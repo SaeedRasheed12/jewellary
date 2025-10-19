@@ -75,45 +75,71 @@
   <div class="fixed inset-0 -z-10 bg-white"></div>
   {% endif %}
 
-<!-- 💎 AURIELLE — Centered Premium Lavender Navbar -->
+<!-- 💎 AURIELLE — Elegant Glass-Luxury Navbar -->
 <nav id="main-navbar"
-     class="bg-gradient-to-r from-white via-[rgb(249,245,255)] to-[rgb(247,238,255)] text-[rgb(120,80,180)] sticky top-0 z-50 border-b border-[rgb(230,220,255)] shadow-md backdrop-blur-xl transition-all duration-300">
+     class="fixed top-0 inset-x-0 z-50 bg-gradient-to-r from-white/90 via-[rgba(250,245,255,0.8)] to-[rgba(245,235,255,0.85)] 
+            backdrop-blur-2xl border-b border-[rgba(200,180,255,0.3)] shadow-[0_2px_30px_rgba(160,120,255,0.1)] transition-all duration-300 font-[Poppins]">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center py-3">
+    <div class="flex justify-between items-center py-3 sm:py-4">
 
-      <!-- 🍔 Mobile Menu Button -->
+      <!-- 🍔 Mobile Menu -->
       <button id="menu-toggle"
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[rgb(240,230,255)] to-[rgb(255,245,255)] text-[rgb(160,90,230)] shadow-sm hover:scale-105 transition">
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-[rgba(255,255,255,0.7)] to-[rgba(240,225,255,0.9)] 
+               text-[rgb(150,90,230)] shadow-sm hover:scale-110 hover:shadow-[0_0_15px_rgba(180,130,255,0.3)] transition-all duration-300 focus:outline-none">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
 
-      <!-- 👑 Brand Logo + Name (Center) -->
+      <!-- 👑 Center Logo -->
       <a href="{{ url_for('index') }}" 
-         class="flex flex-col items-center justify-center text-center group transition-all">
+         class="flex flex-col items-center justify-center text-center group cursor-pointer transition-all duration-300">
         {% if setting and setting.logo %}
-          <img src="{{ setting.logo }}" alt="Logo"
-               class="h-10 sm:h-12 w-auto object-contain drop-shadow-sm mb-1 group-hover:scale-105 transition">
+        <img src="{{ setting.logo }}" alt="Aurielle Logo"
+             class="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(180,130,255,0.3)] mb-1 group-hover:scale-105 transition-all duration-300">
         {% endif %}
-        <span class="text-[rgb(160,90,230)] font-extrabold text-xl sm:text-2xl tracking-wide drop-shadow-md">
+        <span class="bg-gradient-to-r from-[rgb(150,90,230)] via-[rgb(200,120,255)] to-[rgb(255,170,240)] 
+                     bg-clip-text text-transparent font-extrabold text-lg sm:text-2xl tracking-wide drop-shadow-sm">
           {{ setting.website_name if setting else 'AURIELLE' }}
         </span>
-        <p class="text-xs text-[rgb(180,130,255)] mt-0.5 italic">Luxury You Deserve</p>
+        <p class="text-[11px] sm:text-xs text-[rgb(170,120,255)] italic mt-0.5 opacity-80">
+          Luxury You Deserve ✨
+        </p>
       </a>
 
       <!-- 🛍️ Cart Icon -->
       <a href="{{ url_for('cart') }}" 
-         class="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[rgb(235,225,255)] to-[rgb(255,240,255)] text-[rgb(150,90,230)] shadow-sm hover:scale-105 transition">
-        👜
+         class="relative flex items-center justify-center w-10 h-10 rounded-full 
+                bg-gradient-to-br from-[rgba(255,255,255,0.8)] to-[rgba(240,225,255,0.9)] 
+                text-[rgb(150,90,230)] hover:text-[rgb(120,70,200)] 
+                shadow-sm hover:shadow-[0_0_15px_rgba(180,130,255,0.2)] hover:scale-110 transition-all duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.8" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.3 6.3A1 1 0 0 0 6.7 21h10.6a1 1 0 0 0 1-.7L21 13M7 13l4 8m6-8l-4 8"/>
+        </svg>
         {% if session.get('cart') and session['cart']|length > 0 %}
-        <span class="absolute -top-1 -right-1 bg-[rgb(180,130,255)] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm">
+        <span class="absolute -top-1.5 -right-1.5 bg-[rgb(180,130,255)] text-white text-[10px] w-4.5 h-4.5 
+                     flex items-center justify-center rounded-full font-bold shadow-sm animate-pulse">
           {{ session['cart']|length }}
         </span>
         {% endif %}
       </a>
     </div>
+  </div>
+</nav>
+
+<!-- ✨ Navbar Hover Effect -->
+<style>
+#main-navbar {
+  backdrop-filter: saturate(180%) blur(16px);
+}
+#menu-toggle:hover svg {
+  transform: rotate(15deg);
+  transition: transform 0.3s ease;
+}
+</style>
 
     <!-- 💫 Desktop Menu (Below Brand Name) -->
     <div class="hidden lg:flex justify-center items-center gap-8 mt-3 text-sm sm:text-base font-medium text-gray-700">
@@ -148,22 +174,69 @@
     </div>
   </div>
 
-  <!-- 📱 Mobile Menu -->
-  <div id="mobile-menu" class="lg:hidden hidden bg-white/95 border-t border-[rgb(230,220,255)] shadow-md animate-slideDown text-[rgb(150,90,230)]">
-    <div class="flex flex-col px-4 py-4 space-y-3 font-medium">
-      <a href="{{ url_for('index') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">🏠 Home</a>
-      <a href="{{ url_for('all_reviews') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">⭐ Reviews</a>
-      <a href="{{ url_for('track_order') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">📦 Track Order</a>
-      <a href="{{ url_for('refund_policy') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">💵 Refund Policy</a>
-      <a href="{{ url_for('social') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">🌐 Social</a>
-      <a href="{{ url_for('about') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">👑 About</a>
-      {% if session.get('admin_logged_in') %}
-        <a href="{{ url_for('admin_dashboard') }}" class="text-[rgb(160,90,230)] hover:underline">⚙️ Admin</a>
-        <a href="{{ url_for('admin_logout') }}" class="text-rose-400 hover:underline">🔒 Logout</a>
-      {% endif %}
+<!-- 📱 Mobile Menu — Aurielle Luxury Edition -->
+<div id="mobile-menu"
+     class="lg:hidden hidden bg-white/95 backdrop-blur-2xl border-t border-[rgba(210,190,255,0.4)] shadow-lg animate-slideDown 
+            text-[rgb(140,80,220)] font-[Poppins] rounded-t-3xl">
+
+  <div class="flex flex-col px-6 py-5 space-y-4 text-base sm:text-lg font-medium">
+
+    <!-- 🌸 Main Navigation -->
+    <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">🏠 Home</a>
+    <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">⭐ Reviews</a>
+    <a href="{{ url_for('track_order') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">📦 Track Order</a>
+    <a href="{{ url_for('refund_policy') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">💵 Refund Policy</a>
+    <a href="{{ url_for('social') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">🌐 Social</a>
+    <a href="{{ url_for('about') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">👑 About</a>
+
+    <!-- 💎 Categories Section -->
+    {% if categories %}
+    <div class="mt-4 border-t border-[rgba(200,180,255,0.3)] pt-4">
+      <h3 class="text-[rgb(160,90,230)] font-semibold text-lg flex items-center gap-2 mb-3">
+        💎 Shop by Category
+      </h3>
+
+      <!-- Category Links Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[15px]">
+        {% for cat in categories %}
+        <a href="{{ url_for('filter_category', category_id=cat.id) }}"
+           class="flex items-center justify-between bg-gradient-to-r from-[rgba(245,235,255,0.9)] to-[rgba(255,245,255,0.9)]
+                  hover:from-[rgba(240,220,255,1)] hover:to-[rgba(255,235,255,1)]
+                  text-[rgb(140,80,220)] hover:text-[rgb(180,120,250)]
+                  px-3 py-2 rounded-xl shadow-sm hover:shadow-md border border-[rgba(200,180,255,0.2)]
+                  transition-all duration-300 group">
+          <span class="truncate font-medium">{{ cat.name }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+               stroke-width="2" stroke="currentColor"
+               class="w-4 h-4 opacity-60 group-hover:translate-x-1 transition-transform duration-300">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        {% endfor %}
+      </div>
     </div>
+    {% endif %}
+
+    <!-- ⚙️ Admin Options -->
+    {% if session.get('admin_logged_in') %}
+    <div class="border-t border-[rgba(200,180,255,0.3)] pt-4">
+      <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-2 text-[rgb(150,90,230)] hover:underline">⚙️ Admin Dashboard</a>
+      <a href="{{ url_for('admin_logout') }}" class="flex items-center gap-2 text-rose-400 hover:underline">🔒 Logout</a>
+    </div>
+    {% endif %}
   </div>
-</nav>
+</div>
+
+<!-- ✨ Smooth Slide Animation -->
+<style>
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out;
+}
+</style>
 
 <style>
   @keyframes slideDown {
