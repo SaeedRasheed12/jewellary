@@ -174,45 +174,44 @@
     </div>
   </div>
 
-<!-- 📱 Mobile Menu — Our Categories View (Text Only) -->
+<!-- 📱 Mobile Menu — Aurielle Minimal Luxe Categories -->
 <div id="mobile-menu"
-     class="lg:hidden hidden bg-white/95 border-t border-[rgb(230,220,255)] shadow-md animate-slideDown 
-            text-[rgb(150,90,230)] font-[Poppins] rounded-t-3xl">
+     class="lg:hidden hidden bg-white/95 border-t border-[rgb(235,225,255)] shadow-md animate-slideDown 
+            text-[rgb(130,80,210)] font-[Poppins] rounded-t-3xl">
 
   <div class="flex flex-col px-4 py-5 space-y-3 font-medium">
 
     <!-- 🌸 Main Navigation -->
-    <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">🏠 Home</a>
-    <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">⭐ Reviews</a>
-    <a href="{{ url_for('track_order') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">📦 Track Order</a>
-    <a href="{{ url_for('refund_policy') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">💵 Refund Policy</a>
-    <a href="{{ url_for('social') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">🌐 Social</a>
-    <a href="{{ url_for('about') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">👑 About</a>
+    <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">🏠 Home</a>
+    <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">⭐ Reviews</a>
+    <a href="{{ url_for('track_order') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">📦 Track Order</a>
+    <a href="{{ url_for('refund_policy') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">💵 Refund Policy</a>
+    <a href="{{ url_for('social') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">🌐 Social</a>
+    <a href="{{ url_for('about') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">👑 About</a>
 
     <!-- 💎 Our Categories -->
     {% if categories %}
-    <div class="border-t border-[rgba(220,200,255,0.4)] mt-4 pt-5">
-      <h3 class="text-[rgb(160,90,230)] font-semibold text-lg mb-3 text-center tracking-wide">
-        💎 OUR CATEGORIES
+    <div class="border-t border-[rgba(225,210,255,0.5)] mt-4 pt-5">
+      <h3 class="text-[rgb(150,90,230)] font-semibold text-lg mb-3 text-center tracking-wide uppercase">
+        💎 Our Categories
       </h3>
 
-      <div class="flex flex-col divide-y divide-[rgba(230,220,255,0.6)]">
+      <div class="flex flex-col divide-y divide-[rgba(235,225,255,0.8)]">
         {% for cat in categories %}
         <a href="{{ url_for('filter_category', category_id=cat.id) }}"
-           class="flex items-center justify-between px-3 py-3 rounded-xl 
-                  bg-gradient-to-r from-[rgba(255,250,255,0.9)] to-[rgba(245,240,255,0.9)]
-                  hover:from-[rgba(250,240,255,1)] hover:to-[rgba(240,225,255,1)]
-                  hover:shadow-[0_0_20px_rgba(200,160,255,0.2)] transition-all duration-300 group">
+           class="flex items-center justify-between px-3 py-3 bg-white rounded-xl 
+                  hover:bg-[rgba(245,235,255,0.8)] hover:text-[rgb(160,90,240)] 
+                  transition-all duration-300 group">
           
           <!-- Category Name -->
-          <span class="font-semibold text-[rgb(120,60,200)] group-hover:text-[rgb(170,110,255)] tracking-wide">
+          <span class="font-semibold text-[rgb(110,60,190)] group-hover:text-[rgb(160,90,240)] tracking-wide transition-all">
             {{ cat.name }}
           </span>
 
           <!-- Arrow Indicator -->
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                stroke-width="2" stroke="currentColor"
-               class="w-4 h-4 text-[rgb(160,90,230)] opacity-60 group-hover:translate-x-1 transition-transform duration-300">
+               class="w-4 h-4 text-[rgb(160,90,230)] opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all duration-300">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
         </a>
@@ -223,14 +222,15 @@
 
     <!-- ⚙️ Admin Controls -->
     {% if session.get('admin_logged_in') %}
-    <div class="border-t border-[rgba(200,180,255,0.3)] pt-4 mt-4">
-      <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-2 text-[rgb(150,90,230)] hover:underline">⚙️ Admin Dashboard</a>
+    <div class="border-t border-[rgba(230,220,255,0.4)] pt-4 mt-4">
+      <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-2 text-[rgb(140,80,220)] hover:underline">⚙️ Admin Dashboard</a>
       <a href="{{ url_for('admin_logout') }}" class="flex items-center gap-2 text-rose-400 hover:underline">🔒 Logout</a>
     </div>
     {% endif %}
   </div>
 </div>
 
+<!-- ✨ Smooth Slide Animation -->
 <style>
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
