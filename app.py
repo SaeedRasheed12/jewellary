@@ -896,6 +896,19 @@ def delete_category(category_id):
     flash("🗑️ Category deleted!", "success")
     return redirect(url_for('admin_dashboard'))
 
+# 🛍️ View Products by Category
+@app.route('/category/<int:category_id>')
+def filter_category(category_id):
+    category = Category.query.get_or_404(category_id)
+    products = Product.query.filter_by(category_id=category_id).all()
+    categories = Category.query.all()
+    
+    return render_template(
+        'index.html',   # or 'category_products.html' if you have a separate template
+        products=products,
+        categories=categories,
+        selected_category=category
+    )
 
 # ✏️ Edit Category
 @app.route('/edit_category/<int:category_id>', methods=['POST'])
