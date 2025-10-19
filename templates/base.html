@@ -174,50 +174,47 @@
     </div>
   </div>
 
-<!-- 📱 Mobile Menu — Aurielle Luxe Inline Category Icons -->
+<!-- 📱 Mobile Menu — Our Categories View (Text Only) -->
 <div id="mobile-menu"
-     class="lg:hidden hidden bg-white/95 backdrop-blur-2xl border-t border-[rgba(230,220,255,0.5)] shadow-2xl 
-            animate-slideDown text-[rgb(140,80,220)] font-[Poppins] rounded-t-3xl">
+     class="lg:hidden hidden bg-white/95 border-t border-[rgb(230,220,255)] shadow-md animate-slideDown 
+            text-[rgb(150,90,230)] font-[Poppins] rounded-t-3xl">
 
-  <div class="flex flex-col px-5 py-6 space-y-5 text-base sm:text-lg font-medium">
+  <div class="flex flex-col px-4 py-5 space-y-3 font-medium">
 
     <!-- 🌸 Main Navigation -->
-    <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">🏠 Home</a>
-    <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">⭐ Reviews</a>
-    <a href="{{ url_for('track_order') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">📦 Track Order</a>
-    <a href="{{ url_for('refund_policy') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">💵 Refund Policy</a>
-    <a href="{{ url_for('social') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">🌐 Social</a>
-    <a href="{{ url_for('about') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)] transition-all">👑 About</a>
+    <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">🏠 Home</a>
+    <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">⭐ Reviews</a>
+    <a href="{{ url_for('track_order') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">📦 Track Order</a>
+    <a href="{{ url_for('refund_policy') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">💵 Refund Policy</a>
+    <a href="{{ url_for('social') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">🌐 Social</a>
+    <a href="{{ url_for('about') }}" class="flex items-center gap-2 hover:text-[rgb(180,130,255)]">👑 About</a>
 
-    <!-- 💍 Categories (Inline View with Icons) -->
+    <!-- 💎 Our Categories -->
     {% if categories %}
-    <div class="mt-4 border-t border-[rgba(200,180,255,0.3)] pt-4">
-      <h3 class="text-[rgb(160,90,230)] font-semibold text-lg mb-3 flex items-center gap-2">💎 Shop by Category</h3>
-      <div class="space-y-2">
+    <div class="border-t border-[rgba(220,200,255,0.4)] mt-4 pt-5">
+      <h3 class="text-[rgb(160,90,230)] font-semibold text-lg mb-3 text-center tracking-wide">
+        💎 OUR CATEGORIES
+      </h3>
+
+      <div class="flex flex-col divide-y divide-[rgba(230,220,255,0.6)]">
         {% for cat in categories %}
         <a href="{{ url_for('filter_category', category_id=cat.id) }}"
-           class="flex items-center gap-3 p-2.5 rounded-xl border border-[rgba(220,190,255,0.4)] 
-                  bg-gradient-to-r from-[rgba(250,240,255,0.9)] to-[rgba(255,245,255,0.95)] 
-                  hover:from-[rgba(245,230,255,1)] hover:to-[rgba(255,240,255,1)] 
-                  shadow-sm hover:shadow-md transition-all duration-300 group">
+           class="flex items-center justify-between px-3 py-3 rounded-xl 
+                  bg-gradient-to-r from-[rgba(255,250,255,0.9)] to-[rgba(245,240,255,0.9)]
+                  hover:from-[rgba(250,240,255,1)] hover:to-[rgba(240,225,255,1)]
+                  hover:shadow-[0_0_20px_rgba(200,160,255,0.2)] transition-all duration-300 group">
+          
+          <!-- Category Name -->
+          <span class="font-semibold text-[rgb(120,60,200)] group-hover:text-[rgb(170,110,255)] tracking-wide">
+            {{ cat.name }}
+          </span>
 
-          <!-- Small Category Thumbnail -->
-          <img src="{{ cat.image_url or '/static/default-category.jpg' }}" 
-               alt="{{ cat.name }}" 
-               class="w-9 h-9 object-cover rounded-full border border-[rgba(200,180,255,0.5)] 
-                      shadow-sm group-hover:scale-105 transition-transform duration-300">
-
-          <!-- Category Name & Arrow -->
-          <div class="flex justify-between items-center w-full">
-            <span class="font-semibold text-[rgb(120,60,200)] group-hover:text-[rgb(170,110,255)]">
-              {{ cat.name }}
-            </span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                 stroke-width="2" stroke="currentColor"
-                 class="w-4 h-4 text-[rgb(160,90,230)] opacity-60 group-hover:translate-x-1 transition-transform duration-300">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-            </svg>
-          </div>
+          <!-- Arrow Indicator -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+               stroke-width="2" stroke="currentColor"
+               class="w-4 h-4 text-[rgb(160,90,230)] opacity-60 group-hover:translate-x-1 transition-transform duration-300">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
         </a>
         {% endfor %}
       </div>
@@ -234,7 +231,6 @@
   </div>
 </div>
 
-<!-- ✨ Smooth Animation -->
 <style>
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
