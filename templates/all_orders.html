@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}📦 All Orders{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">📦 All Orders</h1>
+
+{% if orders %}
+<div class="overflow-x-auto bg-white rounded-xl shadow border">
+  <table class="w-full text-sm border-collapse">
+    <thead class="bg-gray-100 sticky top-0 z-10">
+      <tr class="text-left text-gray-700">
+        <th class="p-3 border">Product</th>
+        <th class="p-3 border">Image</th>
+        <th class="p-3 border">Qty</th>
+        <th class="p-3 border">Price</th>
+        <th class="p-3 border">Subtotal</th>
+        <th class="p-3 border">Status</th>
+        <th class="p-3 border">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+      {% set order_total = namespace(value=0) %}
+
+      <!-- 🔹 Order Header -->
+      <tr class="bg-blue-50">
+        <td colspan="7" class="p-3 font-semibold text-gray-800">
+          🆔 Order #{{ order.id }} — {{ order.customer_name if order.customer_name else 'Guest' }}
+          <span class="ml-3 text-sm text-gray-500">📞 {{ order.phone }}</span>
+        </td>
+      </tr>
+
+      <!-- 🔹 Order Items -->
+      {% for item in order.items %}
+      <tr class="hover:bg-gray-50 transition">
+        <td class="p-3 border font-medium">{{ item.product_name }}</td>
+        <td class="p-3 border">
+          {% if item.product_image %}
+            <a href="{{ item.product_image }}" class="glightbox" data-gallery="order-{{ order.id }}">
+              <img src="{{ item.product_image }}" 
+                   alt="{{ item.product_name }}" 
+                   class="h-12 w-12 object-cover rounded shadow hover:scale-110 transition" />
+            </a>
+          {% else %}
+            <span class="text-gray-400">No image</span>
+          {% endif %}
+        </td>
+        <td class="p-3 border">× {{ item.quantity }}</td>
+        <td class="p-3 border">PKR {{ "%.2f"|format(item.price) }}</td>
+        <td class="p-3 border">PKR {{ "%.2f"|format(item.price * item.quantity) }}</td>
+        <td class="p-3 border" rowspan="{{ order.items|length }}">
+          {% if order.status == "Completed" %}
+            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">✅ Completed</span>
+          {% elif order.status == "Pending" %}
+            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold">⏳ Pending</span>
+          {% elif order.status == "Cancelled" %}
+            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">❌ Cancelled</span>
+          {% else %}
+            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-semibold">{{ order.status }}</span>
+          {% endif %}
+        </td>
+        <td class="p-3 border" rowspan="{{ order.items|length }}">
+          {{ order.created_at.strftime('%Y-%m-%d %I:%M %p') }}
+        </td>
+      </tr>
+      {% set order_total.value = order_total.value + (item.price * item.quantity) %}
+      {% endfor %}
+
+      <!-- 🔹 Order Total -->
+      <tr class="bg-gray-100 font-semibold">
+        <td colspan="4" class="p-3 border text-right">Order Total</td>
+        <td colspan="3" class="p-3 border text-gray-900">PKR {{ "%.2f"|format(order_total.value) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <p class="text-gray-500 italic">No orders found.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+<script>
+  GLightbox({ selector: '.glightbox', loop: true });
+</script>
+{% endblock %}

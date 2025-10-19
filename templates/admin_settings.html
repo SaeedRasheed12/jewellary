@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% block title %}Admin Settings{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+
+  <!-- 🖼️ Website Banner Settings -->
+  <h2 class="text-2xl font-semibold mb-4 text-gray-800">🖼️ Website Banner Settings</h2>
+  <form method="POST" action="{{ url_for('admin_settings') }}" enctype="multipart/form-data"
+        class="bg-white p-6 rounded-lg shadow-md mb-6 max-w-xl space-y-6">
+
+    <!-- Hero Banner -->
+    <div>
+      <label class="block font-medium text-gray-700 mb-1">🖼️ Choose New Hero Banner Image</label>
+      <input type="file" name="hero_banner" accept="image/*"
+             class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full 
+             file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+    </div>
+
+    <!-- Background Image -->
+    <div>
+      <label class="block font-medium text-gray-700 mb-1">🌄 Choose Background Image</label>
+      <input type="file" name="background_image" accept="image/*"
+             class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full 
+             file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100" />
+    </div>
+
+    <!-- 🧑‍💼 About Page Image -->
+    <div>
+      <label class="block font-medium text-gray-700 mb-1">👑 Upload About Page Image</label>
+      <input type="file" name="about_image" accept="image/*"
+             class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full 
+             file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100" />
+      <p class="text-sm text-gray-500 mt-1">This image appears on the About Us page (e.g., founder picture).</p>
+    </div>
+
+    <!-- 🌸 Know Your Perfume Uploads -->
+    <div class="border-t border-gray-200 pt-4">
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">🌸 Know Your Perfume Media</h3>
+
+      <div class="space-y-4">
+        <!-- Perfume Image Upload -->
+        <div>
+          <label class="block font-medium text-gray-700 mb-1">🖼️ Upload Display Image</label>
+          <input type="file" name="perfume_image" accept="image/*"
+                 class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full 
+                 file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
+          <p class="text-sm text-gray-500 mt-1">This image appears on the “Know Your Perfume” page.</p>
+        </div>
+
+        <!-- Perfume Video Upload -->
+        <div>
+          <label class="block font-medium text-gray-700 mb-1">🎥 Upload Informative Video</label>
+          <input type="file" name="perfume_video" accept="video/*"
+                 class="w-full border border-gray-300 p-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full 
+                 file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+          <p class="text-sm text-gray-500 mt-1">This video appears on the “Know Your Perfume” page.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Line Banner Text -->
+    <div>
+      <label class="block font-medium text-gray-700 mb-1">📢 Line Banner Text</label>
+      <input type="text" name="line_banner_text"
+             value="{{ setting.line_banner_text if setting and setting.line_banner_text else '' }}"
+             class="w-full border border-gray-300 p-2 rounded-lg"
+             placeholder="e.g. 🎉 50% Off Lenses this week!" />
+    </div>
+
+    <!-- Save -->
+    <div>
+      <button type="submit"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded w-full sm:w-auto">
+        💾 Save Settings
+      </button>
+    </div>
+  </form>
+
+  <!-- 👁️ Banner Previews -->
+  {% if setting %}
+  <div class="max-w-2xl mx-auto mt-6 space-y-6">
+
+    {% if setting.hero_banner %}
+    <div>
+      <h3 class="text-xl font-bold mb-2 text-gray-800">👁️ Current Hero Banner:</h3>
+      <div class="border border-gray-300 rounded-lg overflow-hidden shadow-md">
+        <img src="{{ setting.hero_banner }}" class="w-full object-cover h-64 sm:h-80">
+      </div>
+      <form action="{{ url_for('delete_hero_banner') }}" method="POST" class="mt-2 text-center">
+        <button type="submit" class="text-red-600 hover:underline font-semibold">🗑️ Delete Hero Banner</button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if setting.background_image %}
+    <div>
+      <h3 class="text-xl font-bold mb-2 text-gray-800">🌄 Current Background Image:</h3>
+      <div class="border border-gray-300 rounded-lg overflow-hidden shadow-md">
+        <img src="{{ setting.background_image }}" class="w-full object-cover h-64 sm:h-80">
+      </div>
+      <form action="{{ url_for('delete_background_image') }}" method="POST" class="mt-2 text-center">
+        <button type="submit" class="text-red-600 hover:underline font-semibold">🗑️ Delete Background Image</button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if setting.about_image %}
+    <div>
+      <h3 class="text-xl font-bold mb-2 text-gray-800">👑 Current About Page Image:</h3>
+      <div class="border border-gray-300 rounded-lg overflow-hidden shadow-md bg-gray-50">
+        <img src="{{ setting.about_image }}" class="w-full object-cover h-64 sm:h-80">
+      </div>
+      <p class="text-center text-gray-600 text-sm mt-2">Displayed on About Us page.</p>
+      <form action="{{ url_for('delete_about_image') }}" method="POST" class="mt-2 text-center">
+        <button type="submit" 
+                class="text-red-600 hover:underline font-semibold">
+          🗑️ Delete About Page Image
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if setting.perfume_image %}
+    <div>
+      <h3 class="text-xl font-bold mb-2 text-gray-800">🌸 Current “Know Your Perfume” Image:</h3>
+      <div class="border border-gray-300 rounded-lg overflow-hidden shadow-md bg-gray-50">
+        <img src="{{ setting.perfume_image }}" class="w-full object-cover h-64 sm:h-80">
+      </div>
+      <p class="text-center text-gray-600 text-sm mt-2">Displayed on the Know Your Perfume page.</p>
+      <form action="{{ url_for('delete_perfume_image') }}" method="POST" class="mt-2 text-center">
+        <button type="submit" class="text-red-600 hover:underline font-semibold">
+          🗑️ Delete Perfume Image
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if setting.perfume_video %}
+    <div>
+      <h3 class="text-xl font-bold mb-2 text-gray-800">🎥 Current “Know Your Perfume” Video:</h3>
+      <video controls playsinline class="w-full rounded-lg shadow-md bg-black max-h-96">
+        <source src="{{ setting.perfume_video }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p class="text-center text-gray-600 text-sm mt-2">Displayed on Know Your Perfume page.</p>
+      <form action="{{ url_for('delete_perfume_video') }}" method="POST" class="mt-2 text-center">
+        <button type="submit" class="text-red-600 hover:underline font-semibold">
+          🗑️ Delete Perfume Video
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if setting.line_banner_text %}
+    <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded text-center font-medium">
+      {{ setting.line_banner_text }}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- 🛠 Maintenance Mode -->
+  <div class="max-w-xl mx-auto mt-12 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg space-y-5">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+      🛠 Maintenance Mode
+    </h2>
+
+    <form method="POST" action="{{ url_for('toggle_maintenance') }}" class="space-y-5">
+      <div class="flex items-center gap-3">
+        <input type="checkbox" name="maintenance_mode" value="1"
+               {% if setting and setting.maintenance_mode %}checked{% endif %}
+               class="w-5 h-5 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500">
+        <label class="font-medium text-gray-700 dark:text-gray-200">
+          Enable Maintenance Mode
+        </label>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+          Maintenance Message
+        </label>
+        <textarea name="maintenance_message" rows="3"
+          class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+          placeholder="🛠 Our website is under maintenance.">{{ setting.maintenance_message if setting and setting.maintenance_message else '' }}</textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+          Admin Password
+        </label>
+        <input type="password" name="password" required
+          placeholder="Enter password"
+          class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100">
+      </div>
+
+      <button type="submit"
+        class="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-2 rounded-lg transition">
+        💾 Save Settings
+      </button>
+    </form>
+  </div>
+
+  <!-- 🚚 Delivery Fee Settings -->
+  <div class="max-w-xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-md space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">🚚 Delivery Fee Settings</h2>
+    <form method="POST" action="{{ url_for('update_delivery_settings') }}" class="space-y-4">
+      <div>
+        <label class="block font-medium text-gray-700 mb-1">Free Delivery Above (Rs.)</label>
+        <input type="number" step="0.01" name="free_delivery_threshold"
+               value="{{ setting.free_delivery_threshold if setting else '' }}"
+               class="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+      </div>
+      <div>
+        <label class="block font-medium text-gray-700 mb-1">Standard Delivery Fee (Rs.)</label>
+        <input type="number" step="0.01" name="delivery_fee"
+               value="{{ setting.delivery_fee if setting else '' }}"
+               class="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+      </div>
+      <div>
+        <button type="submit"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded w-full sm:w-auto">
+          💾 Save Delivery Settings
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 🌐 Website Info Section -->
+  <h2 class="text-2xl font-bold mt-10 mb-4 text-gray-800">🌐 Update Website Info</h2>
+  <form action="{{ url_for('update_site_info') }}" method="POST" enctype="multipart/form-data"
+        class="bg-white p-6 rounded-xl shadow-lg space-y-4 max-w-xl mx-auto border border-gray-200">
+
+    <div>
+      <label class="block font-semibold text-gray-700 mb-1">Website Name</label>
+      <input type="text" name="website_name" value="{{ setting.website_name if setting else '' }}"
+             class="w-full border px-4 py-2 rounded-lg" required />
+    </div>
+
+    <div>
+      <label class="block font-semibold text-gray-700 mb-1">Logo Image</label>
+      <input type="file" name="logo" accept="image/*" 
+             class="w-full text-sm border px-2 py-2 rounded-lg" />
+    </div>
+
+    {% if setting and setting.logo %}
+      <div class="mt-2">
+        <span class="text-sm text-gray-600">Current Logo:</span><br>
+        <img src="{{ setting.logo }}" class="w-32 h-16 object-contain mt-1 border rounded" alt="Logo">
+      </div>
+    {% endif %}
+
+    <div class="mt-6 border-t pt-4">
+      <label class="inline-flex items-center gap-2 font-semibold text-gray-700">
+        <input type="checkbox" name="timer_enabled" value="1"
+               {% if setting and setting.timer_enabled %}checked{% endif %}
+               class="w-5 h-5 text-blue-600 border-gray-300 rounded">
+        Enable Product Countdown Timer
+      </label>
+    </div>
+
+    <div>
+      <label class="block font-semibold text-gray-700 mb-1">⏱️ Product Go Live Time</label>
+      <input type="datetime-local" name="product_visibility_start"
+             value="{{ setting.product_visibility_start.strftime('%Y-%m-%dT%H:%M') if setting and setting.product_visibility_start else '' }}"
+             class="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    </div>
+
+    <div>
+      <label class="block font-semibold text-gray-700 mb-1">⏳ Product Hide Time (optional)</label>
+      <input type="datetime-local" name="product_visibility_end"
+             value="{{ setting.product_visibility_end.strftime('%Y-%m-%dT%H:%M') if setting and setting.product_visibility_end else '' }}"
+             class="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    </div>
+
+    <div>
+      <label class="block font-semibold text-gray-700 mb-1">💬 Countdown Message</label>
+      <textarea name="coming_soon_message" rows="3" class="w-full border px-4 py-2 rounded-lg resize-none text-sm"
+                placeholder="🚀 Get ready! A fresh collection of products will be available soon.">{{ setting.coming_soon_message if setting and setting.coming_soon_message else '' }}</textarea>
+      <p class="text-xs text-gray-500 mt-1">This message appears under the countdown on the homepage.</p>
+    </div>
+
+    <div class="pt-2 text-center">
+      <button type="submit"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-semibold transition w-full sm:w-auto">
+        💾 Save Changes
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

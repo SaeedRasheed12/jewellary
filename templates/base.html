@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}{{ setting.website_name if setting else 'Bin Ahmed' }}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 🅰️ Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- 💨 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            primary: '#1e3a8a',
+            brand: '#0f172a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 🟦 Line Banner Animation */
+    @keyframes scrollLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .banner-marquee-wrapper {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      height: 2.25rem;
+    }
+    .banner-marquee-text {
+      display: flex;
+      width: max-content;
+      animation: scrollLeft 18s linear infinite;
+      will-change: transform;
+    }
+    .banner-marquee-content {
+      flex-shrink: 0;
+      padding-right: 4rem;
+      min-width: 100vw;
+      box-sizing: border-box;
+    }
+
+    /* Background overlay for readability */
+    .background-overlay {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(6px);
+    }
+  </style>
+</head>
+
+<body class="relative font-[Poppins] text-gray-800 min-h-screen flex flex-col bg-white transition-all duration-500">
+
+  <!-- 🌄 Clean White Background (with Optional Image) -->
+  {% if setting and setting.background_image %}
+  <div class="fixed inset-0 -z-10 overflow-hidden">
+    <img src="{{ setting.background_image }}" alt="Background"
+         class="w-full h-full object-cover object-center opacity-30 brightness-100 transition-transform duration-700 ease-out hover:scale-105" />
+    
+    <!-- ✨ White Overlay for Soft Glow & Readability -->
+    <div class="absolute inset-0 bg-white/85 backdrop-blur-[4px]"></div>
+  </div>
+  {% else %}
+  <!-- 🩶 Fallback Pure White -->
+  <div class="fixed inset-0 -z-10 bg-white"></div>
+  {% endif %}
+
+<!-- 💎 AURIELLE — Centered Premium Lavender Navbar -->
+<nav id="main-navbar"
+     class="bg-gradient-to-r from-white via-[rgb(249,245,255)] to-[rgb(247,238,255)] text-[rgb(120,80,180)] sticky top-0 z-50 border-b border-[rgb(230,220,255)] shadow-md backdrop-blur-xl transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center py-3">
+
+      <!-- 🍔 Mobile Menu Button -->
+      <button id="menu-toggle"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[rgb(240,230,255)] to-[rgb(255,245,255)] text-[rgb(160,90,230)] shadow-sm hover:scale-105 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <!-- 👑 Brand Logo + Name (Center) -->
+      <a href="{{ url_for('index') }}" 
+         class="flex flex-col items-center justify-center text-center group transition-all">
+        {% if setting and setting.logo %}
+          <img src="{{ setting.logo }}" alt="Logo"
+               class="h-10 sm:h-12 w-auto object-contain drop-shadow-sm mb-1 group-hover:scale-105 transition">
+        {% endif %}
+        <span class="text-[rgb(160,90,230)] font-extrabold text-xl sm:text-2xl tracking-wide drop-shadow-md">
+          {{ setting.website_name if setting else 'AURIELLE' }}
+        </span>
+        <p class="text-xs text-[rgb(180,130,255)] mt-0.5 italic">Luxury You Deserve</p>
+      </a>
+
+      <!-- 🛍️ Cart Icon -->
+      <a href="{{ url_for('cart') }}" 
+         class="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[rgb(235,225,255)] to-[rgb(255,240,255)] text-[rgb(150,90,230)] shadow-sm hover:scale-105 transition">
+        👜
+        {% if session.get('cart') and session['cart']|length > 0 %}
+        <span class="absolute -top-1 -right-1 bg-[rgb(180,130,255)] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm">
+          {{ session['cart']|length }}
+        </span>
+        {% endif %}
+      </a>
+    </div>
+
+    <!-- 💫 Desktop Menu (Below Brand Name) -->
+    <div class="hidden lg:flex justify-center items-center gap-8 mt-3 text-sm sm:text-base font-medium text-gray-700">
+      <a href="{{ url_for('index') }}" class="relative group flex items-center gap-1">
+        🏠 Home
+        <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+      </a>
+      <a href="{{ url_for('know_your_perfume') }}" class="relative group flex items-center gap-1">
+        💎 Collections
+        <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+      </a>
+      <a href="{{ url_for('all_reviews') }}" class="relative group flex items-center gap-1">
+        ⭐ Reviews
+        <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+      </a>
+      <a href="{{ url_for('track_order') }}" class="relative group flex items-center gap-1">
+        📦 Track Order
+        <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+      </a>
+      <a href="{{ url_for('refund_policy') }}" class="relative group flex items-center gap-1">
+        💵 Refund
+        <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+      </a>
+      <a href="{{ url_for('social') }}" class="relative group flex items-center gap-1">
+        🌐 Social
+        <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+      </a>
+      <a href="{{ url_for('about') }}" class="relative group flex items-center gap-1">
+        👑 About
+        <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+      </a>
+      {% if session.get('admin_logged_in') %}
+        <a href="{{ url_for('admin_dashboard') }}" class="text-[rgb(160,90,230)] hover:underline">⚙️ Admin</a>
+        <a href="{{ url_for('admin_logout') }}" class="text-rose-400 hover:underline">🔒 Logout</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 📱 Mobile Menu -->
+  <div id="mobile-menu" class="lg:hidden hidden bg-white/95 border-t border-[rgb(230,220,255)] shadow-md animate-slideDown text-[rgb(150,90,230)]">
+    <div class="flex flex-col px-4 py-4 space-y-3 font-medium">
+      <a href="{{ url_for('index') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">🏠 Home</a>
+      <a href="{{ url_for('know_your_perfume') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">💎 Collections</a>
+      <a href="{{ url_for('all_reviews') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">⭐ Reviews</a>
+      <a href="{{ url_for('track_order') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">📦 Track Order</a>
+      <a href="{{ url_for('refund_policy') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">💵 Refund Policy</a>
+      <a href="{{ url_for('social') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">🌐 Social</a>
+      <a href="{{ url_for('about') }}" class="hover:text-[rgb(180,130,255)] flex items-center gap-2">👑 About</a>
+      {% if session.get('admin_logged_in') %}
+        <a href="{{ url_for('admin_dashboard') }}" class="text-[rgb(160,90,230)] hover:underline">⚙️ Admin</a>
+        <a href="{{ url_for('admin_logout') }}" class="text-rose-400 hover:underline">🔒 Logout</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<style>
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slideDown { animation: slideDown 0.3s ease-out; }
+</style>
+
+<!-- 💜 AURIELLE — Elegant Scrolling Line Banner -->
+<div class="bg-gradient-to-r from-[rgb(250,245,255)] via-[rgb(255,240,250)] to-[rgb(250,245,255)]
+            text-[rgb(140,90,210)] font-semibold text-sm sm:text-base py-2 w-full shadow-sm border-t border-[rgb(230,210,250)]">
+  <div class="banner-marquee-wrapper overflow-hidden relative">
+    <div class="banner-marquee-text flex whitespace-nowrap animate-marquee">
+      <span class="banner-marquee-content mx-8">
+        {{ setting.line_banner_text if setting and setting.line_banner_text else "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
+      </span>
+      <span class="banner-marquee-content mx-8" aria-hidden="true">
+        {{ setting.line_banner_text if setting and setting.line_banner_text else "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ✨ Smooth Elegant Marquee Animation */
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+
+  .banner-marquee-wrapper {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .banner-marquee-text {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .banner-marquee-content {
+    flex-shrink: 0;
+    padding-right: 4rem;
+    min-width: 100vw;
+  }
+</style>
+
+<!-- 💎 AURIELLE — Page Content Area -->
+<main class="flex-grow max-w-6xl mx-auto px-4 py-10 bg-gradient-to-br from-white/90 via-[rgb(252,248,255)] to-[rgb(245,240,255)] backdrop-blur-xl shadow-lg rounded-2xl mt-8 border border-[rgb(240,230,255)] transition-all duration-300 w-full">
+
+  <!-- 🔔 Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="space-y-4 mb-8 animate-fadeIn">
+        {% for category, message in messages %}
+        <div class="flex items-center justify-between p-4 rounded-xl text-sm sm:text-base font-medium shadow-md border
+          {% if category == 'success' %}
+            bg-[rgb(240,255,245)] border-[rgb(190,245,200)] text-[rgb(25,100,60)]
+          {% elif category == 'danger' %}
+            bg-[rgb(255,245,245)] border-[rgb(250,180,180)] text-[rgb(160,40,40)]
+          {% elif category == 'warning' %}
+            bg-[rgb(255,250,235)] border-[rgb(255,225,160)] text-[rgb(140,100,30)]
+          {% else %}
+            bg-[rgb(245,245,255)] border-[rgb(230,220,255)] text-[rgb(100,80,160)]
+          {% endif %}">
+          
+          <!-- Icon + Message -->
+          <div class="flex items-center gap-2">
+            {% if category == 'success' %}
+              <span class="text-green-600 text-lg">✅</span>
+            {% elif category == 'danger' %}
+              <span class="text-red-500 text-lg">❌</span>
+            {% elif category == 'warning' %}
+              <span class="text-yellow-500 text-lg">⚠️</span>
+            {% else %}
+              <span class="text-[rgb(160,120,255)] text-lg">💡</span>
+            {% endif %}
+            <p class="leading-snug">{{ message }}</p>
+          </div>
+
+          <!-- Close Button -->
+          <button onclick="this.parentElement.remove()" 
+                  class="text-lg font-bold px-2 hover:text-[rgb(180,130,255)] transition">
+            ×
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- ✨ Dynamic Page Block -->
+  <div class="animate-fadeInSlow">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<!-- 🌸 Smooth Entry Animation -->
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+
+  @keyframes fadeInSlow {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeInSlow { animation: fadeInSlow 0.8s ease-out; }
+</style>
+
+<!-- 💜 AURIELLE — Elegant Footer -->
+<footer class="bg-gradient-to-r from-[rgb(250,245,255)] via-[rgb(255,250,255)] to-[rgb(250,245,255)]
+               border-t border-[rgb(235,225,255)] mt-16 shadow-inner backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row justify-between items-center text-sm text-[rgb(100,80,160)] gap-6">
+
+    <!-- 🌸 Left: Social Links -->
+    <div class="flex items-center gap-6 order-2 sm:order-1">
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/bin_ahmed_parfum?igsh=ZGV6dm91djFtbjI0"
+         target="_blank" rel="noopener noreferrer"
+         title="Follow us on Instagram"
+         class="text-[rgb(180,100,200)] hover:text-[rgb(150,70,190)] transition transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+             viewBox="0 0 24 24" class="w-6 h-6">
+          <path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.2 2.3.4.6.2 1 .5 1.4 1 .4.4.7.8 1 1.4.2.4.3 1 .4 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.9-.4 2.3-.2.6-.5 1-1 1.4-.4.4-.8.7-1.4 1-.4.2-1 .3-2.3.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.2-2.3-.4-.6-.2-1-.5-1.4-1-.4-.4-.7-.8-1-1.4-.2-.4-.3-1-.4-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.9.4-2.3.2-.6.5-1 1-1.4.4-.4.8-.7 1.4-1 .4-.2 1-.3 2.3-.4 1.3-.1 1.7-.1 4.9-.1m0-2.2C8.7 0 8.3 0 7 0 5.7 0 4.7.1 4 .3 3 .6 2.2 1.1 1.5 1.8.8 2.5.3 3.3.1 4.3 0 5 0 6 0 7.3 0 8.7 0 9.1 0 12s0 3.3.1 4.7c.1 1 .3 1.8.6 2.5.6 1.1 1.2 1.7 2.3 2.3.7.3 1.5.5 2.5.6 1.4.1 1.8.1 4.7.1s3.3 0 4.7-.1c1-.1 1.8-.3 2.5-.6 1.1-.6 1.7-1.2 2.3-2.3.3-.7.5-1.5.6-2.5.1-1.4.1-1.8.1-4.7s0-3.3-.1-4.7c-.1-1-.3-1.8-.6-2.5-.6-1.1-1.2-1.7-2.3-2.3-.7-.3-1.5-.5-2.5-.6C15.3 0 14.9 0 12 0z"/>
+          <path d="M12 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.6a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/>
+        </svg>
+      </a>
+
+      <!-- Facebook -->
+      <a href="https://www.facebook.com/share/1BR6JECkkN/"
+         target="_blank" rel="noopener noreferrer"
+         title="Like us on Facebook"
+         class="text-[rgb(100,120,240)] hover:text-[rgb(80,90,220)] transition transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+             viewBox="0 0 24 24" class="w-6 h-6">
+          <path d="M22 12c0-5.522-4.478-10-10-10S2 6.478 2 12c0 5 3.657 9.128 8.438 9.878v-6.987H8.078v-2.89h2.36V9.797c0-2.332 1.393-3.621 3.523-3.621 1.021 0 2.09.182 2.09.182v2.3h-1.178c-1.164 0-1.528.723-1.528 1.465v1.757h2.598l-.415 2.89h-2.183v6.987C18.343 21.128 22 17 22 12z"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- 🌿 Middle -->
+    <p class="text-center text-[rgb(130,100,180)] order-3 sm:order-2 italic">
+      Crafted with 💕 by <span class="font-semibold text-[rgb(160,90,230)]">AURIELLE</span>
+    </p>
+
+    <!-- 🕊️ Right -->
+    <p class="text-center sm:text-right order-1 sm:order-3 text-[rgb(110,80,170)] font-medium">
+      © {{ setting.website_name if setting else 'AURIELLE' }} {{ now().year }}
+    </p>
+  </div>
+</footer>
+
+<!-- 🌸 Navbar Shadow on Scroll -->
+<script>
+  window.addEventListener("scroll", () => {
+    const navbar = document.getElementById("main-navbar");
+    if (navbar) {
+      if (window.scrollY > 10) {
+        navbar.classList.add("shadow-2xl", "backdrop-blur-lg");
+      } else {
+        navbar.classList.remove("shadow-2xl", "backdrop-blur-lg");
+      }
+    }
+  });
+
+  const menuBtn = document.getElementById("menu-toggle");
+  const mobileMenu = document.getElementById("mobile-menu");
+  menuBtn?.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+  });
+</script>
+
+<!-- 💬 AURIELLE — WhatsApp Chat Widget -->
+<div id="whatsapp-chat" class="fixed bottom-6 right-6 z-50 animate-bounce-soft">
+  <a id="whatsapp-link"
+     href="#"
+     target="_blank"
+     class="group flex items-center gap-3 bg-gradient-to-r from-[rgb(160,100,255)] to-[rgb(200,150,255)]
+            text-white px-6 py-3.5 rounded-full shadow-lg font-semibold tracking-wide
+            hover:from-[rgb(170,110,255)] hover:to-[rgb(220,170,255)]
+            transition-all duration-300 transform hover:scale-110 hover:shadow-[0_0_25px_rgb(220,180,255)]">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+         alt="WhatsApp" class="w-6 h-6 drop-shadow-md group-hover:scale-110 transition-transform duration-200">
+    <span class="hidden sm:inline">Chat with Us</span>
+  </a>
+</div>
+
+<style>
+  /* 💫 Soft bounce animation (luxury-style) */
+  @keyframes bounce-soft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .animate-bounce-soft {
+    animation: bounce-soft 4s ease-in-out infinite;
+  }
+
+  /* 🌸 Glow Pulse (optional soft aura) */
+  #whatsapp-chat:hover {
+    filter: drop-shadow(0 0 12px rgba(210,160,255,0.6));
+  }
+</style>
+
+<script>
+  // 🌷 Dynamic WhatsApp link builder
+  const phone = "923199287530"; // your WhatsApp number (no + or 0)
+  const msg   = "Hi, I’d love to know more about AURIELLE 💜";
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  const link = document.getElementById("whatsapp-link");
+  if (link) {
+    link.href = isMobile
+      ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(msg)}`
+      : `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`;
+  }
+</script>
+</body>
+</html>

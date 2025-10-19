@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Delivered - {{ setting.website_name if setting else 'Bin Ahmed' }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(90deg, #065f46, #059669, #10b981);
+      color: #fff;
+      text-align: center;
+      padding: 30px 15px;
+    }
+    .logo {
+      max-height: 70px;
+      margin-bottom: 10px;
+    }
+    .heading {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    .body {
+      padding: 25px 20px;
+    }
+    .message {
+      font-size: 16px;
+      line-height: 1.6;
+      text-align: center;
+      color: #444;
+    }
+    .tracking-badge {
+      display: inline-block;
+      background-color: #10b981;
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin: 15px auto;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #059669;
+      color: #fff !important;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 6px;
+      margin: 20px auto;
+      transition: 0.3s;
+    }
+    .btn:hover { background-color: #047857; }
+    .footer {
+      background-color: #f3f4f6;
+      color: #6b7280;
+      font-size: 13px;
+      text-align: center;
+      padding: 15px 10px;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div style="padding: 15px; background-color: #f3f4f6;">
+    <div class="email-container">
+      <div class="header">
+        {% if logo_url %}
+          <img src="{{ logo_url }}" alt="Logo" class="logo">
+        {% endif %}
+        <div class="heading">✅ Your Order Has Been Delivered!</div>
+        <p style="margin: 0;">We hope you love your purchase 💚</p>
+      </div>
+
+      <div class="body">
+        <p class="message">
+          Hello <strong>{{ order.name }}</strong>,<br>
+          your order <b>#{{ order.tracking_number }}</b> has been successfully delivered.
+        </p>
+
+        <div style="text-align:center;">
+          <a href="https://www.bin-ahmed.store" class="btn">🛍️ Shop Again</a>
+        </div>
+
+        <p class="message">
+          Thank you for trusting <strong>{{ setting.website_name if setting else 'Bin Ahmed' }}</strong>.<br>
+          We hope to see you again soon!
+        </p>
+      </div>
+
+      <div class="footer">
+        &copy; {{ setting.website_name if setting else 'Bin Ahmed' }} — All rights reserved.<br>
+        This is an automated message. Please do not reply.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

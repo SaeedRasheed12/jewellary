@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Manage Categories{% endblock %}
+
+{% block content %}
+<div class="p-6">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800">📂 Manage Categories</h1>
+
+  <!-- ➕ Add Category -->
+  <form method="POST" action="{{ url_for('add_category') }}" enctype="multipart/form-data"
+        class="bg-white p-6 rounded-xl shadow-lg mb-8 max-w-xl space-y-4">
+    <div>
+      <label class="block font-medium text-gray-700 mb-1">Category Name</label>
+      <input type="text" name="category_name" required placeholder="e.g. Sunglasses"
+             class="w-full border px-3 py-2 rounded-lg focus:ring focus:ring-blue-300" />
+    </div>
+    <div>
+      <label class="block font-medium text-gray-700 mb-1">Category Image</label>
+      <input type="file" name="image" accept="image/*"
+             class="w-full border px-3 py-2 rounded-lg bg-gray-50" />
+      <p class="text-xs text-gray-500 mt-1">Upload an image that represents this category.</p>
+    </div>
+    <button type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-lg transition">
+      ➕ Add Category
+    </button>
+  </form>
+
+  <!-- 📋 Existing Categories -->
+  <h3 class="text-xl font-semibold mb-3 text-gray-800">📋 Existing Categories</h3>
+  <div class="overflow-x-auto">
+    <table class="w-full border text-sm shadow-md bg-white rounded-lg overflow-hidden">
+      <thead class="bg-gray-100 text-left">
+        <tr>
+          <th class="p-3">Image</th>
+          <th class="p-3">Name</th>
+          <th class="p-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+        <tr class="border-t hover:bg-gray-50 transition" id="row-{{ cat.id }}">
+          <td class="p-3">
+            {% if cat.image %}
+              <img src="{{ cat.image }}" alt="{{ cat.name }}"
+                   class="h-12 w-12 object-cover rounded border">
+            {% else %}
+              <span class="text-gray-400 italic">No image</span>
+            {% endif %}
+          </td>
+          <td class="p-3">
+            <span id="name-display-{{ cat.id }}" class="font-medium">{{ cat.name }}</span>
+            <form method="POST" action="{{ url_for('edit_category', category_id=cat.id) }}"
+                  enctype="multipart/form-data"
+                  class="hidden space-y-3 mt-2" id="edit-form-{{ cat.id }}">
+              <input type="text" name="name" value="{{ cat.name }}" 
+                     class="w-full border px-2 py-1 rounded-lg focus:ring focus:ring-blue-300" />
+              <div>
+                <label class="block font-medium text-gray-700">Change Image</label>
+                <input type="file" name="image" accept="image/*"
+                       class="w-full mt-1 border px-2 py-1 rounded-lg bg-gray-50" />
+                <p class="text-xs text-gray-500 mt-1">Leave empty to keep existing image.</p>
+              </div>
+              <div class="flex gap-2">
+                <button type="submit" 
+                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-medium">
+                  💾 Save
+                </button>
+                <button type="button" onclick="cancelEdit({{ cat.id }})"
+                        class="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm font-medium">
+                  ❌ Cancel
+                </button>
+              </div>
+            </form>
+          </td>
+          <td class="p-3 text-center space-x-2">
+            <button onclick="enableEdit({{ cat.id }})"
+                    class="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded text-sm font-medium">
+              ✏️ Edit
+            </button>
+            <a href="{{ url_for('delete_category', category_id=cat.id) }}"
+               class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
+               onclick="return confirm('Delete this category?')">
+              🗑️ Delete
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function enableEdit(id) {
+  document.getElementById(`name-display-${id}`).style.display = 'none';
+  document.getElementById(`edit-form-${id}`).classList.remove('hidden');
+}
+function cancelEdit(id) {
+  document.getElementById(`edit-form-${id}`).classList.add('hidden');
+  document.getElementById(`name-display-${id}`).style.display = 'inline';
+}
+</script>
+{% endblock %}

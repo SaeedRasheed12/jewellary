@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}About Us - {{ setting.website_name if setting else 'Bin Ahmed Store' }}{% endblock %}
+
+{% block content %}
+<section class="relative bg-gradient-to-b from-black via-gray-900 to-yellow-900 text-white py-20 sm:py-24 px-5 sm:px-10 overflow-hidden font-[Poppins]">
+
+  <!-- Subtle background texture -->
+  <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-twill.png')] opacity-10"></div>
+
+  <!-- Floating glow effect -->
+  <div class="absolute -top-20 -left-20 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 right-0 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl"></div>
+
+  <div class="relative z-10 max-w-5xl mx-auto text-center">
+    
+    <!-- ✨ Headline -->
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 leading-tight tracking-tight text-yellow-400 drop-shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-fade-in">
+      Where Luxury Meets Identity
+    </h1>
+    <p class="text-base sm:text-lg md:text-xl text-gray-300 mb-10 italic animate-fade-in-delayed">
+      Every fragrance carries a story — every watch marks a moment.
+    </p>
+
+    <!-- 👑 Founder Picture -->
+    {% if setting.about_image %}
+    <div class="flex justify-center mb-10 animate-fade-up">
+      <img src="{{ setting.about_image }}" 
+           alt="Founder Picture"
+           class="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 object-cover rounded-full border-4 border-yellow-400 shadow-[0_0_40px_rgba(255,215,0,0.6)] hover:scale-105 hover:shadow-yellow-400/40 transition-all duration-500 ease-out">
+    </div>
+    {% endif %}
+
+    <!-- 🧠 Description -->
+    <div class="mx-auto max-w-3xl bg-white/5 backdrop-blur-lg border border-yellow-700/30 text-gray-200 text-base sm:text-lg leading-relaxed p-7 sm:p-10 rounded-3xl shadow-xl space-y-6 animate-fade-in-delayed">
+      <p>
+        Welcome to <span class="text-yellow-400 font-semibold">{{ setting.website_name if setting else 'Bin Ahmed Store' }}</span> — 
+        a home where fragrance, fashion, and emotion come together.  
+        What began as a simple dream soon turned into a passion-driven journey: to create a space that redefines everyday luxury with authenticity and soul.
+      </p>
+
+      <p>
+        I’m <span class="text-yellow-400 font-bold">Abdul Samad Ahmed</span>, the founder of Bin Ahmed & Co.  
+        Growing up, I was fascinated by how a scent could change someone’s mood or how a timepiece could tell more than just time.  
+        These little details, to me, are pieces of identity — reflections of how we carry ourselves and what stories we silently tell the world.
+      </p>
+
+      <p>
+        At <span class="text-yellow-300 font-medium">Bin Ahmed Store</span>, we blend timeless craftsmanship with a modern sense of individuality.  
+        Our perfumes are carefully curated, inspired by emotion and memory — while our watches celebrate elegance, confidence, and precision.  
+        Every product you hold is the result of thought, love, and devotion to quality.
+      </p>
+
+      <p>
+        We don’t just sell luxury — we deliver experience.  
+        Each scent, each design, each collection is a reminder that beauty isn’t in being noticed; it’s in being remembered.  
+        That’s what we stand for — elegance that whispers, and passion that lasts.
+      </p>
+
+      <p>
+        Thank you for being part of this journey.  
+        Your trust and love fuel our vision to keep evolving — creating moments you can wear, and memories that never fade.  
+      </p>
+
+      <p class="font-medium text-yellow-400 text-center mt-6">
+        ✨ With every bottle, with every tick — Bin Ahmed Store continues to tell your story. ✨
+      </p>
+    </div>
+
+    <!-- 🌐 Social Link -->
+    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up">
+      <a href="https://www.instagram.com/the._sam99" target="_blank"
+         class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-yellow-500/40 hover:scale-105 transition-all duration-300 text-sm sm:text-base font-semibold">
+         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
+           <path d="M7.75 2A5.75 5.75 0 002 7.75v8.5A5.75 5.75 0 007.75 22h8.5A5.75 5.75 0 0022 16.25v-8.5A5.75 5.75 0 0016.25 2h-8.5zM12 7a5 5 0 110 10 5 5 0 010-10zm6.25.75a1 1 0 11-2 0 1 1 0 012 0zM12 8.75a3.25 3.25 0 100 6.5 3.25 3.25 0 000-6.5z"/>
+         </svg>
+         <span>@the._sam99</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ✨ Soft Fade Animations -->
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+.animate-fade-in-delayed { animation: fadeIn 1.3s ease-out forwards; }
+.animate-fade-up { animation: fadeIn 1.7s ease-out forwards; }
+</style>
+{% endblock %}

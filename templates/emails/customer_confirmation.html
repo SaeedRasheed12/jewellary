@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation - {{ setting.website_name if setting else 'Bin Ahmed' }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+    }
+    .email-container {
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(90deg, #111827, #1f2937, #374151);
+      color: #fff;
+      text-align: center;
+      padding: 30px 15px;
+    }
+    .logo {
+      max-height: 70px;
+      margin-bottom: 10px;
+    }
+    .heading {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    .body {
+      padding: 25px 20px;
+    }
+    .message {
+      font-size: 16px;
+      line-height: 1.6;
+      text-align: center;
+      color: #444;
+    }
+    .tracking-badge {
+      display: inline-block;
+      background-color: #2563eb;
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin: 15px auto;
+      letter-spacing: 1px;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #2563eb;
+      color: #fff !important;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 6px;
+      margin: 20px auto;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background-color: #1d4ed8;
+    }
+    .order-summary {
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+      margin: 20px 0;
+      padding: 15px 0;
+    }
+    .order-summary li {
+      list-style: none;
+      padding: 8px 0;
+      font-size: 15px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    .summary {
+      font-size: 15px;
+      margin-top: 10px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .summary td {
+      padding: 6px 0;
+    }
+    .summary .label {
+      color: #555;
+    }
+    .summary .value {
+      text-align: right;
+      font-weight: 500;
+    }
+    .discount {
+      color: #16a34a;
+      font-weight: 600;
+    }
+    .total {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #10b981;
+      margin-top: 15px;
+    }
+    .footer {
+      background-color: #f3f4f6;
+      color: #6b7280;
+      font-size: 13px;
+      text-align: center;
+      padding: 15px 10px;
+      border-top: 1px solid #e5e7eb;
+    }
+    @media only screen and (max-width: 600px) {
+      .heading { font-size: 20px; }
+      .message, td { font-size: 14px; }
+      .tracking-badge { font-size: 16px; padding: 8px 16px; }
+      .btn { font-size: 14px; padding: 10px 16px; }
+      .order-summary li { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div style="padding: 15px; background-color: #f3f4f6;">
+    <div class="email-container">
+      
+      <!-- Header -->
+      <div class="header">
+        {% if logo_url %}
+          <img src="{{ logo_url }}" alt="Logo" class="logo">
+        {% endif %}
+        <div class="heading">Thank You, {{ customer_name }}!</div>
+        <p style="margin: 0;">Your order has been confirmed 🎉</p>
+      </div>
+
+      <!-- Body -->
+      <div class="body">
+        <p class="message">
+          Your order has been placed successfully at
+          <strong>{{ setting.website_name if setting else 'Bin Ahmed' }}</strong>.
+        </p>
+
+        <!-- Tracking -->
+        <p class="message">Here’s your tracking number:</p>
+        <div style="text-align: center;">
+          <div class="tracking-badge">{{ tracking_number }}</div>
+        </div>
+
+        <div style="text-align:center;">
+          <a href="https://www.bin-ahmed.store/track_order" class="btn">🔍 Track Your Order</a>
+        </div>
+
+        <!-- Order Summary -->
+        <h3 style="font-size: 20px; margin-top: 30px; text-align: left;">🛍️ Order Summary</h3>
+        <ul class="order-summary">
+          {% for item in order_items %}
+            <li>{{ item.product.name }} ({{ item.qty }} pcs) — Rs. {{ "%.2f"|format(item.subtotal) }}</li>
+          {% endfor %}
+        </ul>
+
+        <!-- Totals in perfect sequence -->
+        <table class="summary" width="100%">
+          <tr>
+            <td class="label"><strong>Subtotal:</strong></td>
+            <td class="value">Rs. {{ "%.2f"|format(product_total) }}</td>
+          </tr>
+          <tr>
+            <td class="label"><strong>Delivery Fee:</strong></td>
+            <td class="value">
+              {% if delivery_fee == 0 %}
+                Free
+              {% else %}
+                Rs. {{ "%.2f"|format(delivery_fee) }}
+              {% endif %}
+            </td>
+          </tr>
+          {% if coupon_code %}
+          <tr>
+            <td class="label discount">🎟 Coupon ({{ coupon_code }}):</td>
+            <td class="value discount">− Rs. {{ "%.2f"|format(discount) }}</td>
+          </tr>
+          {% endif %}
+        </table>
+
+        <p class="total">💰 Total Paid: Rs. {{ "%.2f"|format(total_amount) }}</p>
+
+        <p class="message">
+          We’ll notify you once your package is shipped.<br>
+          Thank you for shopping with 
+          <strong>{{ setting.website_name if setting else 'Bin Ahmed' }}</strong>!
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        &copy; {{ setting.website_name if setting else 'Bin Ahmed' }} — All rights reserved.<br>
+        This is an automated message. Please do not reply.
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

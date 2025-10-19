@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% block title %}🛒 Your Cart - {{ setting.website_name if setting else 'Shop' }}{% endblock %}
+
+{% block head %}
+<style>
+  /* Drawer overlay */
+  #drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 40;
+  }
+
+  /* Drawer box */
+  #cart-drawer {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+    transition: bottom 0.35s ease-in-out;
+    z-index: 50;
+    max-height: 80%;
+    overflow-y: auto;
+  }
+
+  #cart-drawer.open {
+    bottom: 0;
+  }
+
+  /* Qty control */
+  .qty-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .qty-box button {
+    background: #f3f4f6;
+    padding: 6px 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+  }
+  .qty-box button:hover {
+    background: #e5e7eb;
+  }
+  .qty-box input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    padding: 6px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-10 text-gray-800">
+  🛒 Shopping Cart
+</h1>
+
+{% if products %}
+<form id="cart-form" method="POST" action="{{ url_for('update_cart') }}" class="space-y-6 max-w-5xl mx-auto pb-32 sm:pb-40">
+
+  {% for item in products %}
+  <!-- Cart Item -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 hover:shadow-lg transition cart-item"
+       data-price="{{ item.product.today_price }}" data-key="{{ item.key }}">
+    <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 items-center sm:items-start">
+      
+      <!-- Product Image -->
+      <img src="{{ item.product.image }}" alt="{{ item.product.name }}"
+           class="w-28 h-28 object-cover rounded-lg border shadow-sm flex-shrink-0">
+
+      <!-- Product Details -->
+      <div class="flex-1 text-center sm:text-left space-y-2">
+        <h3 class="text-lg font-semibold text-gray-900">{{ item.product.name }}</h3>
+        <p class="text-gray-600 text-sm sm:text-base">
+          💵 Price: <span class="font-medium">Rs. {{ item.product.today_price }}</span>
+        </p>
+        <p class="text-sm text-blue-700 font-semibold subtotal">
+          Subtotal: Rs. {{ "%.2f"|format(item.subtotal) }}
+        </p>
+      </div>
+
+      <!-- Qty + Remove -->
+<div class="flex flex-col items-center gap-3">
+  <!-- Qty Control -->
+  <div class="flex items-center border rounded-lg overflow-hidden">
+    <button type="button" class="decrease px-3 py-1 bg-gray-100 hover:bg-gray-200">−</button>
+    <input type="number" name="{{ item.key }}" value="{{ item.qty }}" min="1"
+           class="w-12 text-center border-x border-gray-200 focus:outline-none qty-input">
+    <button type="button" class="increase px-3 py-1 bg-gray-100 hover:bg-gray-200">+</button>
+  </div>
+
+  <!-- Remove -->
+  <button type="submit" 
+          formaction="{{ url_for('remove_from_cart', cart_key=item.key) }}"
+          formmethod="POST"
+          class="flex items-center gap-1 text-sm text-red-600 hover:text-red-700 font-medium">
+    ❌ <span>Remove</span>
+  </button>
+</div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- 🧾 Summary (desktop only) -->
+  <div class="bg-gray-50 rounded-2xl shadow-inner border border-gray-200 p-6 mt-8 hidden sm:block">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">🧾 Order Summary</h2>
+    <div class="space-y-3 text-gray-700 text-sm sm:text-base">
+      <div class="flex justify-between"><span>Products Total</span><span id="products-total">Rs. {{ "%.2f"|format(total) }}</span></div>
+      <div class="flex justify-between"><span>Delivery Fee</span><span id="delivery-fee">{% if delivery_fee == 0 %} Free 🚚 {% else %} Rs. {{ "%.2f"|format(delivery_fee) }} {% endif %}</span></div>
+      {% if discount and discount > 0 %}
+      <div class="flex justify-between text-green-700 font-medium"><span>Discount</span><span id="discount">- Rs. {{ "%.2f"|format(discount) }}</span></div>
+      {% endif %}
+      <hr class="my-2 sm:my-3">
+      <div class="flex justify-between font-bold text-lg text-gray-900">
+        <span>Grand Total</span>
+        <span id="grand-total">Rs. {{ "%.2f"|format(grand_total if grand_total else total + delivery_fee) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop actions -->
+  <div class="hidden sm:flex justify-between items-center gap-4 mt-6">
+    <a href="{{ url_for('index') }}"
+       class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-3 rounded-lg shadow text-center">
+      ← Continue Shopping
+    </a>
+    <div class="flex gap-3">
+      <button type="submit"
+              class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-5 py-3 rounded-lg">
+        🔄 Update Cart
+      </button>
+      <a href="{{ url_for('checkout') }}"
+         class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-3 rounded-lg text-center">
+        ✅ Checkout
+      </a>
+    </div>
+  </div>
+</form>
+
+<!-- 📱 Drawer Overlay -->
+<div id="drawer-overlay" onclick="toggleDrawer(false)"></div>
+
+<!-- 📱 Mobile Slide-up Drawer -->
+<div id="cart-drawer" class="p-6 sm:hidden">
+  <div class="flex justify-between items-center mb-5">
+    <h2 class="text-lg font-bold">🧾 Order Summary</h2>
+    <button onclick="toggleDrawer(false)" class="text-gray-500 text-2xl font-bold">&times;</button>
+  </div>
+  <div class="space-y-2 text-gray-700 text-sm">
+    <div class="flex justify-between"><span>Products Total</span><span id="m-products-total">Rs. {{ "%.2f"|format(total) }}</span></div>
+    <div class="flex justify-between"><span>Delivery Fee</span><span id="m-delivery-fee">{% if delivery_fee == 0 %}Free 🚚{% else %}Rs. {{ "%.2f"|format(delivery_fee) }}{% endif %}</span></div>
+    {% if discount and discount > 0 %}
+    <div class="flex justify-between text-green-700 font-medium"><span>Discount</span><span id="m-discount">- Rs. {{ "%.2f"|format(discount) }}</span></div>
+    {% endif %}
+    <hr class="my-2">
+    <div class="flex justify-between font-bold text-gray-900 text-base">
+      <span>Grand Total</span>
+      <span id="m-grand-total">Rs. {{ "%.2f"|format(grand_total if grand_total else total + delivery_fee) }}</span>
+    </div>
+  </div>
+
+  <!-- Mobile Actions -->
+  <div class="mt-6 flex flex-col gap-3">
+    <a href="{{ url_for('checkout') }}" class="bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-lg font-semibold">
+      ✅ Checkout
+    </a>
+    <a href="{{ url_for('index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-center py-3 rounded-lg font-semibold">
+      ← Continue Shopping
+    </a>
+  </div>
+</div>
+
+{% else %}
+<!-- Empty Cart -->
+<div class="text-center py-20 text-gray-500 space-y-4">
+  <p class="text-xl sm:text-2xl">😕 Your cart is empty.</p>
+  <a href="{{ url_for('index') }}"
+     class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg font-semibold shadow transition">
+    🛍️ Back to {{ setting.website_name if setting else 'Shop' }}
+  </a>
+</div>
+{% endif %}
+
+<script>
+function toggleDrawer(open) {
+  const drawer = document.getElementById("cart-drawer");
+  const overlay = document.getElementById("drawer-overlay");
+  if (open) {
+    drawer.classList.add("open");
+    overlay.style.display = "block";
+  } else {
+    drawer.classList.remove("open");
+    overlay.style.display = "none";
+  }
+}
+
+// ✅ Auto-submit cart when qty changes
+document.querySelectorAll(".cart-item").forEach(item => {
+  const qtyInput = item.querySelector(".qty-input");
+  const increaseBtn = item.querySelector(".increase");
+  const decreaseBtn = item.querySelector(".decrease");
+  const cartForm = document.getElementById("cart-form");
+
+  function autoSave() {
+    cartForm.submit();  // instantly push updates to backend
+  }
+
+  increaseBtn.addEventListener("click", () => {
+    qtyInput.value = parseInt(qtyInput.value || 1) + 1;
+    autoSave();
+  });
+
+  decreaseBtn.addEventListener("click", () => {
+    qtyInput.value = Math.max(1, parseInt(qtyInput.value || 1) - 1);
+    autoSave();
+  });
+
+  qtyInput.addEventListener("change", autoSave);
+});
+</script>
+{% endblock %}

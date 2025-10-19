@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Chat with {{ user_name or 'User' }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <!-- 🧑‍💬 Chat Header -->
+  <h1 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+    💬 Chat with
+    {% if user_name %}
+      <span class="text-blue-700">{{ user_name }}</span>
+    {% else %}
+      <code>{{ sender_id[:8] }}</code>
+    {% endif %}
+  </h1>
+
+  <!-- 💬 Chat Window -->
+  <div id="chatMessages" class="bg-gray-100 h-[420px] overflow-y-auto p-4 rounded-lg shadow mb-6 space-y-3 scroll-smooth">
+    {% for msg in messages %}
+      <div class="flex {{ 'justify-end' if msg.role == 'admin' else 'justify-start' }}">
+        <div class="max-w-xs">
+          {% if msg.role == 'user' and msg.sender_name %}
+            <p class="text-xs text-gray-400 mb-1">{{ msg.sender_name }}</p>
+          {% endif %}
+          <div class="px-4 py-2 rounded-2xl shadow 
+                      {{ 'bg-blue-600 text-white' if msg.role == 'admin' else 'bg-white text-gray-800 border' }}">
+            <p class="text-sm break-words">{{ msg.message }}</p>
+            <p class="text-[10px] mt-1 text-right text-gray-400">
+              {{ msg.timestamp.strftime('%d %b %I:%M %p') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- 📝 Reply Form -->
+  <form id="replyForm" class="flex gap-2">
+    <input type="text" id="replyInput" placeholder="Type your message..."
+           class="flex-grow border border-gray-300 px-4 py-2 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+           required>
+    <button type="submit"
+            class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+      ➤ Send
+    </button>
+  </form>
+</div>
+
+<!-- 💬 Send via Fetch -->
+<script>
+  const form = document.getElementById('replyForm');
+  const input = document.getElementById('replyInput');
+  const chatBox = document.getElementById('chatMessages');
+
+  // Auto-scroll to bottom
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
+
+    const response = await fetch('/optician/reply/{{ sender_id }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+
+    if (response.ok) {
+      input.value = "";
+      location.reload(); // Later: replace with dynamic insert
+    }
+  });
+</script>
+{% endblock %}

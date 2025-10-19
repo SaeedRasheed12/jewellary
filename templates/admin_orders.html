@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block title %}📦 Customer Orders{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl sm:text-3xl font-bold mb-6 flex items-center gap-2 text-gray-900">
+  📬 Customer Orders
+</h2>
+
+{% if orders %}
+<!-- 📱 Mobile Card View -->
+<div class="space-y-6 lg:hidden">
+  {% for order in orders %}
+  <div class="bg-white rounded-2xl shadow-md p-5 border border-gray-200 hover:shadow-lg transition">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="font-bold text-lg text-gray-900">{{ order.name }}</h3>
+      <span class="text-xs text-gray-500">{{ order.created_at.strftime('%Y-%m-%d %I:%M %p') }}</span>
+    </div>
+
+    <p class="text-sm text-gray-700">📧 {{ order.email or '❌ No Email Provided' }}</p>
+    <p class="text-sm text-gray-700">📞 {{ order.phone }}</p>
+    <p class="text-sm text-gray-700">📍 {{ order.address }}</p>
+    <p class="text-sm text-gray-700 mb-3">
+      🔖 Tracking: <span class="font-mono text-gray-800">{{ order.tracking_number }}</span>
+    </p>
+
+    <!-- Payment Method -->
+    {% if order.payment_method %}
+    <p class="text-sm text-gray-700 mb-3">
+      💳 Payment: 
+      <span class="font-semibold">
+        {% if order.payment_method == 'easypaisa' %}
+          Easypaisa (Screenshot attached)
+        {% else %}
+          Cash on Delivery
+        {% endif %}
+      </span>
+    </p>
+    {% endif %}
+
+    <!-- Items -->
+    <div class="space-y-4 border-t pt-3">
+      {% for item in order.items %}
+      <div class="p-3 bg-gray-50 rounded-lg shadow-inner">
+        {% if item.product_image %}
+          <a href="{{ item.product_image }}" class="glightbox block mb-2" data-gallery="order-{{ order.id }}">
+            <img src="{{ item.product_image }}" class="w-full h-36 object-cover rounded-lg border shadow-sm" />
+          </a>
+        {% else %}
+          <div class="w-full h-36 flex items-center justify-center bg-gray-100 text-gray-500 rounded-lg mb-2">📦</div>
+        {% endif %}
+        <p class="text-base font-semibold text-gray-900">{{ item.product_name }}</p>
+        <p class="text-sm text-gray-600">Quantity: × {{ item.quantity }}</p>
+        <p class="text-sm text-gray-600">Price: PKR{{ "%.2f"|format(item.price) }}</p>
+        <p class="text-sm font-bold text-green-700 mt-1">Subtotal: PKR{{ "%.2f"|format(item.price * item.quantity) }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Totals -->
+    <div class="mt-4 space-y-1 border-t pt-3">
+      <p class="flex justify-between text-sm text-gray-600">
+        <span>🛍️ Products Total:</span>
+        <span>PKR{{ "%.2f"|format(order.product_total or (order.total + (order.discount or 0) - order.delivery_fee)) }}</span>
+      </p>
+
+      <p class="flex justify-between text-sm text-gray-600">
+        <span>🚚 Delivery Fee:</span>
+        <span>
+          {% if order.delivery_fee == 0 %}
+            Free
+          {% else %}
+            PKR{{ "%.2f"|format(order.delivery_fee) }}
+          {% endif %}
+        </span>
+      </p>
+
+      {% if order.coupon_code %}
+      <p class="flex justify-between text-sm text-green-700 font-semibold">
+        <span>🎟 Coupon: {{ order.coupon_code }}</span>
+        <span>- PKR{{ "%.2f"|format(order.discount or 0) }}</span>
+      </p>
+      {% endif %}
+
+      <div class="flex justify-between items-center font-bold text-green-600 text-lg border-t pt-2">
+        <span>💰 Grand Total:</span>
+        <span>PKR{{ "%.2f"|format(order.total) }}</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-4 flex flex-col gap-2">
+      <a href="{{ url_for('admin_invoice', order_id=order.id) }}"
+         class="bg-green-600 text-white text-xs px-3 py-2 rounded text-center hover:bg-green-700">
+        🧾 View Invoice
+      </a>
+
+      <!-- Update Status (auto-submit) -->
+      <form action="{{ url_for('admin_orders') }}" method="POST" class="flex items-center gap-2">
+        <input type="hidden" name="order_id" value="{{ order.id }}">
+        <select name="status" class="border rounded px-3 py-1 text-xs w-full" onchange="this.form.submit()">
+          <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>⏳ Pending</option>
+          <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>⚙️ Processing</option>
+          <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>🚚 Shipped</option>
+          <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>✅ Delivered</option>
+          <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>❌ Cancelled</option>
+        </select>
+      </form>
+
+      <!-- Delete -->
+      <form action="{{ url_for('delete_order', order_id=order.id) }}" method="POST">
+        <button type="submit" onclick="return confirm('⚠️ Are you sure you want to delete this order?')"
+                class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 w-full">
+          🗑️ Delete
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- 💻 Desktop Table View -->
+<div class="hidden lg:block overflow-x-auto bg-white rounded-xl shadow-md">
+  <table class="min-w-full text-sm border border-gray-200">
+    <thead class="bg-gray-100 text-left text-gray-700 uppercase text-xs tracking-wider">
+      <tr>
+        <th class="p-4">Name</th>
+        <th class="p-4">Email</th>
+        <th class="p-4">Phone</th>
+        <th class="p-4">Address</th>
+        <th class="p-4">Tracking</th>
+        <th class="p-4">Payment</th>
+        <th class="p-4">Items</th>
+        <th class="p-4">Products Total</th>
+        <th class="p-4">Delivery Fee</th>
+        <th class="p-4">Discount</th>
+        <th class="p-4">Grand Total</th>
+        <th class="p-4">Status</th>
+        <th class="p-4">Date</th>
+        <th class="p-4">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody class="text-gray-800">
+      {% for order in orders %}
+      <tr class="border-t align-top hover:bg-gray-50 transition">
+        <td class="p-4 font-medium">{{ order.name }}</td>
+        <td class="p-4">{{ order.email or '❌ No Email Provided' }}</td>
+        <td class="p-4">{{ order.phone }}</td>
+        <td class="p-4">{{ order.address }}</td>
+        <td class="p-4 font-mono">{{ order.tracking_number }}</td>
+
+        <!-- Payment -->
+        <td class="p-4">
+          {% if order.payment_method == 'easypaisa' %}
+            <span class="text-green-700 font-semibold">Easypaisa</span>
+          {% else %}
+            <span class="text-gray-700 font-medium">Cash on Delivery</span>
+          {% endif %}
+        </td>
+
+        <!-- Items -->
+        <td class="p-4">
+          <table class="w-full text-xs">
+            {% for item in order.items %}
+            <tr>
+              <td>
+                {% if item.product_image %}
+                <a href="{{ item.product_image }}" class="glightbox" data-gallery="order-{{ order.id }}">
+                  <img src="{{ item.product_image }}" class="w-8 h-8 rounded object-cover inline-block mr-1" />
+                </a>
+                {% endif %}
+                <span class="font-medium">{{ item.product_name }}</span>
+              </td>
+              <td>× {{ item.quantity }}</td>
+              <td>PKR{{ "%.2f"|format(item.price) }}</td>
+              <td class="font-bold">PKR{{ "%.2f"|format(item.price * item.quantity) }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </td>
+
+        <td class="p-4">PKR{{ "%.2f"|format(order.product_total or (order.total + (order.discount or 0) - order.delivery_fee)) }}</td>
+        <td class="p-4">{% if order.delivery_fee == 0 %}Free{% else %}PKR{{ "%.2f"|format(order.delivery_fee) }}{% endif %}</td>
+        {% if order.coupon_code %}
+        <td class="p-4 text-green-600 font-semibold">
+          🎟 {{ order.coupon_code }}<br>-PKR{{ "%.2f"|format(order.discount or 0) }}
+        </td>
+        {% else %}
+        <td class="p-4 text-gray-400 italic">—</td>
+        {% endif %}
+        <td class="p-4 font-bold text-green-600">PKR{{ "%.2f"|format(order.total) }}</td>
+
+        <!-- Status -->
+        <td class="p-4">
+          <form action="{{ url_for('admin_orders') }}" method="POST" class="flex gap-2 items-center">
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <select name="status" class="border rounded px-2 py-1 text-xs font-semibold text-white
+              {% if order.status == 'Pending' %}bg-yellow-500
+              {% elif order.status == 'Processing' %}bg-blue-500
+              {% elif order.status == 'Shipped' %}bg-indigo-600
+              {% elif order.status == 'Delivered' %}bg-green-600
+              {% elif order.status == 'Cancelled' %}bg-red-600{% endif %}" onchange="this.form.submit()">
+              <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+              <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+              <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+              <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+              <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+          </form>
+        </td>
+
+        <td class="p-4 text-xs text-gray-500">{{ order.created_at.strftime('%Y-%m-%d %I:%M %p') }}</td>
+
+        <td class="p-4 space-y-2">
+          <a href="{{ url_for('admin_invoice', order_id=order.id) }}"
+             class="bg-green-600 text-white text-xs px-3 py-1 rounded hover:bg-green-700 block text-center">
+            🧾 Invoice
+          </a>
+          <form action="{{ url_for('delete_order', order_id=order.id) }}" method="POST">
+            <button type="submit" onclick="return confirm('⚠️ Are you sure you want to delete this order?')"
+                    class="bg-red-600 text-white text-xs px-3 py-1 rounded hover:bg-red-700 w-full">
+              🗑️ Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-gray-500 mt-4 text-center">No orders yet.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+<script>
+  GLightbox({ selector: '.glightbox', loop: true });
+</script>
+{% endblock %}

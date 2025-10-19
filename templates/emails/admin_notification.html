@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Order - {{ setting.website_name if setting else 'Bin Ahmed' }}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f4f6;
+      color: #1f2937;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 650px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+    .logo {
+      max-height: 70px;
+      display: block;
+      margin: 0 auto 20px auto;
+    }
+    .heading {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #111827;
+    }
+    .details {
+      background: #f9fafb;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .details p {
+      font-size: 15px;
+      margin: 6px 0;
+      line-height: 1.5;
+    }
+    .tracking {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .tracking span {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+    .order-items {
+      margin: 20px 0;
+    }
+    .order-items table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .order-items th, .order-items td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+      text-align: left;
+    }
+    .order-items th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .order-items tr:last-child td {
+      border-bottom: none;
+    }
+    .summary {
+      margin-top: 20px;
+      font-size: 15px;
+    }
+    .summary p {
+      display: flex;
+      justify-content: space-between;
+      margin: 4px 0;
+    }
+    .summary strong {
+      color: #111827;
+    }
+    .discount {
+      color: #16a34a;
+      font-weight: 600;
+    }
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #10b981;
+      margin-top: 20px;
+      text-align: right;
+    }
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 35px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    {% if logo_url %}
+      <img src="{{ logo_url }}" alt="Logo" class="logo">
+    {% endif %}
+
+    <div class="heading">📥 New Order Notification</div>
+
+    <!-- Customer Details -->
+    <div class="details">
+      <p><strong>👤 Name:</strong> {{ customer_name }}</p>
+      <p><strong>📧 Email:</strong> {{ customer_email }}</p>
+      <p><strong>📱 Phone:</strong> {{ phone }}</p>
+      <p><strong>🏠 Address:</strong> {{ address }}</p>
+    </div>
+
+    <!-- Tracking Number -->
+    <div class="tracking">
+      <p><strong>Tracking Number:</strong></p>
+      <span>{{ tracking_number }}</span>
+    </div>
+
+    <!-- Order Items -->
+    <div class="order-items">
+      <h3 style="margin-bottom: 10px;">🛒 Order Items</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Subtotal (Rs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_items %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.qty }}</td>
+            <td>{{ "%.2f"|format(item.subtotal) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Totals Section -->
+    <div class="summary">
+      <p><strong>Subtotal:</strong> Rs. {{ "%.2f"|format(product_total) }}</p>
+      <p><strong>Delivery Fee:</strong>
+        {% if delivery_fee == 0 %}
+          Free
+        {% else %}
+          Rs. {{ "%.2f"|format(delivery_fee) }}
+        {% endif %}
+      </p>
+
+      {% if coupon_code %}
+      <p class="discount">
+        🎟 Coupon <strong>{{ coupon_code }}</strong> applied — Saved Rs. {{ "%.2f"|format(discount) }}
+      </p>
+      {% endif %}
+    </div>
+
+    <!-- Grand Total -->
+    <p class="total">💰 Grand Total: Rs. {{ "%.2f"|format(total_amount) }}</p>
+
+    <!-- Footer -->
+    <div class="footer">
+      {{ setting.website_name if setting else 'Bin Ahmed' }}<br>
+      This order was placed via the checkout system.<br>
+      Coupon and discount info included for admin tracking.
+    </div>
+
+  </div>
+</body>
+</html>

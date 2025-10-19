@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - {{ setting.website_name if setting else 'Shop' }}{% endblock %}
+
+{% block content %}
+<h1 class="text-4xl font-bold mb-10 text-center text-gray-900">💳 Secure Checkout</h1>
+
+<!-- 🧾 Main Checkout Form -->
+<form id="checkoutForm" method="POST" enctype="multipart/form-data"
+      class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-xl space-y-8">
+
+  <!-- 👤 Customer Info -->
+  <div>
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">👤 Customer Information</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="block font-medium text-gray-700">Full Name</label>
+        <input type="text" name="name" required
+               class="w-full mt-1 border px-4 py-3 rounded-lg focus:ring focus:ring-blue-400 shadow-sm" />
+      </div>
+      <div>
+        <label class="block font-medium text-gray-700">Email Address</label>
+        <input type="email" name="email" required placeholder="you@example.com"
+               class="w-full mt-1 border px-4 py-3 rounded-lg focus:ring focus:ring-blue-400 shadow-sm" />
+      </div>
+      <div>
+        <label class="block font-medium text-gray-700">Phone Number</label>
+        <input type="text" name="phone" required
+               class="w-full mt-1 border px-4 py-3 rounded-lg focus:ring focus:ring-blue-400 shadow-sm" />
+      </div>
+      <div class="md:col-span-2">
+        <label class="block font-medium text-gray-700">Shipping Address</label>
+        <textarea name="address" rows="3" required
+                  class="w-full mt-1 border px-4 py-3 rounded-lg focus:ring focus:ring-blue-400 shadow-sm"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🧾 Order Summary -->
+  <div class="border-t pt-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">🧾 Order Summary</h2>
+    <div class="bg-gray-50 rounded-xl p-6 shadow-inner">
+      <ul class="divide-y text-sm">
+        {% for item in products %}
+        <li class="py-3 flex justify-between">
+          <span class="font-medium">{{ item.product.name }} × {{ item.qty }}</span>
+          <span>PKR {{ "%.2f"|format(item.subtotal) }}</span>
+        </li>
+        {% endfor %}
+        <li class="py-3 flex justify-between text-blue-700 font-medium">
+          <span>🚚 Delivery Fee</span>
+          <span id="deliveryFee">
+            {% if delivery_fee == 0 %}Free{% else %}PKR {{ "%.2f"|format(delivery_fee) }}{% endif %}
+          </span>
+        </li>
+        <li id="discountRow" class="py-3 flex justify-between text-green-600 font-semibold {% if not discount %}hidden{% endif %}">
+          <span>🎟️ Coupon Discount (<span id="appliedCoupon">{{ applied_coupon or '' }}</span>)</span>
+          <span id="discountAmount">- PKR {{ "%.2f"|format(discount or 0) }}</span>
+        </li>
+      </ul>
+      <div class="mt-5 text-right text-xl font-bold border-t pt-3 text-gray-900">
+        Total: <span id="totalAmount">PKR {{ "%.2f"|format(grand_total) }}</span>
+      </div>
+    </div>
+
+    <!-- 🎟️ Coupon Section -->
+    <div class="mt-6 bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+      <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">🎟️ Have a Coupon?</h3>
+      <div id="couponMessage" class="text-sm mt-2"></div>
+      <div class="flex flex-col sm:flex-row gap-3 mt-3">
+        <input type="text" id="couponInput" name="coupon_code" placeholder="Enter your coupon code"
+               class="flex-1 border px-4 py-3 rounded-lg focus:ring focus:ring-blue-400">
+        <button type="button" id="applyCouponBtn"
+                class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold transition">
+          Apply
+        </button>
+        <button type="button" id="removeCouponBtn"
+                class="hidden bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔒 Secure Checkout Note -->
+  <div class="flex items-center gap-2 text-sm text-gray-600 mt-2">
+    🔒 Secure Checkout – Your details are safe with SSL encryption.
+  </div>
+
+  <!-- ✅ Place Order -->
+  <div class="pt-4">
+    <button type="submit" name="place_order"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl text-lg font-semibold mt-4 shadow-lg transition">
+      🛍️ Place My Order
+    </button>
+  </div>
+</form>
+
+<!-- ⚙️ JS for AJAX Coupon -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const applyBtn = document.getElementById('applyCouponBtn');
+  const removeBtn = document.getElementById('removeCouponBtn');
+  const couponInput = document.getElementById('couponInput');
+  const totalEl = document.getElementById('totalAmount');
+  const discountRow = document.getElementById('discountRow');
+  const discountAmount = document.getElementById('discountAmount');
+  const appliedCoupon = document.getElementById('appliedCoupon');
+  const couponMessage = document.getElementById('couponMessage');
+
+  // Apply Coupon AJAX
+  applyBtn.addEventListener('click', async () => {
+    const code = couponInput.value.trim();
+    if (!code) return alert("Please enter a coupon code.");
+
+    const res = await fetch(`/apply_coupon/${code}`);
+    const data = await res.json();
+
+    if (data.valid) {
+      totalEl.textContent = `PKR ${data.new_total.toFixed(2)}`;
+      discountRow.classList.remove('hidden');
+      discountAmount.textContent = `- PKR ${data.discount.toFixed(2)}`;
+      appliedCoupon.textContent = data.code;
+      couponMessage.innerHTML = `<p class="text-green-600 font-medium">🎉 Coupon '${data.code}' applied!</p>`;
+      applyBtn.classList.add('hidden');
+      removeBtn.classList.remove('hidden');
+    } else {
+      couponMessage.innerHTML = `<p class="text-red-600 font-medium">❌ Invalid or expired coupon.</p>`;
+    }
+  });
+
+  // Remove Coupon AJAX
+  removeBtn.addEventListener('click', async () => {
+    const res = await fetch(`/remove_coupon`);
+    const data = await res.json();
+
+    if (data.removed) {
+      totalEl.textContent = `PKR ${data.new_total.toFixed(2)}`;
+      discountRow.classList.add('hidden');
+      couponMessage.innerHTML = `<p class="text-gray-600 font-medium">🎟️ Coupon removed.</p>`;
+      applyBtn.classList.remove('hidden');
+      removeBtn.classList.add('hidden');
+      couponInput.value = '';
+    }
+  });
+});
+</script>
+{% endblock %}

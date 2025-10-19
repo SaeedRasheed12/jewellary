@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}🧾 Existing Products{% endblock %}
+
+{% block content %}
+<h3 class="text-2xl font-bold mb-6 text-gray-800">🧾 Existing Products</h3>
+
+<div class="space-y-6">
+  {% for product in products %}
+  <div class="bg-white rounded-xl shadow-md border overflow-hidden w-full hover:shadow-lg transition">
+    <div class="flex flex-col md:flex-row">
+
+      <!-- 📷 Main Product Image -->
+      <div class="p-4 flex flex-col items-center bg-gray-50 w-full md:w-56">
+        <img src="{{ product.image or 'https://via.placeholder.com/150' }}" 
+             alt="{{ product.name }}" 
+             class="w-28 h-28 object-cover rounded-lg border shadow-sm mb-2">
+        <p class="text-xs text-gray-500">Main Image</p>
+
+        <!-- 🎥 Product Video Preview -->
+        {% if product.video_url %}
+        <video controls class="mt-3 w-full rounded-lg shadow">
+          <source src="{{ product.video_url }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <p class="text-xs text-gray-500 mt-1">Product Video</p>
+        {% endif %}
+      </div>
+
+      <!-- 📝 Product Details Form -->
+      <div class="flex-1 p-4">
+        <form method="POST" 
+              action="{{ url_for('edit_product', product_id=product.id) }}" 
+              enctype="multipart/form-data" 
+              class="space-y-4">
+
+          <!-- Grid Inputs -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Name -->
+            <input type="text" name="name" value="{{ product.name or '' }}" 
+                   class="border px-3 py-2 rounded-lg focus:ring focus:ring-blue-300"
+                   placeholder="Product Name">
+
+            <!-- Prices -->
+            <input type="number" step="0.01" name="today_price" value="{{ product.today_price or '' }}" 
+                   class="border px-3 py-2 rounded-lg focus:ring focus:ring-blue-300"
+                   placeholder="Today Price">
+            <input type="number" step="0.01" name="before_price" value="{{ product.before_price or '' }}" 
+                   class="border px-3 py-2 rounded-lg focus:ring focus:ring-blue-300"
+                   placeholder="Before Price">
+
+            <!-- Category -->
+            <select name="category_id" 
+                    class="border px-3 py-2 rounded-lg focus:ring focus:ring-blue-300">
+              {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if cat.id == product.category_id %}selected{% endif %}>
+                  {{ cat.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- ✍️ Rich Text Description -->
+          <div>
+            <label class="block font-semibold mb-1">Description</label>
+            <textarea id="desc-{{ product.id }}" name="description" rows="6"
+              class="w-full border rounded-lg">{{ product.description or '' }}</textarea>
+          </div>
+
+          <!-- Uploads -->
+          <div>
+            <label class="block font-medium mb-1">Change Main Image</label>
+            <input type="file" name="image" accept="image/*" 
+                   class="w-full text-sm border rounded px-2 py-1">
+          </div>
+
+          <div>
+            <label class="block font-medium mb-1">Add / Replace Gallery Images</label>
+            <input type="file" name="gallery_images" accept="image/*" multiple 
+                   class="w-full text-sm border rounded px-2 py-1">
+          </div>
+
+          <!-- 🎥 Product Video Upload -->
+          <div>
+            <label class="block font-medium mb-1">Add / Replace Product Video</label>
+            <input type="file" name="video" accept="video/*"
+                   class="w-full text-sm border rounded px-2 py-1">
+            <p class="text-xs text-gray-500 mt-1">Upload mp4, mov, etc. Stored in Cloudinary.</p>
+          </div>
+
+          <!-- Existing Gallery -->
+          {% if product.images and product.images|length > 0 %}
+          <div class="mt-3">
+            <p class="font-medium text-sm mb-2">Gallery Images</p>
+            <div class="flex flex-wrap gap-2">
+              {% for img in product.images %}
+                <div class="relative group">
+                  <img src="{{ img.filename }}" 
+                       alt="Gallery Image"
+                       class="w-20 h-20 object-cover rounded-lg border shadow-sm">
+                  <a href="{{ url_for('delete_gallery_image', image_id=img.id) }}"
+                     class="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 rounded-bl opacity-0 group-hover:opacity-100 transition"
+                     onclick="return confirm('Delete this image?')">✕</a>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Submit Button -->
+          <button type="submit" 
+                  class="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-lg text-sm font-semibold transition">
+            ✏️ Update Product
+          </button>
+        </form>
+      </div>
+
+      <!-- 🗑 Delete Product -->
+      <div class="p-4 flex items-center justify-center border-l">
+        <a href="{{ url_for('delete_product', product_id=product.id) }}" 
+           class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition"
+           onclick="return confirm('Delete this product?')">
+          🗑️ Delete
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- ✨ TinyMCE for Rich Descriptions -->
+<script src="https://cdn.tiny.cloud/1/ea8lvzpeukfhja4w3hpe3gu10tio0lzy104pi7s0ksue34ep/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  {% for product in products %}
+  tinymce.init({
+    selector: '#desc-{{ product.id }}',
+    height: 220,
+    menubar: false,
+    plugins: 'lists link code',
+    toolbar: 'undo redo | bold italic underline | bullist numlist | link | code',
+    content_style: "body { font-family: Poppins, sans-serif; font-size: 14px; }"
+  });
+  {% endfor %}
+});
+</script>
+{% endblock %}
