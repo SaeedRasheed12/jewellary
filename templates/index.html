@@ -3,33 +3,47 @@
 
 {% block content %}
 
-<!-- 🌸 AURIELLE Hero Banner -->
+<!-- 🌸 AURIELLE Hero Banner — Luxe Glow Edition -->
 {% if setting and setting.hero_banner %}
-<section class="relative w-full overflow-hidden mb-14 h-[75vh] sm:h-[85vh] rounded-3xl shadow-2xl">
-  
-  <!-- 🌷 Hero Image -->
+<section class="relative w-full overflow-hidden mb-16 h-[80vh] sm:h-[85vh] rounded-3xl shadow-2xl 
+                bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100">
+
+  <!-- 🌷 Hero Image with Gentle Zoom -->
   <img src="{{ setting.hero_banner }}"
        alt="Aurielle Hero Banner"
-       class="w-full h-full object-cover rounded-3xl brightness-95 scale-105 transition-transform duration-[3000ms] ease-in-out hover:scale-110" />
+       class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95 scale-105 
+              transition-transform duration-[3000ms] ease-in-out hover:scale-110" />
 
-  <!-- ✨ Feminine Gradient Overlay -->
-  <div class="absolute inset-0 bg-gradient-to-t from-[rgba(255,192,203,0.9)] via-[rgba(255,240,250,0.4)] to-transparent z-10 rounded-3xl"></div>
+  <!-- ✨ Layered Gradient Overlays -->
+  <div class="absolute inset-0 bg-gradient-to-b from-[rgba(0,0,0,0.3)] via-[rgba(0,0,0,0.2)] to-transparent 
+              mix-blend-overlay z-10 rounded-3xl"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-[rgba(255,200,240,0.9)] via-[rgba(255,240,255,0.5)] 
+              to-transparent z-10 rounded-3xl"></div>
+
+  <!-- 🌟 Floating Sparkles -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none z-20">
+    <div class="sparkle"></div>
+    <div class="sparkle sparkle-delay"></div>
+    <div class="sparkle sparkle-alt"></div>
+  </div>
 
   <!-- 💫 Hero Content -->
-  <div class="absolute inset-0 z-20 flex flex-col justify-end sm:justify-center items-start 
-              px-6 sm:px-12 pb-12 sm:pb-0 max-w-2xl">
+  <div class="absolute inset-0 z-30 flex flex-col justify-end sm:justify-center items-start 
+              px-6 sm:px-12 pb-14 sm:pb-0 max-w-2xl text-white space-y-5 sm:space-y-7">
 
     {% if setting.timer_enabled and setting.product_visibility_start %}
-    <!-- 🕒 Countdown Timer -->
-    <div id="countdownWrapper" 
-         class="mb-6 bg-[rgba(255,255,255,0.25)] backdrop-blur-lg px-5 py-3 rounded-2xl shadow-lg border border-white/30">
-      <h2 id="countdown-label" 
-          class="text-[rgb(153,102,204)] text-base sm:text-xl font-semibold mb-1">
-        💫 New Collection Drops In:
+    <!-- ⏳ Countdown Timer -->
+    <div id="countdownWrapper"
+         class="bg-white/20 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-lg border border-white/40 
+                mb-4 animate-fade-in flex flex-col items-start">
+      <h2 id="countdown-label"
+          class="text-[rgb(220,160,255)] text-lg sm:text-xl font-semibold tracking-wide">
+        💫 New Collection Drops In
       </h2>
-      <div id="countdown" class="text-2xl sm:text-4xl font-mono text-[rgb(204,102,255)] drop-shadow-md"></div>
+      <div id="countdown" 
+           class="text-3xl sm:text-5xl font-mono text-[rgb(255,230,255)] font-extrabold drop-shadow-lg"></div>
       {% if setting.coming_soon_message %}
-      <p class="text-[rgb(120,80,160)] text-xs sm:text-base mt-1 italic">
+      <p class="text-[rgb(255,225,255)] text-xs sm:text-sm mt-1 italic">
         ✨ {{ setting.coming_soon_message }}
       </p>
       {% endif %}
@@ -37,25 +51,26 @@
     {% endif %}
 
     <!-- 💎 Headline -->
-    <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-snug sm:leading-tight 
-               text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
-      Discover <span class="text-[rgb(230,153,255)]">Elegance</span><br class="hidden sm:block">
-      in Every <span class="text-[rgb(204,102,255)]">Detail</span>
+    <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold leading-snug sm:leading-tight 
+               bg-clip-text text-transparent bg-gradient-to-r 
+               from-[rgb(240,150,255)] via-[rgb(255,170,220)] to-[rgb(255,210,240)]
+               drop-shadow-[0_2px_15px_rgba(255,180,250,0.5)]">
+      Discover <span class="text-white/90">Elegance</span><br class="hidden sm:block">
+      in Every <span class="text-[rgb(255,210,255)]">Detail</span>
     </h1>
 
-    <!-- ✨ Subtext -->
-    <p class="mt-4 sm:mt-6 text-white/90 text-sm sm:text-lg leading-relaxed max-w-md font-light">
+    <!-- 🌼 Subtext -->
+    <p class="text-white/90 text-sm sm:text-lg leading-relaxed max-w-md font-light">
       Where every sparkle tells your story — timeless jewelry for the modern woman 💖
     </p>
 
     <!-- 💍 CTA Button -->
     <a href="{{ url_for('index') }}#products-section"
-       class="mt-6 sm:mt-8 inline-block bg-gradient-to-r 
-              from-[rgb(204,102,255)] to-[rgb(255,153,204)] 
+       class="mt-4 inline-block px-10 py-3 sm:py-4 text-white text-lg font-semibold 
+              rounded-full bg-gradient-to-r from-[rgb(204,102,255)] to-[rgb(255,153,204)] 
               hover:from-[rgb(230,153,255)] hover:to-[rgb(255,179,217)] 
-              text-white font-semibold text-sm sm:text-lg py-2.5 sm:py-3.5 px-8 sm:px-12 
-              rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 
-              hover:shadow-[0_0_25px_rgb(230,153,255)]">
+              shadow-[0_0_20px_rgba(230,153,255,0.5)] backdrop-blur-xl 
+              transition-all duration-500 hover:scale-110 hover:shadow-[0_0_40px_rgba(230,153,255,0.6)]">
       💎 Shop Now
     </a>
   </div>
@@ -80,16 +95,40 @@
       return;
     }
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((distance % (1000 * 60)) / 1000);
+    countdownElement.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
   }, 1000);
 </script>
 {% endif %}
 {% endif %}
+
+<!-- 🌟 Animations & Effects -->
+<style>
+@keyframes sparkleFloat {
+  0% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-50px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(-100px) scale(1); opacity: 0; }
+}
+.sparkle, .sparkle-delay, .sparkle-alt {
+  position: absolute;
+  background: radial-gradient(circle, rgba(255,230,255,0.9) 0%, transparent 70%);
+  width: 6px; height: 6px; border-radius: 50%;
+  animation: sparkleFloat 6s ease-in-out infinite;
+  filter: blur(2px);
+}
+.sparkle { left: 20%; bottom: 10%; animation-delay: 0s; }
+.sparkle-delay { left: 60%; bottom: 20%; animation-delay: 2s; }
+.sparkle-alt { left: 80%; bottom: 15%; animation-delay: 4s; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.8s ease-out; }
+</style>
 
 <!-- 💖 Elegant Jewelry Promo Banners -->
 {% if promo_banners or categories %}
