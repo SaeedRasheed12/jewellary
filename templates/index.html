@@ -414,15 +414,19 @@
     {% for cat in categories %}
       {% set cat_products = products | selectattr('category_id', 'equalto', cat.id) | list %}
       {% if cat_products|length > 0 %}
-        <!-- 🌼 Category Header (Girly Centered Style) -->
+        <!-- 🌼 Category Header (with animated sparkle background) -->
         <div class="mb-8 mt-16 text-center relative">
-          <h3 class="text-3xl sm:text-4xl font-extrabold 
-                     bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)]
-                     bg-clip-text text-transparent drop-shadow-sm capitalize inline-block px-6 py-2 relative">
-            ✨ {{ cat.name }}
-            <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-[3px] 
-                         bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full mt-2"></span>
-          </h3>
+          <div class="relative inline-block">
+            <div class="absolute inset-0 bg-[url('https://i.imgur.com/1xkiNQz.png')] 
+                        bg-repeat opacity-30 animate-sparkle"></div>
+            <h3 class="relative text-3xl sm:text-4xl font-extrabold 
+                       bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)]
+                       bg-clip-text text-transparent drop-shadow-sm capitalize inline-block px-6 py-2">
+              ✨ {{ cat.name }}
+              <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-[3px] 
+                           bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full mt-2"></span>
+            </h3>
+          </div>
           <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
              class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-[rgb(204,102,255)] hover:underline font-medium">
             View All →
@@ -504,14 +508,20 @@
       {% endif %}
     {% endfor %}
   {% endif %}
-
-  <!-- ❌ No Products -->
-  {% if products|length == 0 %}
-  <p class="text-center text-gray-500 text-lg mt-12">
-    🚫 No products found. Check back soon for new arrivals 💖
-  </p>
-  {% endif %}
 </section>
+
+<!-- ✨ Sparkle Animation -->
+<style>
+@keyframes sparkle {
+  0% { background-position: 0 0; opacity: 0.2; }
+  50% { background-position: 100px 100px; opacity: 0.5; }
+  100% { background-position: 200px 0; opacity: 0.3; }
+}
+.animate-sparkle {
+  animation: sparkle 10s linear infinite;
+  background-size: 300px 300px;
+}
+</style>
 
 <!-- 🔄 Redirect on Dropdown Select -->
 <script>

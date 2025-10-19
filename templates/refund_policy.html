@@ -1,88 +1,127 @@
 {% extends "base.html" %}
-{% block title %}Refund & Return Policy - Bin Ahmed{% endblock %}
+{% block title %}🔐 Privacy & Data Protection Policy - {{ setting.website_name if setting else 'Aurielle' }}{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 font-[Poppins] leading-relaxed">
+<section class="relative bg-gradient-to-b from-pink-50 via-rose-100 to-purple-100 py-16 px-6 sm:px-10 font-[Poppins] overflow-hidden">
 
-  <!-- Header -->
-  <div class="text-center mb-8">
-    {% if setting and setting.logo %}
-      <img src="{{ setting.logo }}" alt="Bin Ahmed Logo" 
-           class="mx-auto h-16 sm:h-20 w-auto rounded-lg mb-4">
-    {% endif %}
-    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 dark:text-gray-100">🔄 Refund & Return Policy</h1>
-    <p class="text-gray-500 text-sm mt-2">Effective from {{ now().strftime('%B %d, %Y') }}</p>
+  <!-- Floating Glow -->
+  <div class="absolute top-0 left-0 w-80 h-80 bg-pink-300/20 blur-3xl rounded-full"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-300/20 blur-3xl rounded-full"></div>
+
+  <div class="relative z-10 max-w-5xl mx-auto">
+    
+    <!-- Header -->
+    <div class="text-center mb-12">
+      {% if setting and setting.logo %}
+        <img src="{{ setting.logo }}" alt="{{ setting.website_name or 'Aurielle' }} Logo"
+             class="mx-auto h-20 sm:h-24 mb-5 rounded-xl shadow-[0_0_25px_rgba(230,153,255,0.3)]">
+      {% endif %}
+      <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(255,200,255,0.4)]">
+        Privacy & Data Protection Policy
+      </h1>
+      <p class="text-gray-600 italic mt-2">Last updated {{ now().strftime('%B %d, %Y') }}</p>
+    </div>
+
+    <!-- Content Box -->
+    <div class="bg-white/70 backdrop-blur-2xl border border-[rgba(230,153,255,0.3)] rounded-3xl shadow-[0_0_30px_rgba(230,153,255,0.1)] p-8 sm:p-10 space-y-10 text-gray-700 leading-relaxed">
+
+      <!-- 💎 Intro -->
+      <section>
+        <p class="text-lg text-gray-700">
+          At <strong>Aurielle</strong>, your privacy is as valuable as the jewels we craft.  
+          This policy explains how we collect, protect, and use your information to ensure a safe and transparent experience while shopping with us.
+        </p>
+      </section>
+
+      <!-- 📦 Data We Collect -->
+      <section>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">📦 What Information We Collect</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li><strong>Personal details:</strong> Name, email, phone number, and shipping address.</li>
+          <li><strong>Payment data:</strong> Processed securely through trusted gateways — we never store card details.</li>
+          <li><strong>Browsing info:</strong> IP address, device type, and cookies for site performance and personalization.</li>
+          <li><strong>Communication history:</strong> Messages, reviews, or customer support inquiries.</li>
+        </ul>
+      </section>
+
+      <!-- 🔒 How We Protect Your Data -->
+      <section class="bg-gradient-to-r from-pink-100 to-purple-100 border border-[rgba(230,153,255,0.3)] rounded-2xl p-6 shadow-inner">
+        <h2 class="text-xl font-semibold text-[rgb(204,102,255)] mb-2">🔒 How We Protect Your Data</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>All transactions are encrypted using <strong>SSL (Secure Socket Layer)</strong> technology.</li>
+          <li>We use advanced firewalls and regular security audits to safeguard your information.</li>
+          <li>Access to customer data is strictly limited to authorized Aurielle staff only.</li>
+          <li>Your personal data is never sold or shared with third parties without your consent.</li>
+        </ul>
+      </section>
+
+      <!-- 🎯 Why We Use Your Information -->
+      <section>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🎯 Why We Use Your Information</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>To process and deliver your orders accurately and efficiently.</li>
+          <li>To send important updates, offers, and newsletters (only with your permission).</li>
+          <li>To enhance our website experience using anonymous analytics and preferences.</li>
+          <li>To provide faster support and personalized jewelry recommendations.</li>
+        </ul>
+      </section>
+
+      <!-- 🍪 Cookies Policy -->
+      <section>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🍪 Cookies & Tracking</h2>
+        <p>
+          Our website uses cookies to improve your browsing experience.  
+          These small data files help us remember your preferences and shopping cart contents.  
+          You can disable cookies anytime in your browser settings — though some features may not function properly without them.
+        </p>
+      </section>
+
+      <!-- 🤝 Sharing with Trusted Partners -->
+      <section>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🤝 Sharing with Trusted Partners</h2>
+        <p>
+          We may share limited data with verified third parties (e.g., courier or payment providers)  
+          only for order fulfillment and customer service — never for advertising or resale purposes.
+        </p>
+      </section>
+
+      <!-- 🧾 Your Rights -->
+      <section>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🧾 Your Rights & Choices</h2>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Request access to your personal data or corrections at any time.</li>
+          <li>Opt-out of promotional emails through the unsubscribe link.</li>
+          <li>Request complete deletion (“right to be forgotten”) by contacting us directly.</li>
+        </ul>
+      </section>
+
+      <!-- 📧 Contact -->
+      <section>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">📧 Contact Us</h2>
+        <p>
+          If you have any questions about this policy or your data, please contact us at  
+          <a href="mailto:privacy@aurielle.com" class="text-[rgb(204,102,255)] font-semibold underline hover:text-[rgb(160,80,230)] transition">
+            privacy@aurielle.com
+          </a>.  
+          Our team is always happy to assist and protect your trust.
+        </p>
+      </section>
+
+      <!-- 💖 Closing -->
+      <section class="text-center bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-6 border border-[rgba(230,153,255,0.3)] shadow-inner">
+        <p class="text-[rgb(160,80,230)] font-medium italic">
+          Your trust is our most precious gem.  
+          Thank you for letting Aurielle be a part of your story. 💎
+        </p>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-gray-500 text-xs sm:text-sm mt-10">
+      &copy; {{ setting.website_name if setting else "Aurielle" }} — All rights reserved.
+    </div>
+
   </div>
-
-  <!-- Policy Content -->
-  <div class="bg-white/95 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-6 sm:p-8 space-y-8 text-sm sm:text-base">
-
-    <!-- ✅ Eligibility -->
-    <section>
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">✅ Eligibility for Refunds & Returns</h2>
-      <ul class="list-disc pl-5 sm:pl-6 text-gray-600 dark:text-gray-300 space-y-2">
-        <li>Items must be <strong>unused, unopened, and in original packaging</strong>.</li>
-        <li>Returns accepted within <strong>7 days of delivery</strong>.</li>
-        <li>Perfumes must remain <strong>sealed</strong> unless covered by our fragrance guarantee (see below).</li>
-        <li>Watches must be <strong>unworn</strong> with box, warranty card, and all accessories.</li>
-      </ul>
-    </section>
-
-    <!-- 🌟 Fragrance Promise -->
-    <section class="bg-green-50 dark:bg-green-900/30 border border-green-300 dark:border-green-700 p-4 sm:p-5 rounded-lg">
-      <h2 class="text-lg sm:text-xl font-semibold text-green-700 dark:text-green-400 mb-2">🌟 Our Fragrance Promise</h2>
-      <p class="text-gray-700 dark:text-gray-200">
-        At <strong>Bin Ahmed</strong>, we want you to love your fragrance.  
-        <br>If you <strong>don’t like the fragrance</strong> after purchase, you may return it within <strong>7 days</strong> for a replacement or refund — no questions asked.
-      </p>
-    </section>
-
-    <!-- 🚫 Non-Returnable -->
-    <section>
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">🚫 Non-Returnable Items</h2>
-      <ul class="list-disc pl-5 sm:pl-6 text-gray-600 dark:text-gray-300 space-y-2">
-        <li>Perfumes that are half-used or bottles intentionally damaged.</li>
-        <li>Products damaged by mishandling, water, or normal wear & tear.</li>
-        <li>Customized or limited-edition products.</li>
-      </ul>
-    </section>
-
-    <!-- 💰 Refund Process -->
-    <section>
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">💰 Refund Process</h2>
-      <p class="text-gray-600 dark:text-gray-300">
-        Once we receive and inspect your return, you’ll be notified of the approval or rejection.  
-        Approved refunds are processed within <strong>7–10 business days</strong> via your original payment method.  
-        <br><span class="font-medium">Note:</span> Shipping charges are <strong>non-refundable</strong> unless the issue was caused by us.
-      </p>
-    </section>
-
-    <!-- 🔄 Exchanges -->
-    <section>
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">🔄 Exchanges</h2>
-      <p class="text-gray-600 dark:text-gray-300">
-        Exchanges are only available for items that are <strong>defective or damaged upon arrival</strong>.  
-        Contact us immediately with your order details if you need a replacement.
-      </p>
-    </section>
-
-    <!-- 📩 How to Return -->
-    <section>
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3">📩 How to Initiate a Return</h2>
-      <p class="text-gray-600 dark:text-gray-300">
-        Simply email us at  
-        <a href="mailto:support@binahmed.com" class="text-blue-600 font-semibold">support@binahmed.com</a>  
-        with your <strong>order number</strong>, product details, and reason for return.  
-        Our support team will respond quickly and guide you through the process.
-      </p>
-    </section>
-
-  </div>
-
-  <!-- Footer -->
-  <div class="text-center text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-10">
-    &copy; {{ setting.website_name if setting else "Bin Ahmed" }} — All rights reserved.
-  </div>
-
-</div>
+</section>
 {% endblock %}
