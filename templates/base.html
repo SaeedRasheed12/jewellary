@@ -174,7 +174,7 @@
     </div>
   </div>
 
-<!-- 📱 Mobile Menu — Aurielle Minimal Luxe Categories -->
+<!-- 📱 Mobile Menu — Aurielle Luxe Glow Pulse Edition -->
 <div id="mobile-menu"
      class="lg:hidden hidden bg-white/95 border-t border-[rgb(235,225,255)] shadow-md animate-slideDown 
             text-[rgb(130,80,210)] font-[Poppins] rounded-t-3xl">
@@ -192,16 +192,15 @@
     <!-- 💎 Our Categories -->
     {% if categories %}
     <div class="border-t border-[rgba(225,210,255,0.5)] mt-4 pt-5">
-      <h3 class="text-[rgb(150,90,230)] font-semibold text-lg mb-3 text-center tracking-wide uppercase">
+      <h3 class="text-[rgb(150,90,230)] font-semibold text-lg mb-4 text-center tracking-wide uppercase">
         💎 Our Categories
       </h3>
 
-      <div class="flex flex-col divide-y divide-[rgba(235,225,255,0.8)]">
+      <div class="flex flex-col">
         {% for cat in categories %}
         <a href="{{ url_for('filter_category', category_id=cat.id) }}"
-           class="flex items-center justify-between px-3 py-3 bg-white rounded-xl 
-                  hover:bg-[rgba(245,235,255,0.8)] hover:text-[rgb(160,90,240)] 
-                  transition-all duration-300 group">
+           class="flex items-center justify-between px-3 py-4 bg-white transition-all duration-300 group 
+                  hover:bg-[rgba(245,235,255,0.8)] hover:text-[rgb(160,90,240)] rounded-xl hover:-translate-y-[1px]">
           
           <!-- Category Name -->
           <span class="font-semibold text-[rgb(110,60,190)] group-hover:text-[rgb(160,90,240)] tracking-wide transition-all">
@@ -215,6 +214,11 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
         </a>
+
+        <!-- ✨ Divider Line with Pulsing Glow -->
+        {% if not loop.last %}
+        <div class="divider-line w-full h-[1px] bg-[rgba(235,225,255,0.6)] my-1 opacity-70 transition-all duration-500"></div>
+        {% endif %}
         {% endfor %}
       </div>
     </div>
@@ -230,13 +234,26 @@
   </div>
 </div>
 
-<!-- ✨ Smooth Slide Animation -->
+<!-- ✨ Animations -->
 <style>
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-slideDown { animation: slideDown 0.3s ease-out; }
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 6px rgba(160, 90, 240, 0.3); }
+  50% { box-shadow: 0 0 12px rgba(160, 90, 240, 0.6); }
+}
+
+.divider-line {
+  transition: opacity 0.4s ease-in-out, box-shadow 0.6s ease-in-out;
+}
+a:hover + .divider-line {
+  opacity: 1 !important;
+  animation: pulseGlow 1.8s ease-in-out infinite;
+}
 </style>
 
 <!-- 💜 AURIELLE — Elegant Scrolling Line Banner -->
