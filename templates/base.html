@@ -135,7 +135,7 @@
 </nav>
 
 <!-- 💫 Desktop Menu -->
-<div class="hidden lg:flex justify-center items-center gap-8 mt-3 text-sm sm:text-base font-medium text-gray-700 z-[900]">
+<div class="hidden lg:flex justify-center items-center gap-8 mt-3 text-sm sm:text-base font-medium text-gray-700 z-[950] relative">
   {% for label, icon, link in [
       ('Home','',url_for('index')),
       ('Reviews','',url_for('all_reviews')),
@@ -146,7 +146,7 @@
   ] %}
   <a href="{{ link }}" class="relative group flex items-center gap-1">
     {{ icon }} {{ label }}
-    <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all"></span>
+    <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all duration-300"></span>
   </a>
   {% endfor %}
   {% if session.get('admin_logged_in') %}
@@ -157,8 +157,9 @@
 
 <!-- 📱 Mobile Menu -->
 <div id="mobile-menu"
-     class="hidden fixed top-[70px] left-0 right-0 z-[999] bg-white/95 border-t border-[rgb(235,225,255)] 
-            shadow-[0_10px_25px_rgba(160,120,255,0.15)] animate-slideDown text-[rgb(130,80,210)] font-[Poppins] rounded-b-3xl overflow-y-auto max-h-[calc(100vh-70px)]">
+     class="hidden fixed top-[75px] left-0 right-0 z-[1100] bg-white/95 border-t border-[rgb(235,225,255)] 
+            shadow-[0_10px_25px_rgba(160,120,255,0.15)] animate-slideDown text-[rgb(130,80,210)] 
+            font-[Poppins] rounded-b-3xl overflow-y-auto max-h-[calc(100vh-75px)]">
   <div class="flex flex-col px-4 py-5 space-y-3 font-medium">
     <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> Home</a>
     <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> Reviews</a>
@@ -214,7 +215,6 @@
 .divider-line { transition: opacity 0.4s ease-in-out, box-shadow 0.6s ease-in-out; }
 a:hover + .divider-line { opacity: 1 !important; animation: pulseGlow 1.8s ease-in-out infinite; }
 
-/* 🍎 Scroll Reactive Navbar */
 #main-navbar.scrolled {
   background: linear-gradient(to right, rgba(240,230,255,0.92), rgba(230,220,255,0.95));
   backdrop-filter: blur(25px) saturate(200%);
@@ -222,10 +222,13 @@ a:hover + .divider-line { opacity: 1 !important; animation: pulseGlow 1.8s ease-
   border-color: rgba(180,160,250,0.5);
   transform: scale(0.985);
 }
-#nav-logo.scrolled {
-  transform: scale(0.9);
-  filter: brightness(0.95);
-}
+#nav-logo.scrolled { transform: scale(0.9); filter: brightness(0.95); }
+
+/* 🌸 Line Banner Marquee */
+.banner-marquee-wrapper { position: relative; overflow: hidden; }
+@keyframes marquee { 0% { transform: translateX(0%);} 100% { transform: translateX(-50%);} }
+.animate-marquee { animation: marquee 18s linear infinite; width: max-content; }
+.banner-marquee-content { display: inline-block; white-space: nowrap; padding-right: 4rem; }
 </style>
 
 <script>
@@ -234,73 +237,66 @@ const mobileMenu = document.getElementById("mobile-menu");
 const navbar = document.getElementById("main-navbar");
 const logo = document.getElementById("nav-logo");
 
-// Toggle mobile menu
-menuToggle.addEventListener("click", () => {
+// 🍔 Toggle mobile menu
+menuToggle?.addEventListener("click", () => {
   mobileMenu.classList.toggle("hidden");
   mobileMenu.classList.toggle("animate-slideDown");
+  // ensure it's always above line banner
+  if (!mobileMenu.classList.contains("hidden")) {
+    mobileMenu.style.zIndex = "1100";
+  }
 });
 
 // Auto-hide on scroll
 window.addEventListener("scroll", () => {
-  if (!mobileMenu.classList.contains("hidden")) {
-    mobileMenu.classList.add("hidden");
-  }
+  if (!mobileMenu.classList.contains("hidden")) mobileMenu.classList.add("hidden");
 });
 
-// 🍎 Scroll Reactive Effect
+// Navbar shrink
 window.addEventListener("scroll", () => {
   if (window.scrollY > 40) {
-    navbar.classList.add("scrolled");
+    navbar?.classList.add("scrolled");
     logo?.classList.add("scrolled");
   } else {
-    navbar.classList.remove("scrolled");
+    navbar?.classList.remove("scrolled");
     logo?.classList.remove("scrolled");
   }
 });
 </script>
 
 <!-- 💜 AURIELLE — Elegant Scrolling Line Banner -->
-<div class="bg-gradient-to-r from-[rgb(250,245,255)] via-[rgb(255,240,250)] to-[rgb(250,245,255)]
-            text-[rgb(140,90,210)] font-semibold text-sm sm:text-base py-2 w-full shadow-sm border-t border-[rgb(230,210,250)]">
-  <div class="banner-marquee-wrapper overflow-hidden relative">
-    <div class="banner-marquee-text flex whitespace-nowrap animate-marquee">
+<div id="line-banner"
+     class="fixed top-[72px] sm:top-[80px] inset-x-0 z-[1040]
+            bg-gradient-to-r from-[rgb(250,245,255)] via-[rgb(255,240,250)] to-[rgb(250,245,255)]
+            text-[rgb(140,90,210)] font-semibold text-sm sm:text-base py-2
+            shadow-sm border-t border-[rgb(230,210,250)] text-center select-none overflow-hidden">
+  <div class="banner-marquee-wrapper">
+    <div class="banner-marquee-text flex animate-marquee">
       <span class="banner-marquee-content mx-8">
-        {{ setting.line_banner_text if setting and setting.line_banner_text else "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
+        {{ setting.line_banner_text if setting and setting.line_banner_text else 
+        "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
       </span>
       <span class="banner-marquee-content mx-8" aria-hidden="true">
-        {{ setting.line_banner_text if setting and setting.line_banner_text else "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
+        {{ setting.line_banner_text if setting and setting.line_banner_text else 
+        "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
       </span>
     </div>
   </div>
 </div>
 
+<!-- 🧭 Spacer (push content below navbar + line banner) -->
+<div class="h-[130px] sm:h-[145px]"></div>
+
 <style>
-  /* ✨ Smooth Elegant Marquee Animation */
-  @keyframes marquee {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-50%); }
-  }
-  .animate-marquee {
-    animation: marquee 20s linear infinite;
-  }
-
-  .banner-marquee-wrapper {
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-  }
-
-  .banner-marquee-text {
-    display: flex;
-    width: max-content;
-    will-change: transform;
-  }
-
-  .banner-marquee-content {
-    flex-shrink: 0;
-    padding-right: 4rem;
-    min-width: 100vw;
-  }
+/* ✨ Smooth Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 20s linear infinite; }
+.banner-marquee-wrapper { overflow: hidden; white-space: nowrap; position: relative; }
+.banner-marquee-text { display: flex; width: max-content; will-change: transform; }
+.banner-marquee-content { flex-shrink: 0; padding-right: 4rem; min-width: 100vw; }
 </style>
 
 <!-- 💎 AURIELLE — Page Content Area -->
