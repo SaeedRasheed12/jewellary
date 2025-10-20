@@ -148,14 +148,23 @@ body {
       </div>
       {% endif %}
 
-      <!-- 📝 Description -->
-      <div class="prose max-w-none text-gray-700 leading-relaxed mb-8">
-        {% if '<p>' in product.description or '<br>' in product.description %}
-          {{ product.description | safe }}
-        {% else %}
-          <p class="whitespace-pre-line break-words">{{ product.description }}</p>
-        {% endif %}
-      </div>
+      <!-- 📝 Description (clean, no URLs shown) -->
+<div class="prose max-w-none text-gray-700 leading-relaxed mb-8">
+  {% if '<p>' in product.description or '<br>' in product.description %}
+    {{ product.description
+        |regex_replace(r'https?://\\S+', '')
+        |safe }}
+  {% else %}
+    <p class="whitespace-pre-line break-words">
+      {{ product.description
+          |replace('https://', '')
+          |replace('http://', '')
+          |replace('www.', '')
+          |truncate(200, True, '...')
+      }}
+    </p>
+  {% endif %}
+</div>
 
       <!-- 🛒 Add to Cart Button -->
       <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">

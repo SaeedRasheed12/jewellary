@@ -517,7 +517,8 @@
               {% endif %}
 
               <p class="text-gray-500 text-xs sm:text-sm mt-1 truncate italic">
-                {{ product.description[:60] }}
+                {{ product.description|replace('https://', '')|replace('http://', '')|replace('www.', '')|truncate(60, True, '...')|safe }}
+
               </p>
 
               <!-- ⭐ Rating -->
