@@ -34,16 +34,6 @@ body {
   width: 100%; height: 100%; object-fit: contain;
 }
 
-/* 🌈 Sparkle Background Animation */
-@keyframes sparkle {
-  0%,100% { background-position: 0 0; opacity: 0.2; }
-  50% { background-position: 200px 100px; opacity: 0.4; }
-}
-.animate-sparkle {
-  animation: sparkle 12s linear infinite;
-  background-size: 300px 300px;
-}
-
 /* 📸 Scrollable Gallery */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
@@ -51,20 +41,11 @@ body {
 /* ✨ Edge Gradient Fades */
 .gallery-fade {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 60px;
-  pointer-events: none;
-  z-index: 5;
+  top: 0; bottom: 0;
+  width: 60px; pointer-events: none; z-index: 5;
 }
-.gallery-fade.left {
-  left: 0;
-  background: linear-gradient(to right, #fff9ff 80%, transparent);
-}
-.gallery-fade.right {
-  right: 0;
-  background: linear-gradient(to left, #fff9ff 80%, transparent);
-}
+.gallery-fade.left { left: 0; background: linear-gradient(to right, #fff9ff 80%, transparent); }
+.gallery-fade.right { right: 0; background: linear-gradient(to left, #fff9ff 80%, transparent); }
 </style>
 {% endblock %}
 
@@ -96,30 +77,17 @@ body {
     </div>
     {% endif %}
 
-    <!-- 🎥 Product Video -->
-    {% if product.video_url %}
-    <div class="mt-12">
-      <h2 class="text-2xl font-bold text-center text-[rgb(160,90,230)] mb-4">🎬 Product Showcase</h2>
-      <div class="video-wrapper">
-        <video controls playsinline preload="metadata" poster="{{ product.image if product.image else '' }}">
-          <source src="{{ product.video_url }}" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      <p class="text-xs text-gray-500 text-center italic mt-3">Watch this beauty come to life ✨</p>
-    </div>
-    {% endif %}
-
-    <!-- 🖼️ Product Gallery -->
+    <!-- 🖼️ Cover Gallery (if available) -->
     {% if product.images %}
+    {% set img_count = product.images|length %}
     <div class="mt-12 relative">
-      <h2 class="text-2xl font-bold text-center text-[rgb(160,90,230)] mb-6">📸 Product Gallery</h2>
+      <h2 class="text-2xl font-bold text-center text-[rgb(160,90,230)] mb-6">✨ More Views</h2>
 
-      <!-- 💫 Fades -->
+      {% if img_count > 3 %}
       <div class="gallery-fade left hidden sm:block"></div>
       <div class="gallery-fade right hidden sm:block"></div>
+      {% endif %}
 
-      <!-- 🌈 Scrollable Gallery -->
       <div class="overflow-x-auto whitespace-nowrap scrollbar-hide px-1 relative">
         <div class="inline-flex gap-4 pb-2">
           {% for img in product.images %}
@@ -131,9 +99,25 @@ body {
         </div>
       </div>
 
+      {% if img_count > 3 %}
       <p class="text-xs text-center text-gray-500 mt-2 italic sm:hidden">
         👉 Swipe to explore more views
       </p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- 🎞️ Product Video -->
+    {% if product.video_url %}
+    <div class="mt-14">
+      <h2 class="text-2xl font-bold text-center text-[rgb(160,90,230)] mb-4">🎞️ Behind the Elegance</h2>
+      <div class="video-wrapper">
+        <video controls playsinline preload="metadata" poster="{{ product.image if product.image else '' }}">
+          <source src="{{ product.video_url }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <p class="text-xs text-gray-500 text-center italic mt-3">Discover the artistry that brings Aurielle’s pieces to life ✨</p>
     </div>
     {% endif %}
 
