@@ -4,7 +4,6 @@
 {% block head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
 <style>
-/* 🌸 Aurielle Product Page Styling */
 body {
   background: linear-gradient(to bottom right, #fff9ff, #f9f2ff);
   font-family: 'Poppins', sans-serif;
@@ -13,162 +12,163 @@ body {
 /* ✨ Floating Sparkles */
 .sparkle {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 10px; height: 10px;
   background: radial-gradient(circle, rgba(255,255,255,1) 40%, transparent 60%);
   border-radius: 50%;
   animation: sparkleFloat 10s linear infinite;
-  opacity: 0.6;
-  pointer-events: none;
+  opacity: 0.6; pointer-events: none;
 }
 @keyframes sparkleFloat {
-  0% {
-    transform: translateY(0px) scale(0.8);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateY(-40px) scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0px) scale(0.8);
-    opacity: 0.6;
-  }
+  0%,100% { transform: translateY(0px) scale(0.8); opacity: 0.6; }
+  50% { transform: translateY(-40px) scale(1.2); opacity: 1; }
 }
 
-/* 🎥 Video Wrapper */
+/* 🎥 Video */
 .video-wrapper {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%;
-  overflow: hidden;
-  border-radius: 16px;
-  background: #000;
-  box-shadow: 0 0 25px rgba(230, 153, 255, 0.15);
+  position: relative; width: 100%; padding-top: 56.25%;
+  overflow: hidden; border-radius: 18px;
+  background: #000; box-shadow: 0 0 30px rgba(230,153,255,0.2);
 }
 .video-wrapper video {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  object-fit: contain;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; object-fit: contain;
 }
 
-/* 🌈 Sparkle background for title */
+/* 🌈 Sparkle Background Animation */
 @keyframes sparkle {
-  0% { background-position: 0 0; opacity: 0.2; }
-  50% { background-position: 100px 100px; opacity: 0.4; }
-  100% { background-position: 200px 0; opacity: 0.2; }
+  0%,100% { background-position: 0 0; opacity: 0.2; }
+  50% { background-position: 200px 100px; opacity: 0.4; }
 }
 .animate-sparkle {
   animation: sparkle 12s linear infinite;
   background-size: 300px 300px;
+}
+
+/* 📸 Scrollable Gallery */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ✨ Edge Gradient Fades */
+.gallery-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  pointer-events: none;
+  z-index: 5;
+}
+.gallery-fade.left {
+  left: 0;
+  background: linear-gradient(to right, #fff9ff 80%, transparent);
+}
+.gallery-fade.right {
+  right: 0;
+  background: linear-gradient(to left, #fff9ff 80%, transparent);
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="max-w-6xl mx-auto px-4 py-14">
-  <div class="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(230,153,255,0.2)] border border-[rgba(255,255,255,0.3)] grid grid-cols-1 md:grid-cols-2 gap-10 p-8 transition-all duration-500 relative overflow-hidden">
+  <div class="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(230,153,255,0.2)] border border-[rgba(255,255,255,0.3)] p-8 transition-all duration-500 relative overflow-hidden">
 
-    <!-- 💎 Floating Sparkles Container -->
+    <!-- ✨ Floating Sparkles -->
     <div id="sparkle-container" class="absolute inset-0 pointer-events-none z-0"></div>
 
-    <!-- 💎 Product Media -->
-    <div class="space-y-5 relative z-10">
-      {% if product.image %}
-      <div class="relative">
-        <a href="{{ product.image }}" class="glightbox block" data-gallery="product-gallery">
-          <img src="{{ product.image }}" alt="{{ product.name }}"
-               class="rounded-2xl w-full h-[420px] object-contain border border-[rgba(230,153,255,0.2)] shadow-lg hover:scale-[1.02] transition-transform duration-500" />
-        </a>
-        <!-- ✨ Light shimmer overlay -->
-        <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 hover:opacity-100 transition duration-[1500ms] animate-pulse rounded-2xl"></div>
-      </div>
-      {% endif %}
+    <!-- 🌟 Product Name -->
+    <div class="text-center relative z-10 mb-10">
+      <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r 
+                 from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)] 
+                 bg-clip-text text-transparent capitalize tracking-wide drop-shadow-sm">
+        {{ product.name }}
+      </h1>
+      <div class="w-20 h-[3px] mx-auto mt-2 bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full"></div>
+    </div>
 
-      <!-- 🎥 Video -->
-      {% if product.video_url %}
+    <!-- 💎 Main Product Image -->
+    {% if product.image %}
+    <div class="relative z-10 max-w-xl mx-auto mb-10">
+      <a href="{{ product.image }}" class="glightbox block" data-gallery="product-gallery">
+        <img src="{{ product.image }}" alt="{{ product.name }}"
+             class="rounded-2xl w-full h-[420px] object-contain border border-[rgba(230,153,255,0.2)] shadow-lg hover:scale-[1.02] transition-transform duration-500" />
+      </a>
+      <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 hover:opacity-100 transition duration-[1500ms] animate-pulse rounded-2xl"></div>
+    </div>
+    {% endif %}
+
+    <!-- 🎥 Product Video -->
+    {% if product.video_url %}
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-center text-[rgb(160,90,230)] mb-4">🎬 Product Showcase</h2>
       <div class="video-wrapper">
         <video controls playsinline preload="metadata" poster="{{ product.image if product.image else '' }}">
           <source src="{{ product.video_url }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       </div>
-      <p class="text-xs text-gray-500 text-center italic mt-2">🎥 Product Demo / Preview</p>
-      {% endif %}
-
-      <!-- 🖼️ Additional Images -->
-      {% if product.images %}
-      <div class="flex gap-3 flex-wrap mt-5 justify-center sm:justify-start">
-        {% for img in product.images %}
-        <a href="{{ img.filename }}" class="glightbox" data-gallery="product-gallery">
-          <img src="{{ img.filename }}" alt="{{ product.name }}"
-               class="h-20 w-20 object-cover rounded-xl border hover:scale-110 transition-all duration-300 shadow-sm" />
-        </a>
-        {% endfor %}
-      </div>
-      {% endif %}
+      <p class="text-xs text-gray-500 text-center italic mt-3">Watch this beauty come to life ✨</p>
     </div>
+    {% endif %}
 
-<!-- 💫 Product Info -->
-<div>
-  <div class="relative inline-block mb-6">
-    <h1 class="relative text-4xl sm:text-5xl font-extrabold 
-               bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)] 
-               bg-clip-text text-transparent capitalize tracking-wide drop-shadow-sm">
-      {{ product.name }}
-    </h1>
-  </div>
-</div>
+    <!-- 🖼️ Product Gallery -->
+    {% if product.images %}
+    <div class="mt-12 relative">
+      <h2 class="text-2xl font-bold text-center text-[rgb(160,90,230)] mb-6">📸 Product Gallery</h2>
 
-      <!-- 💰 Price Display -->
-      {% if product.before_price and product.before_price > product.today_price %}
-        {% set discount = ((product.before_price - product.today_price) / product.before_price) * 100 %}
-        <div class="flex items-center gap-4 mb-5">
-          <span class="line-through text-gray-400 text-lg">Rs {{ product.before_price|int }}</span>
-          <span class="text-3xl font-extrabold text-[rgb(204,102,255)]">Rs {{ product.today_price|int }}</span>
-          <span class="bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow animate-pulse">
-            -{{ discount|round(0) }}%
-          </span>
-        </div>
-      {% else %}
-        <p class="text-3xl font-extrabold text-[rgb(204,102,255)] mb-4">Rs {{ product.today_price|int }}</p>
-      {% endif %}
+      <!-- 💫 Fades -->
+      <div class="gallery-fade left hidden sm:block"></div>
+      <div class="gallery-fade right hidden sm:block"></div>
 
-      <!-- ⭐ Ratings -->
-      {% if product.reviews %}
-      {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
-      <div class="flex items-center gap-2 mb-5">
-        <div class="flex text-[rgb(255,179,217)] text-xl">
-          {% for i in range(1,6) %}
-            {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
+      <!-- 🌈 Scrollable Gallery -->
+      <div class="overflow-x-auto whitespace-nowrap scrollbar-hide px-1 relative">
+        <div class="inline-flex gap-4 pb-2">
+          {% for img in product.images %}
+          <a href="{{ img.filename }}" class="glightbox inline-block" data-gallery="product-gallery">
+            <img src="{{ img.filename }}" alt="{{ product.name }}"
+                 class="h-24 w-24 sm:h-28 sm:w-28 object-cover rounded-xl border border-[rgba(230,153,255,0.3)] shadow hover:scale-110 transition-all duration-300" />
+          </a>
           {% endfor %}
         </div>
-        <span class="text-sm text-gray-600">
-          {{ "%.1f"|format(avg_rating) }}/5 ({{ product.reviews|length }} reviews)
+      </div>
+
+      <p class="text-xs text-center text-gray-500 mt-2 italic sm:hidden">
+        👉 Swipe to explore more views
+      </p>
+    </div>
+    {% endif %}
+
+    <!-- 📝 Description -->
+    <div class="prose max-w-none text-gray-700 leading-relaxed mt-12">
+      {% if '<p>' in product.description or '<br>' in product.description %}
+        {{ product.description | safe }}
+      {% else %}
+        <p class="whitespace-pre-line break-words">{{ product.description }}</p>
+      {% endif %}
+    </div>
+
+    <!-- 💰 Price -->
+    {% if product.before_price and product.before_price > product.today_price %}
+      {% set discount = ((product.before_price - product.today_price) / product.before_price) * 100 %}
+      <div class="flex items-center justify-center gap-4 mt-6">
+        <span class="line-through text-gray-400 text-lg">Rs {{ product.before_price|int }}</span>
+        <span class="text-3xl font-extrabold text-[rgb(204,102,255)]">Rs {{ product.today_price|int }}</span>
+        <span class="bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow animate-pulse">
+          -{{ discount|round(0) }}%
         </span>
       </div>
-      {% endif %}
+    {% else %}
+      <p class="text-3xl font-extrabold text-center text-[rgb(204,102,255)] mt-6">Rs {{ product.today_price|int }}</p>
+    {% endif %}
 
-      <!-- 📝 Description -->
-      <div class="prose max-w-none text-gray-700 leading-relaxed mb-8">
-        {% if '<p>' in product.description or '<br>' in product.description %}
-          {{ product.description | safe }}
-        {% else %}
-          <p class="whitespace-pre-line break-words">{{ product.description }}</p>
-        {% endif %}
-      </div>
-
-      <!-- 🛒 Add to Cart Button -->
-      <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
-        <button type="submit"
-                class="w-full py-3 rounded-xl font-semibold text-white shadow-lg 
-                       bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-                       hover:scale-[1.03] transition-all duration-500">
-          🛍️ Add to Cart
-        </button>
-      </form>
-    </div>
+    <!-- 🛒 Add to Cart -->
+    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="mt-8">
+      <button type="submit"
+              class="w-full py-3 rounded-xl font-semibold text-white shadow-lg 
+                     bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
+                     hover:scale-[1.03] transition-all duration-500">
+        🛍️ Add to Cart
+      </button>
+    </form>
   </div>
 
   <!-- 💬 Customer Reviews -->
@@ -195,49 +195,17 @@ body {
     {% else %}
     <p class="text-gray-500 italic mb-6">No reviews yet 💭 Be the first to share your sparkle ✨</p>
     {% endif %}
+  </div>
 
-    <!-- ✍️ Submit Review -->
-    <h3 class="text-lg font-semibold mt-8 mb-3 text-[rgb(160,90,230)]">💖 Write a Review</h3>
-    <form method="POST" action="{{ url_for('add_review', product_id=product.id) }}" class="space-y-5">
-      <div>
-        <label class="block font-medium text-gray-700 mb-1">⭐ Rating</label>
-        <select name="rating" required class="border rounded-lg w-full px-3 py-2 focus:ring-2 focus:ring-[rgb(230,153,255)]">
-          <option value="">-- Select Rating --</option>
-          <option value="5">★★★★★ - Excellent</option>
-          <option value="4">★★★★☆ - Good</option>
-          <option value="3">★★★☆☆ - Average</option>
-          <option value="2">★★☆☆☆ - Poor</option>
-          <option value="1">★☆☆☆☆ - Terrible</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-medium text-gray-700 mb-1">💬 Review</label>
-        <textarea name="comment" rows="3" required placeholder="Share your thoughts..." class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[rgb(230,153,255)]"></textarea>
-      </div>
-
-      <div>
-        <label class="block font-medium text-gray-700 mb-1">👤 Name (optional)</label>
-        <input type="text" name="user_name" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[rgb(230,153,255)]" />
-      </div>
-
-      <button type="submit"
-              class="w-full bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-                     text-white font-semibold py-3 rounded-xl hover:scale-[1.03] shadow-lg transition-all duration-500">
-        ✍️ Submit Review
-      </button>
-    </form>
+  <!-- 🔙 Continue Shopping -->
+  <div class="mt-10 text-center">
+    <a href="{{ url_for('index') }}"
+       class="inline-block bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
+              text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300">
+      ⬅️ Continue Shopping
+    </a>
   </div>
 </section>
-
-<!-- 🔙 Continue Shopping -->
-<div class="mt-10 text-center">
-  <a href="{{ url_for('index') }}"
-     class="inline-block bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-            text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300">
-    ⬅️ Continue Shopping
-  </a>
-</div>
 {% endblock %}
 
 {% block scripts %}
@@ -245,7 +213,7 @@ body {
 <script>
   GLightbox({ selector: '.glightbox', loop: true });
 
-  // ✨ Generate random floating sparkles
+  // ✨ Floating sparkles
   const sparkleContainer = document.getElementById('sparkle-container');
   for (let i = 0; i < 15; i++) {
     const s = document.createElement('div');
