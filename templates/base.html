@@ -108,7 +108,7 @@
           {{ setting.website_name if setting else 'AURIELLE' }}
         </span>
         <p class="text-[11px] sm:text-xs text-[rgb(170,120,255)] italic mt-0.5 opacity-80">
-          Luxury You Deserve ✨
+          A house of calm luxury & modern femininity. 🤍
         </p>
       </a>
 
@@ -137,12 +137,12 @@
 <!-- 💫 Desktop Menu -->
 <div class="hidden lg:flex justify-center items-center gap-8 mt-3 text-sm sm:text-base font-medium text-gray-700 z-[900]">
   {% for label, icon, link in [
-      ('Home','🏠',url_for('index')),
-      ('Reviews','⭐',url_for('all_reviews')),
-      ('Track Order','📦',url_for('track_order')),
-      ('Refund','💵',url_for('refund_policy')),
-      ('Social','🌐',url_for('social')),
-      ('About','👑',url_for('about'))
+      ('Home','',url_for('index')),
+      ('Reviews','',url_for('all_reviews')),
+      ('Track Order','',url_for('track_order')),
+      ('Refund','',url_for('refund_policy')),
+      ('Social','',url_for('social')),
+      ('About','',url_for('about'))
   ] %}
   <a href="{{ link }}" class="relative group flex items-center gap-1">
     {{ icon }} {{ label }}
@@ -160,12 +160,12 @@
      class="hidden fixed top-[70px] left-0 right-0 z-[999] bg-white/95 border-t border-[rgb(235,225,255)] 
             shadow-[0_10px_25px_rgba(160,120,255,0.15)] animate-slideDown text-[rgb(130,80,210)] font-[Poppins] rounded-b-3xl overflow-y-auto max-h-[calc(100vh-70px)]">
   <div class="flex flex-col px-4 py-5 space-y-3 font-medium">
-    <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">🏠 Home</a>
-    <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">⭐ Reviews</a>
-    <a href="{{ url_for('track_order') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">📦 Track Order</a>
-    <a href="{{ url_for('refund_policy') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">💵 Refund Policy</a>
-    <a href="{{ url_for('social') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">🌐 Social</a>
-    <a href="{{ url_for('about') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all">👑 About</a>
+    <a href="{{ url_for('index') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> Home</a>
+    <a href="{{ url_for('all_reviews') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> Reviews</a>
+    <a href="{{ url_for('track_order') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> Track Order</a>
+    <a href="{{ url_for('refund_policy') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> Refund Policy</a>
+    <a href="{{ url_for('social') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> Social</a>
+    <a href="{{ url_for('about') }}" class="flex items-center gap-2 hover:text-[rgb(170,110,250)] transition-all"> About</a>
 
     {% if categories %}
     <div class="border-t border-[rgba(225,210,255,0.5)] mt-4 pt-5">
@@ -416,7 +416,7 @@ window.addEventListener("scroll", () => {
       <!-- 💍 About Aurielle -->
       <div>
         <h3 class="text-xl font-bold mb-4 bg-gradient-to-r from-[rgb(160,90,230)] via-[rgb(200,100,250)] to-[rgb(255,180,255)] bg-clip-text text-transparent">
-          ✨ About Aurielle
+           About Aurielle
         </h3>
         <p class="text-sm leading-relaxed text-[rgb(110,85,170)]">
           <span class="font-semibold">Aurielle</span> is your destination for timeless jewelry that blends modern elegance with everyday sophistication.  
@@ -463,13 +463,13 @@ window.addEventListener("scroll", () => {
             </svg>
           </a>
         </div>
-        <p class="text-sm mt-4 text-[rgb(110,85,170)]">Follow us for the latest trends & exclusive offers 💫</p>
+        <p class="text-sm mt-4 text-[rgb(110,85,170)]">Follow us for the latest trends & exclusive offers </p>
       </div>
     </div>
 
     <!-- 🩵 Bottom Credits -->
     <div class="pt-6 border-t border-[rgb(235,225,255)] text-xs sm:text-sm text-center sm:flex sm:items-center sm:justify-between text-[rgb(120,95,180)]">
-      <p class="italic mb-3 sm:mb-0">Crafted with 💕 by <span class="font-semibold text-[rgb(160,90,230)]">AURIELLE</span> — Where every sparkle tells a story.</p>
+      <p class="italic mb-3 sm:mb-0">Crafted with calm by <span class="font-semibold text-[rgb(160,90,230)]">AURIELLE 💜</span> — Where Each piece tells your story. </p>
       <p>© {{ setting.website_name if setting else 'AURIELLE' }} {{ now().year }}. All rights reserved.</p>
     </div>
 
