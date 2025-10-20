@@ -110,14 +110,16 @@ body {
       {% endif %}
     </div>
 
-    <!-- 💫 Product Info -->
-    <div>
-      <div class="relative inline-block mb-6">
-        <div class="absolute inset-0 bg-[url('https://i.imgur.com/1xkiNQz.png')] bg-repeat opacity-30 animate-sparkle"></div>
-        <h1 class="relative text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)] bg-clip-text text-transparent capitalize tracking-wide drop-shadow-sm">
-          {{ product.name }}
-        </h1>
-      </div>
+<!-- 💫 Product Info -->
+<div>
+  <div class="relative inline-block mb-6">
+    <h1 class="relative text-4xl sm:text-5xl font-extrabold 
+               bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)] 
+               bg-clip-text text-transparent capitalize tracking-wide drop-shadow-sm">
+      {{ product.name }}
+    </h1>
+  </div>
+</div>
 
       <!-- 💰 Price Display -->
       {% if product.before_price and product.before_price > product.today_price %}
@@ -148,23 +150,14 @@ body {
       </div>
       {% endif %}
 
-      <!-- 📝 Description (clean, no URLs shown) -->
-<div class="prose max-w-none text-gray-700 leading-relaxed mb-8">
-  {% if '<p>' in product.description or '<br>' in product.description %}
-    {{ product.description
-        |regex_replace(r'https?://\\S+', '')
-        |safe }}
-  {% else %}
-    <p class="whitespace-pre-line break-words">
-      {{ product.description
-          |replace('https://', '')
-          |replace('http://', '')
-          |replace('www.', '')
-          |truncate(200, True, '...')
-      }}
-    </p>
-  {% endif %}
-</div>
+      <!-- 📝 Description -->
+      <div class="prose max-w-none text-gray-700 leading-relaxed mb-8">
+        {% if '<p>' in product.description or '<br>' in product.description %}
+          {{ product.description | safe }}
+        {% else %}
+          <p class="whitespace-pre-line break-words">{{ product.description }}</p>
+        {% endif %}
+      </div>
 
       <!-- 🛒 Add to Cart Button -->
       <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">

@@ -457,24 +457,31 @@
     {% for cat in categories %}
       {% set cat_products = products | selectattr('category_id', 'equalto', cat.id) | list %}
       {% if cat_products|length > 0 %}
-        <!-- 🌼 Category Header (with animated sparkle background) -->
-        <div class="mb-8 mt-16 text-center relative">
-          <div class="relative inline-block">
-            <div class="absolute inset-0 bg-[url('https://i.imgur.com/1xkiNQz.png')] 
-                        bg-repeat opacity-30 animate-sparkle"></div>
-            <h3 class="relative text-3xl sm:text-4xl font-extrabold 
-                       bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)]
-                       bg-clip-text text-transparent drop-shadow-sm capitalize inline-block px-6 py-2">
-              ✨ {{ cat.name }}
-              <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-[3px] 
-                           bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full mt-2"></span>
-            </h3>
-          </div>
-          <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
-             class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-[rgb(204,102,255)] hover:underline font-medium">
-            View All →
-          </a>
-        </div>
+<!-- 🌼 Category Header (with soft gradient glow, no Imgur link) -->
+<div class="mb-8 mt-16 text-center relative">
+  <div class="relative inline-block px-6 py-3">
+    <!-- ✨ Soft pastel glow background -->
+    <div class="absolute inset-0 rounded-full bg-gradient-to-r 
+                from-[rgba(221,126,255,0.15)] via-[rgba(255,169,218,0.15)] to-[rgba(255,199,238,0.15)]
+                blur-xl animate-pulse"></div>
+
+    <!-- 🩷 Category Name -->
+    <h3 class="relative text-3xl sm:text-4xl font-extrabold 
+               bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)]
+               bg-clip-text text-transparent drop-shadow-sm capitalize tracking-wide">
+      ✨ {{ cat.name }}
+    </h3>
+
+    <!-- 🌈 Underline Accent -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-[3px] 
+                bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full"></div>
+  </div>
+
+  <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
+     class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-[rgb(204,102,255)] hover:underline font-medium">
+    View All →
+  </a>
+</div>
 
         <!-- 🧿 Product Grid -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -517,8 +524,7 @@
               {% endif %}
 
               <p class="text-gray-500 text-xs sm:text-sm mt-1 truncate italic">
-                {{ product.description|replace('https://', '')|replace('http://', '')|replace('www.', '')|truncate(60, True, '...')|safe }}
-
+                {{ product.description[:60] }}
               </p>
 
               <!-- ⭐ Rating -->
