@@ -61,7 +61,7 @@ input:focus, textarea:focus {
 
     <!-- 👤 Customer Info -->
     <div>
-      <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-5">👤 Customer Information</h2>
+      <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-5">Checkout Information</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="block font-medium text-gray-700">Full Name</label>
@@ -135,15 +135,27 @@ input:focus, textarea:focus {
       🔒 Secure Checkout — Your details are protected with SSL encryption.
     </div>
 
-    <!-- ✅ Place Order -->
-    <div class="pt-4">
-      <button type="submit" name="place_order"
-              class="gradient-btn w-full py-4 px-6 rounded-xl text-lg mt-4">
-        🛍️ Place My Order
-      </button>
-    </div>
-  </form>
-</section>
+<!-- ✅ Place Order -->
+<div class="pt-4">
+  <button type="submit" name="place_order"
+          class="relative w-full py-4 px-6 rounded-xl text-lg font-semibold text-white tracking-wide 
+                 bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(255,150,230)] to-[rgb(255,190,200)]
+                 shadow-[0_4px_20px_rgba(200,100,255,0.4)] transition-all duration-700 overflow-hidden
+                 hover:shadow-[0_6px_25px_rgba(200,100,255,0.6)] hover:scale-[1.02]">
+    <span class="relative z-10 flex items-center justify-center gap-2">
+      🛍️ Place My Order
+    </span>
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent 
+                animate-[orderShimmer_2.8s_infinite]"></div>
+  </button>
+</div>
+
+<style>
+@keyframes orderShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+</style>
 
 <!-- ⚙️ JS for AJAX Coupon -->
 <script>
