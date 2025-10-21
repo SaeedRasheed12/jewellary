@@ -192,22 +192,51 @@
           {% endif %}
         </div>
 
-        <!-- 🛒 Add to Cart / Buy Now / Sold Out -->
-        <div class="flex flex-col sm:flex-row gap-4">
-          {% if product.is_soldout %}
-            <button class="aurielle-btn soldout-btn w-full">❌ Sold Out</button>
-          {% else %}
-            <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2">
-              <button type="submit" class="aurielle-btn cart-btn w-full">🛍️ Add to Cart</button>
-            </form>
-            <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2">
-              <button type="submit" class="aurielle-btn buy-btn w-full">💖 Buy It Now</button>
-            </form>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- 🛒 Add to Cart / Buy Now / Sold Out -->
+<div class="mt-8 flex flex-col sm:flex-row items-center gap-4">
+  {% if product.is_soldout %}
+    <button class="w-full aurielle-btn soldout-btn text-base py-3 rounded-xl font-semibold cursor-not-allowed flex items-center justify-center gap-2 shadow-none">
+      ❌ Sold Out
+    </button>
+  {% else %}
+    <!-- 🛍️ Add to Cart -->
+    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2 relative group">
+      <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(255,140,210)] to-[rgb(240,190,255)]
+                   opacity-70 blur-md transition-all duration-700 group-hover:opacity-100 group-hover:blur-lg animate-gradient"></span>
+      <button type="submit" 
+        class="relative w-full aurielle-btn bg-white text-[rgb(130,50,200)] border-2 border-transparent rounded-xl 
+               py-3 text-base font-semibold flex items-center justify-center gap-2
+               shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden z-10">
+        🛍️ <span>Add to Cart</span>
+      </button>
+    </form>
+
+    <!-- 💖 Buy Now -->
+    <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2 relative group">
+      <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-[rgb(255,110,190)] via-[rgb(240,150,255)] to-[rgb(255,200,230)]
+                   opacity-70 blur-md transition-all duration-700 group-hover:opacity-100 group-hover:blur-lg animate-gradient"></span>
+      <button type="submit" 
+        class="relative w-full aurielle-btn bg-white text-[rgb(160,70,220)] border-2 border-transparent rounded-xl 
+               py-3 text-base font-semibold flex items-center justify-center gap-2
+               shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden z-10">
+        💖 <span>Buy It Now</span>
+      </button>
+    </form>
+  {% endif %}
+</div>
+
+<style>
+  /* 🌈 Gradient Animation (Shopify Luxe style) */
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+  }
+</style>
 
 <!-- 💬 Customer Reviews -->
 <div class="mt-14 aurielle-card p-8">
