@@ -215,9 +215,28 @@
 <!-- 🛒 Add to Cart / Buy Now / Sold Out -->
 <div class="mt-8 flex flex-col sm:flex-row items-center gap-4">
   {% if product.is_soldout %}
-    <button class="w-full aurielle-btn soldout-btn text-base py-3 rounded-xl font-semibold cursor-not-allowed flex items-center justify-center gap-2 shadow-none">
-      ❌ Sold Out
-    </button>
+    <!-- ✨ SOLD OUT (Luxury Style) -->
+    <div class="w-full text-center">
+      <button 
+        class="w-full relative text-white text-base font-semibold py-3 rounded-xl cursor-not-allowed 
+               flex items-center justify-center gap-2 overflow-hidden border border-[rgba(190,130,255,0.4)]
+               bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(230,140,255)] to-[rgb(255,180,230)]
+               shadow-[0_0_20px_rgba(210,140,255,0.4)] tracking-wide uppercase select-none">
+        <span class="relative z-10 flex items-center gap-2 drop-shadow-[0_0_4px_rgba(255,255,255,0.6)]">
+          ❌ Sold&nbsp;Out
+        </span>
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent 
+                    animate-[aurielleShimmer_2.8s_infinite]"></div>
+      </button>
+
+      <!-- 💬 Sold-Out Note -->
+      <p class="mt-3 text-sm text-[rgb(110,80,160)] italic font-medium">
+        This piece is currently unavailable — but don’t worry, it’ll be back soon! 💫  
+        <br class="hidden sm:block">
+        Stay tuned or message us on <span class="text-[rgb(180,100,255)] font-semibold">WhatsApp</span> for restock alerts.
+      </p>
+    </div>
+
   {% else %}
     <!-- 🛍️ Add to Cart -->
     <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2 relative group">
@@ -246,16 +265,22 @@
 </div>
 
 <style>
-  /* 🌈 Gradient Animation (Shopify Luxe style) */
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
-  }
+/* 🌈 Smooth Gradient Animation */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* ✨ Soft shimmer sweep for Sold-Out */
+@keyframes aurielleShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
 </style>
 
 <!-- 💬 Customer Reviews -->
