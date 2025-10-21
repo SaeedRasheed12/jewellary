@@ -1,117 +1,133 @@
 {% extends "base.html" %}
-{% block title %}🔐 Privacy & Data Protection Policy - {{ setting.website_name if setting else 'Aurielle' }}{% endblock %}
+{% block title %}Privacy & Data Protection Policy - {{ setting.website_name if setting else 'Aurielle' }}{% endblock %}
 
 {% block content %}
-<section class="relative bg-gradient-to-b from-pink-50 via-rose-100 to-purple-100 py-16 px-6 sm:px-10 font-[Poppins] overflow-hidden">
+<section class="relative bg-gradient-to-b from-pink-50 via-rose-100 to-purple-100 py-16 px-5 sm:px-10 font-[Poppins] overflow-hidden">
 
-  <!-- Floating Glow -->
+  <!-- Soft Glow Accents -->
   <div class="absolute top-0 left-0 w-80 h-80 bg-pink-300/20 blur-3xl rounded-full"></div>
   <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-300/20 blur-3xl rounded-full"></div>
 
   <div class="relative z-10 max-w-5xl mx-auto">
-    
+
     <!-- Header -->
     <div class="text-center mb-12">
       {% if setting and setting.logo %}
-        <img src="{{ setting.logo }}" alt="{{ setting.website_name or 'Aurielle' }} Logo"
-             class="mx-auto h-20 sm:h-24 mb-5 rounded-xl shadow-[0_0_25px_rgba(230,153,255,0.3)]">
+      <img src="{{ setting.logo }}" 
+           alt="{{ setting.website_name or 'Aurielle' }} Logo"
+           class="mx-auto h-20 sm:h-24 mb-6 rounded-xl shadow-[0_0_25px_rgba(230,153,255,0.3)]">
       {% endif %}
-      <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(255,200,255,0.4)]">
+      <h1 class="text-3xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)]
+                 bg-clip-text text-transparent leading-tight">
         Privacy & Data Protection Policy
       </h1>
-      <p class="text-gray-600 italic mt-2">Last updated {{ now().strftime('%B %d, %Y') }}</p>
+      <p class="text-gray-600 italic mt-2 text-sm sm:text-base">
+        Last updated {{ now().strftime('%B %d, %Y') }}
+      </p>
     </div>
 
-    <!-- Content Box -->
-    <div class="bg-white/70 backdrop-blur-2xl border border-[rgba(230,153,255,0.3)] rounded-3xl shadow-[0_0_30px_rgba(230,153,255,0.1)] p-8 sm:p-10 space-y-10 text-gray-700 leading-relaxed">
+    <!-- Content -->
+    <div class="bg-white/80 backdrop-blur-2xl border border-[rgba(230,153,255,0.3)] rounded-3xl shadow-[0_0_30px_rgba(230,153,255,0.1)]
+                p-6 sm:p-10 space-y-10 text-gray-700 leading-relaxed text-[15px] sm:text-[16px]">
 
-      <!-- 💎 Intro -->
+      <!-- Introduction -->
       <section>
-        <p class="text-lg text-gray-700">
-          At <strong>Aurielle</strong>, your privacy is as valuable as the jewels we craft.  
-          This policy explains how we collect, protect, and use your information to ensure a safe and transparent experience while shopping with us.
+        <p>
+          At <strong>Aurielle</strong>, we respect and protect your privacy as carefully as we craft our designs. 
+          This policy explains how we collect and use your information responsibly to ensure a safe, transparent, and enjoyable shopping experience. 
+          We are also committed to fast, secure order handling, including 24-hour delivery where applicable.
         </p>
       </section>
 
-      <!-- 📦 Data We Collect -->
+      <!-- Data Collection -->
       <section>
-        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">📦 What Information We Collect</h2>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">Information We Collect</h2>
         <ul class="list-disc pl-5 space-y-2">
-          <li><strong>Personal details:</strong> Name, email, phone number, and shipping address.</li>
-          <li><strong>Payment data:</strong> Processed securely through trusted gateways — we never store card details.</li>
-          <li><strong>Browsing info:</strong> IP address, device type, and cookies for site performance and personalization.</li>
-          <li><strong>Communication history:</strong> Messages, reviews, or customer support inquiries.</li>
+          <li><strong>Personal details:</strong> Your name, email address, phone number, and delivery location.</li>
+          <li><strong>Payment information:</strong> Managed securely through certified payment gateways. Aurielle never stores or accesses your card details.</li>
+          <li><strong>Order details:</strong> Product selections, preferences, delivery notes, and 24-hour delivery requests.</li>
+          <li><strong>Technical data:</strong> IP address, browser type, and cookies to improve site performance and usability.</li>
+          <li><strong>Communication history:</strong> Customer messages, reviews, and support queries to help improve our service.</li>
         </ul>
       </section>
 
-      <!-- 🔒 How We Protect Your Data -->
+      <!-- Data Protection -->
       <section class="bg-gradient-to-r from-pink-100 to-purple-100 border border-[rgba(230,153,255,0.3)] rounded-2xl p-6 shadow-inner">
-        <h2 class="text-xl font-semibold text-[rgb(204,102,255)] mb-2">🔒 How We Protect Your Data</h2>
+        <h2 class="text-xl font-semibold text-[rgb(204,102,255)] mb-2">How We Protect Your Data</h2>
         <ul class="list-disc pl-5 space-y-2">
-          <li>All transactions are encrypted using <strong>SSL (Secure Socket Layer)</strong> technology.</li>
-          <li>We use advanced firewalls and regular security audits to safeguard your information.</li>
-          <li>Access to customer data is strictly limited to authorized Aurielle staff only.</li>
-          <li>Your personal data is never sold or shared with third parties without your consent.</li>
+          <li>All transactions use <strong>SSL (Secure Socket Layer)</strong> encryption to protect sensitive information.</li>
+          <li>We follow strict security audits, encrypted data storage, and regular access monitoring.</li>
+          <li>Customer information is accessed only by authorized personnel under confidentiality agreements.</li>
+          <li>We never share, sell, or disclose your data to third parties without your consent.</li>
         </ul>
       </section>
 
-      <!-- 🎯 Why We Use Your Information -->
+      <!-- Purpose of Use -->
       <section>
-        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🎯 Why We Use Your Information</h2>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">How We Use Your Information</h2>
         <ul class="list-disc pl-5 space-y-2">
-          <li>To process and deliver your orders accurately and efficiently.</li>
-          <li>To send important updates, offers, and newsletters (only with your permission).</li>
-          <li>To enhance our website experience using anonymous analytics and preferences.</li>
-          <li>To provide faster support and personalized jewelry recommendations.</li>
+          <li>To process and deliver your orders efficiently, including 24-hour delivery where available.</li>
+          <li>To send order confirmations, updates, and relevant offers.</li>
+          <li>To personalize your shopping experience and improve our platform.</li>
+          <li>To provide quick and effective customer support and product recommendations.</li>
         </ul>
       </section>
 
-      <!-- 🍪 Cookies Policy -->
+      <!-- Delivery & Exchange -->
       <section>
-        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🍪 Cookies & Tracking</h2>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">Delivery & Exchange Policy</h2>
         <p>
-          Our website uses cookies to improve your browsing experience.  
-          These small data files help us remember your preferences and shopping cart contents.  
-          You can disable cookies anytime in your browser settings — though some features may not function properly without them.
+          We aim to deliver in-stock products within 24 hours in major cities. Orders placed before our daily cut-off are prioritized for same-day or next-day dispatch.  
+          In case of unexpected delays, customers are informed via email or SMS.  
+          Exchanges are accepted within 24 hours of delivery for unused, unworn items in their original packaging.
         </p>
       </section>
 
-      <!-- 🤝 Sharing with Trusted Partners -->
+      <!-- Cookies -->
       <section>
-        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🤝 Sharing with Trusted Partners</h2>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">Cookies & Tracking</h2>
         <p>
-          We may share limited data with verified third parties (e.g., courier or payment providers)  
-          only for order fulfillment and customer service — never for advertising or resale purposes.
+          Our website uses cookies to remember your cart, preferences, and browsing activity. 
+          You can disable cookies through your browser settings, but some features may not work properly if you do so.
         </p>
       </section>
 
-      <!-- 🧾 Your Rights -->
+      <!-- Third Parties -->
       <section>
-        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">🧾 Your Rights & Choices</h2>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">Sharing with Service Partners</h2>
+        <p>
+          We only share your data with trusted service providers such as courier companies, secure payment partners, and analytics tools — strictly for order fulfillment and site performance improvement.  
+          Each partner is bound by confidentiality and data protection standards equal to ours.
+        </p>
+      </section>
+
+      <!-- Your Rights -->
+      <section>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">Your Rights</h2>
         <ul class="list-disc pl-5 space-y-2">
-          <li>Request access to your personal data or corrections at any time.</li>
-          <li>Opt-out of promotional emails through the unsubscribe link.</li>
-          <li>Request complete deletion (“right to be forgotten”) by contacting us directly.</li>
+          <li>Access or update your personal information anytime.</li>
+          <li>Unsubscribe from promotional emails through the provided link.</li>
+          <li>Request data removal by contacting us directly.</li>
         </ul>
       </section>
 
-      <!-- 📧 Contact -->
+      <!-- Contact -->
       <section>
-        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">📧 Contact Us</h2>
+        <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-3">Contact Us</h2>
         <p>
-          If you have any questions about this policy or your data, please contact us at  
+          For privacy-related questions or data concerns, please contact our Data Protection Team at  
           <a href="mailto:privacy@aurielle.com" class="text-[rgb(204,102,255)] font-semibold underline hover:text-[rgb(160,80,230)] transition">
             privacy@aurielle.com
           </a>.  
-          Our team is always happy to assist and protect your trust.
+          We respond to all requests as promptly and professionally as possible.
         </p>
       </section>
 
-      <!-- 💖 Closing -->
+      <!-- Closing -->
       <section class="text-center bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-6 border border-[rgba(230,153,255,0.3)] shadow-inner">
-        <p class="text-[rgb(160,80,230)] font-medium italic">
-          Your trust is our most precious gem.  
-          Thank you for letting Aurielle be a part of your story. 💎
+        <p class="text-[rgb(160,80,230)] font-medium">
+          At Aurielle, trust and transparency define how we serve you.  
+          Your information is protected, your privacy is respected, and your satisfaction is our promise.
         </p>
       </section>
 

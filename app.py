@@ -167,6 +167,7 @@ class Product(db.Model):
     before_price = db.Column(db.Float, nullable=True)  # Optional old price
     today_price = db.Column(db.Float, nullable=True)
     description = db.Column(db.Text, nullable=True)
+    is_soldout = db.Column(db.Boolean, default=False)
 
     image = db.Column(db.String(200), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
@@ -339,8 +340,8 @@ def admin_login():
         password = request.form.get('password', '').strip()
 
         # Secure fixed credentials (can be moved to env later)
-        ADMIN_USERNAME = 'binahmedandco.'
-        ADMIN_PASSWORD = 'Binahmed25'
+        ADMIN_USERNAME = 'Auriellebyshsa.'
+        ADMIN_PASSWORD = 'Shsa1122'
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session['admin_logged_in'] = True
@@ -1466,6 +1467,29 @@ def checkout():
         setting=setting
     )
 
+from decimal import Decimal
+
+@app.route("/buy-now/<int:product_id>", methods=["POST"])
+def buy_now(product_id):
+    """Direct-buy: instantly opens checkout for one product only."""
+    product = Product.query.get_or_404(product_id)
+
+    # 🔒 Prevent checkout for sold-out items
+    if getattr(product, "is_soldout", False):
+        flash("This product is currently sold out.", "warning")
+        return redirect(url_for("product_detail", product_id=product.id))
+
+    # 🛒 Build a temporary one-item cart inside session
+    session["cart"] = {
+        f"{product.id}-0": 1   # format matches your checkout parser (product_id + lens_id)
+    }
+
+    # 🧮 (Optional) store the product’s latest price
+    session["instant_price"] = str(product.today_price or product.price)
+
+    # 🚀 Go straight to checkout
+    return redirect(url_for("checkout"))
+
 @app.route('/admin/manage-categories', methods=['GET', 'POST'])
 def manage_categories():
     if not session.get('admin_logged_in'):  # ✅ Ensure admin is logged in
@@ -1909,6 +1933,21 @@ def track_order():
             flash("❌ Invalid tracking number.", "danger")
     
     return render_template('track_order.html', order=order)
+
+@app.route('/admin/toggle-soldout/<int:product_id>', methods=['POST'])
+def toggle_soldout(product_id):
+    # ✅ ensure only admin can perform this
+    if not session.get('admin_logged_in'):
+        flash("Unauthorized access", "danger")
+        return redirect(url_for('admin_login'))
+
+    product = Product.query.get_or_404(product_id)
+    product.is_soldout = not product.is_soldout  # toggle
+    db.session.commit()
+
+    status = "Sold Out" if product.is_soldout else "Available"
+    flash(f"Product '{product.name}' marked as {status}.", "info")
+    return redirect(request.referrer or url_for('admin_dashboard'))
 
 from datetime import datetime
 

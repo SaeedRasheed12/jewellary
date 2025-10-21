@@ -5,39 +5,68 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
 <style>
   body {
-    background: linear-gradient(to bottom right, #fff8ff, #f8f1ff);
+    background: linear-gradient(to bottom right, #fff8ff, #fdf6ff, #faf1ff);
     font-family: 'Poppins', sans-serif;
   }
 
-  /* ✨ Glow Card */
+  /* 💎 Glow Card */
   .aurielle-card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    border-radius: 1.5rem;
-    box-shadow: 0 0 35px rgba(230, 153, 255, 0.2);
-    border: 1px solid rgba(230, 153, 255, 0.2);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border-radius: 1.75rem;
+    border: 1px solid rgba(230, 153, 255, 0.25);
+    box-shadow: 0 0 40px rgba(230, 153, 255, 0.25);
     transition: all 0.4s ease;
   }
   .aurielle-card:hover {
-    box-shadow: 0 0 50px rgba(230, 153, 255, 0.35);
+    box-shadow: 0 0 60px rgba(230, 153, 255, 0.4);
   }
 
   /* 🌸 Gradient Text */
   .aurielle-gradient {
-    background: linear-gradient(to right, rgb(221,126,255), rgb(255,169,218), rgb(255,199,238));
+    background: linear-gradient(to right, rgb(210,126,255), rgb(255,160,210), rgb(255,210,240));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
-  /* 📹 Video */
+  /* ✨ Buttons */
+  .aurielle-btn {
+    display: inline-block;
+    padding: 0.9rem 1.2rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    transition: all 0.4s ease;
+  }
+  .aurielle-btn:hover { transform: scale(1.05); }
+
+  .buy-btn {
+    background: linear-gradient(90deg, rgb(230,140,255), rgb(255,180,230), rgb(255,210,240));
+    box-shadow: 0 0 20px rgba(230,140,255,0.4);
+  }
+  .cart-btn {
+    background: linear-gradient(90deg, rgb(200,100,255), rgb(255,150,210), rgb(255,190,230));
+    box-shadow: 0 0 20px rgba(200,100,255,0.3);
+  }
+  .soldout-btn {
+    background: linear-gradient(90deg, #d8d8d8, #e4e4e4);
+    color: #777;
+    cursor: not-allowed;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: none;
+  }
+
+  /* 🎥 Video */
   .video-wrapper {
     position: relative;
     width: 100%;
     padding-top: 56.25%;
+    border-radius: 20px;
     overflow: hidden;
-    border-radius: 18px;
     background: #000;
-    box-shadow: 0 0 25px rgba(230, 153, 255, 0.3);
+    box-shadow: 0 0 25px rgba(230,153,255,0.3);
   }
   .video-wrapper video {
     position: absolute;
@@ -46,66 +75,83 @@
     object-fit: contain;
   }
 
-  /* 📝 Inputs */
-  input, select, textarea {
+  /* ⭐ Stars */
+  .star { color: #ffd966; }
+
+  /* 🌷 Policy Box */
+  .policy-box {
+    background: linear-gradient(to right, #fff9ff, #fef2ff, #fbeaff);
     border: 1px solid rgba(230,153,255,0.3);
-    background: white;
-    border-radius: 12px;
-    padding: 10px 14px;
-    width: 100%;
-    outline: none;
-    transition: all 0.3s ease;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: rgb(204,102,255);
-    box-shadow: 0 0 0 3px rgba(204,102,255,0.1);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-top: 3rem;
+    box-shadow: 0 0 25px rgba(230,153,255,0.1);
   }
 
-  /* ✨ Rating Stars */
-  .star {
-    color: #ffd966;
-    font-size: 1.2rem;
+  /* 💖 Small Note */
+  .note {
+    font-size: 0.85rem;
+    color: #666;
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="max-w-6xl mx-auto px-4 py-12">
-  <div class="aurielle-card p-8 md:p-10">
+<section class="max-w-6xl mx-auto px-4 py-14">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<!-- 🛍️ Product Showcase -->
+<div class="aurielle-card p-8 md:p-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
 
-      <!-- 🖼️ Product Media -->
+    <!-- Left: Product Media -->
+    <div class="space-y-6">
+
+      <!-- Main Product Image -->
+      {% if product.image %}
       <div>
-        {% if product.image %}
-        <a href="{{ product.image }}" class="glightbox block mb-4" data-gallery="product-gallery">
+        <a href="{{ product.image }}" class="glightbox block" data-gallery="product-gallery">
           <img src="{{ product.image }}" alt="{{ product.name }}"
-               class="rounded-2xl w-full h-[420px] object-contain transition-transform duration-500 hover:scale-[1.03]" />
+               class="rounded-2xl w-full h-[450px] object-contain shadow-md hover:scale-[1.02] transition-all duration-500" />
         </a>
-        {% endif %}
+      </div>
+      {% endif %}
 
-        {% if product.video_url %}
-        <div class="mt-4">
-          <div class="video-wrapper">
-            <video controls playsinline preload="metadata" poster="{{ product.image if product.image else '' }}">
-              <source src="{{ product.video_url }}" type="video/mp4">
-            </video>
-          </div>
-          <p class="text-xs text-gray-500 mt-2 text-center italic">💎 See How It Shines in Real Life</p>
-        </div>
-        {% endif %}
-
-        {% if product.images %}
-        <div class="flex gap-3 flex-wrap mt-5 justify-center sm:justify-start">
+      <!-- Cover Gallery -->
+      {% if product.images %}
+      <div>
+        <h3 class="text-sm font-semibold text-gray-600 mb-2 tracking-wide uppercase">
+          More Views
+        </h3>
+        <div class="flex flex-wrap gap-3 justify-center sm:justify-start">
           {% for img in product.images %}
           <a href="{{ img.filename }}" class="glightbox" data-gallery="product-gallery">
             <img src="{{ img.filename }}" alt="{{ product.name }}"
-                 class="h-20 w-20 object-cover rounded-xl border border-[rgba(230,153,255,0.3)] shadow hover:scale-105 transition" />
+                 class="h-20 w-20 object-cover rounded-xl border border-[rgba(230,153,255,0.3)] shadow-sm hover:scale-105 hover:shadow-md transition-all duration-300" />
           </a>
           {% endfor %}
         </div>
-        {% endif %}
       </div>
+      {% endif %}
+
+      <!-- Product Video -->
+      {% if product.video_url %}
+      <div class="mt-6">
+        <h3 class="text-sm font-semibold text-gray-600 mb-3 tracking-wide uppercase">
+          Product in Motion
+        </h3>
+        <div class="video-wrapper rounded-2xl overflow-hidden border border-[rgba(230,153,255,0.2)] shadow-sm">
+          <video controls playsinline preload="metadata"
+                 poster="{{ product.image if product.image else '' }}"
+                 class="w-full h-[320px] object-contain bg-black/5">
+            <source src="{{ product.video_url }}" type="video/mp4">
+          </video>
+        </div>
+        <p class="text-xs text-gray-500 mt-2 text-center italic">
+          Experience the sparkle and movement of this piece.
+        </p>
+      </div>
+      {% endif %}
+    </div>
 
       <!-- 💎 Product Info -->
       <div>
@@ -146,50 +192,60 @@
           {% endif %}
         </div>
 
-        <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
-          <button type="submit"
-                  class="w-full py-3 rounded-xl font-semibold text-white shadow-lg 
-                         bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-                         hover:scale-[1.03] transition-all duration-500">
-            🛍️ Add to Cart
-          </button>
-        </form>
+        <!-- 🛒 Add to Cart / Buy Now / Sold Out -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          {% if product.is_soldout %}
+            <button class="aurielle-btn soldout-btn w-full">❌ Sold Out</button>
+          {% else %}
+            <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2">
+              <button type="submit" class="aurielle-btn cart-btn w-full">🛍️ Add to Cart</button>
+            </form>
+            <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2">
+              <button type="submit" class="aurielle-btn buy-btn w-full">💖 Buy It Now</button>
+            </form>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 💬 Reviews -->
-  <div class="mt-14 aurielle-card p-8">
-    <h2 class="text-2xl font-bold aurielle-gradient mb-6 text-center">💬 Customer Reviews</h2>
+<!-- 💬 Customer Reviews -->
+<div class="mt-14 aurielle-card p-8">
+  <h2 class="text-2xl font-bold aurielle-gradient mb-8 text-center">Customer Reviews</h2>
 
-    {% if product.reviews %}
-    <div class="divide-y divide-[rgba(230,153,255,0.2)]">
-      {% for review in product.reviews %}
-      <div class="py-4">
-        <div class="flex items-center justify-between mb-1">
-          <div class="flex text-yellow-400 text-lg">
-            {% for i in range(1,6) %}
-              {% if i <= review.rating %}★{% else %}☆{% endif %}
-            {% endfor %}
-          </div>
-          <span class="text-sm text-gray-600">{{ review.rating }}/5</span>
+  {% if product.reviews %}
+  <div class="divide-y divide-[rgba(230,153,255,0.2)]">
+    {% for review in product.reviews %}
+    <div class="py-5">
+      <div class="flex items-center justify-between mb-1">
+        <div class="flex text-yellow-400 text-lg">
+          {% for i in range(1,6) %}
+            {% if i <= review.rating %}★{% else %}☆{% endif %}
+          {% endfor %}
         </div>
-        <p class="text-gray-800">{{ review.comment }}</p>
-        <p class="text-xs text-gray-500 mt-1">— {{ review.user_name or "Anonymous" }}, {{ review.created_at.strftime('%Y-%m-%d') }}</p>
+        <span class="text-sm text-gray-600">{{ review.rating }}/5</span>
       </div>
-      {% endfor %}
+      <p class="text-gray-800 leading-relaxed">{{ review.comment }}</p>
+      <p class="text-xs text-gray-500 mt-1">— {{ review.user_name or "Anonymous" }}, {{ review.created_at.strftime('%Y-%m-%d') }}</p>
     </div>
-    {% else %}
-    <p class="text-gray-500 italic text-center mb-6">No reviews yet 💭 Be the first to share your sparkle ✨</p>
-    {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-gray-500 italic text-center mb-8">No reviews yet. Be the first to share your sparkle.</p>
+  {% endif %}
 
-    <!-- ✍️ Write a Review -->
-    <h3 class="text-xl font-semibold aurielle-gradient mt-10 mb-4 text-center">✨ Write a Review</h3>
-    <form method="POST" action="{{ url_for('add_review', product_id=product.id) }}" class="space-y-4">
+  <!-- ✍️ Review Form -->
+  <div class="mt-10">
+    <h3 class="text-xl font-semibold aurielle-gradient mb-6 text-center">Write a Review</h3>
+
+    <form method="POST" action="{{ url_for('add_review', product_id=product.id) }}" class="space-y-5 max-w-lg mx-auto">
+      
+      <!-- ⭐ Rating -->
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">⭐ Rating</label>
-        <select name="rating" required>
-          <option value="">-- Select Rating --</option>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Rating</label>
+        <select name="rating" required
+          class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-[rgb(204,102,255)] focus:border-transparent bg-white/70 backdrop-blur-sm transition">
+          <option value="">Select your rating</option>
           <option value="5">★★★★★ Excellent</option>
           <option value="4">★★★★☆ Good</option>
           <option value="3">★★★☆☆ Average</option>
@@ -197,37 +253,72 @@
           <option value="1">★☆☆☆☆ Terrible</option>
         </select>
       </div>
+
+      <!-- 💬 Review Text -->
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">💬 Review</label>
-        <textarea name="comment" rows="3" placeholder="Share your experience..." required></textarea>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Your Review</label>
+        <textarea name="comment" rows="4" placeholder="Share your experience..."
+          class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-[rgb(204,102,255)] focus:border-transparent bg-white/70 backdrop-blur-sm transition resize-none" required></textarea>
       </div>
+
+      <!-- 👤 Name -->
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1">👤 Name (optional)</label>
-        <input type="text" name="user_name" placeholder="Your name (optional)">
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Name (optional)</label>
+        <input type="text" name="user_name" placeholder="Your name (optional)"
+          class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-[rgb(204,102,255)] focus:border-transparent bg-white/70 backdrop-blur-sm transition">
       </div>
-      <button type="submit"
-              class="w-full py-3 rounded-xl font-semibold text-white shadow-lg 
-                     bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-                     hover:scale-[1.03] transition-all duration-500">
-        💖 Submit Review
+
+      <!-- Submit -->
+      <button type="submit" 
+        class="aurielle-btn cart-btn w-full text-base font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-300">
+        Submit Review
       </button>
     </form>
   </div>
+</div>
 
-  <div class="mt-10 text-center">
-    <a href="{{ url_for('index') }}"
-       class="inline-block bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-              text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300">
-      ⬅️ Continue Shopping
-    </a>
+
+  <!-- 🚚 Delivery & Exchange Policy -->
+  <div class="policy-box">
+    <h2 class="text-2xl font-bold aurielle-gradient mb-3 text-center">🚚 Delivery & Exchange Policy</h2>
+    <p class="text-gray-700 leading-relaxed mb-3 text-center">
+      At <strong>Aurielle</strong>, we ensure your precious order arrives safely and on time.  
+      Standard delivery takes <strong>2 – 7 business days</strong> across Pakistan.
+    </p>
+    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+      <li>Orders are processed within 24 hours after payment confirmation.</li>
+      <li>If your parcel doesn’t arrive within 7 days, please contact us via  
+        <strong class="text-[rgb(204,102,255)]">WhatsApp (link on homepage)</strong> for instant assistance.</li>
+      <li>Delivery timelines may vary slightly for custom or pre-order pieces.</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold aurielle-gradient mt-6 mb-2"> Exchange Policy</h3>
+    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+      <li>Exchange available within <strong>24 hours</strong> of delivery for unused, unworn jewelry.</li>
+      <li>Items must be returned in their original packaging with all tags, boxes, and pouches intact.</li>
+      <li>Customized, engraved, or sale items are not eligible for exchange.</li>
+      <li>Please inform us via WhatsApp before initiating an exchange.</li>
+      <li>Exchange shipping charges are covered by the customer unless the item is defective or incorrect.</li>
+    </ul>
+
+    <p class="note mt-4 text-center italic">
+      💬 For any queries, contact our official WhatsApp (shown on homepage).  
+      We’re always here to help — your satisfaction is our sparkle. 
+    </p>
   </div>
-</section>
 
+<div class="mt-10 text-center">
+  <a href="{{ url_for('index') }}"
+     class="aurielle-btn text-white px-10 py-3 text-lg rounded-xl shadow-lg transition-all duration-300"
+     style="background: linear-gradient(90deg, rgb(160,70,220), rgb(200,100,255), rgb(240,170,255));
+            box-shadow: 0 0 25px rgba(160,70,220,0.5);">
+    ← Continue Shopping
+  </a>
+</div>
+</section>
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
-<script>
-  GLightbox({ selector: '.glightbox', loop: true });
-</script>
+<script>GLightbox({ selector: '.glightbox', loop: true });</script>
 {% endblock %}
