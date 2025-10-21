@@ -317,49 +317,60 @@
           class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-[rgb(204,102,255)] focus:border-transparent bg-white/70 backdrop-blur-sm transition">
       </div>
 
-      <!-- Submit -->
-      <button type="submit" 
-        class="aurielle-btn cart-btn w-full text-base font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-300">
-        Submit Review
-      </button>
-    </form>
-  </div>
+<!-- Submit -->
+<button type="submit" 
+  class="w-full text-base font-semibold py-3 rounded-xl transition-all duration-500 shadow-md hover:shadow-xl
+         bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(240,150,255)] to-[rgb(255,190,240)]
+         text-white hover:from-[rgb(180,90,250)] hover:via-[rgb(230,130,255)] hover:to-[rgb(255,170,240)]
+         border border-[rgba(230,153,255,0.3)] backdrop-blur-md">
+  Submit Review
+</button>
+
+
+<!-- 🚚 Delivery & Exchange Policy -->
+<div class="policy-box px-5 sm:px-8 py-8 sm:py-10 rounded-3xl bg-white/70 backdrop-blur-xl border border-[rgba(230,153,255,0.3)] shadow-[0_0_30px_rgba(230,153,255,0.15)]">
+
+  <h2 class="text-2xl sm:text-3xl font-bold aurielle-gradient mb-4 text-center">
+    Delivery & Exchange Policy
+  </h2>
+
+  <p class="text-gray-700 leading-relaxed mb-5 text-center text-sm sm:text-base">
+    At <strong>Aurielle</strong>, we ensure your precious order arrives safely and on time.  
+    Standard delivery takes <strong>2 – 7 business days</strong> across Pakistan.
+  </p>
+
+  <ul class="list-disc pl-6 sm:pl-8 space-y-2 text-gray-700 text-sm sm:text-base">
+    <li>If your parcel doesn’t arrive within 7 days, please contact us via  
+      <strong class="text-[rgb(204,102,255)]">WhatsApp (link on homepage)</strong> for instant assistance.</li>
+    <li>Delivery timelines may vary slightly for custom or pre-order pieces.</li>
+  </ul>
+
+  <h3 class="text-xl sm:text-2xl font-semibold aurielle-gradient mt-8 mb-3 text-center">
+    Exchange Policy
+  </h3>
+
+  <ul class="list-disc pl-6 sm:pl-8 space-y-2 text-gray-700 text-sm sm:text-base">
+    <li>Exchange available within <strong>24 hours</strong> of delivery for unused, unworn jewelry.</li>
+    <li>Items must be returned in their original packaging with all tags, boxes, and pouches intact.</li>
+    <li>Customized, engraved, or sale items are not eligible for exchange.</li>
+    <li>Please inform us via WhatsApp before initiating an exchange.</li>
+    <li>Exchange shipping charges are covered by the customer unless the item is defective or incorrect.</li>
+  </ul>
+
+  <p class="note mt-6 text-center italic text-gray-600 text-xs sm:text-sm leading-relaxed">
+    For any queries, contact our official WhatsApp (shown on homepage).  
+    We’re always here to help — your satisfaction is our sparkle.
+  </p>
 </div>
 
-
-  <!-- 🚚 Delivery & Exchange Policy -->
-  <div class="policy-box">
-    <h2 class="text-2xl font-bold aurielle-gradient mb-3 text-center">🚚 Delivery & Exchange Policy</h2>
-    <p class="text-gray-700 leading-relaxed mb-3 text-center">
-      At <strong>Aurielle</strong>, we ensure your precious order arrives safely and on time.  
-      Standard delivery takes <strong>2 – 7 business days</strong> across Pakistan.
-    </p>
-    <ul class="list-disc pl-5 space-y-2 text-gray-700">
-      <li>If your parcel doesn’t arrive within 7 days, please contact us via  
-        <strong class="text-[rgb(204,102,255)]">WhatsApp (link on homepage)</strong> for instant assistance.</li>
-      <li>Delivery timelines may vary slightly for custom or pre-order pieces.</li>
-    </ul>
-
-    <h3 class="text-xl font-semibold aurielle-gradient mt-6 mb-2"> Exchange Policy</h3>
-    <ul class="list-disc pl-5 space-y-2 text-gray-700">
-      <li>Exchange available within <strong>24 hours</strong> of delivery for unused, unworn jewelry.</li>
-      <li>Items must be returned in their original packaging with all tags, boxes, and pouches intact.</li>
-      <li>Customized, engraved, or sale items are not eligible for exchange.</li>
-      <li>Please inform us via WhatsApp before initiating an exchange.</li>
-      <li>Exchange shipping charges are covered by the customer unless the item is defective or incorrect.</li>
-    </ul>
-
-    <p class="note mt-4 text-center italic">
-      💬 For any queries, contact our official WhatsApp (shown on homepage).  
-      We’re always here to help — your satisfaction is our sparkle. 
-    </p>
-  </div>
-
-<div class="mt-10 text-center">
+<!-- 🛍️ Continue Shopping Button -->
+<div class="mt-10 flex justify-center">
   <a href="{{ url_for('index') }}"
-     class="aurielle-btn text-white px-10 py-3 text-lg rounded-xl shadow-lg transition-all duration-300"
-     style="background: linear-gradient(90deg, rgb(160,70,220), rgb(200,100,255), rgb(240,170,255));
-            box-shadow: 0 0 25px rgba(160,70,220,0.5);">
+     class="w-full sm:w-auto aurielle-btn text-white text-base sm:text-lg font-semibold px-10 py-3 rounded-xl 
+            transition-all duration-500 text-center shadow-lg hover:shadow-[0_0_25px_rgba(160,70,220,0.6)] 
+            hover:scale-[1.03]"
+     style="background: linear-gradient(90deg, rgb(150,60,220), rgb(200,100,255), rgb(245,180,255));
+            box-shadow: 0 0 25px rgba(160,70,220,0.4);">
     ← Continue Shopping
   </a>
 </div>
