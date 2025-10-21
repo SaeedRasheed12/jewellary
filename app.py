@@ -1934,19 +1934,19 @@ def track_order():
     
     return render_template('track_order.html', order=order)
 
-@app.route('/admin/toggle-soldout/<int:product_id>', methods=['POST'])
+@app.route('/admin/toggle_soldout/<int:product_id>', methods=['POST'])
 def toggle_soldout(product_id):
-    # ✅ ensure only admin can perform this
+    # 🔒 Admin authentication check
     if not session.get('admin_logged_in'):
         flash("Unauthorized access", "danger")
         return redirect(url_for('admin_login'))
 
     product = Product.query.get_or_404(product_id)
-    product.is_soldout = not product.is_soldout  # toggle
+    product.is_soldout = not product.is_soldout  # toggle true/false
     db.session.commit()
 
     status = "Sold Out" if product.is_soldout else "Available"
-    flash(f"Product '{product.name}' marked as {status}.", "info")
+    flash(f"Product '{product.name}' marked as {status}.", "success")
     return redirect(request.referrer or url_for('admin_dashboard'))
 
 from datetime import datetime
