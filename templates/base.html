@@ -75,12 +75,13 @@
   <div class="fixed inset-0 -z-10 bg-white"></div>
   {% endif %}
 
-<!-- 💎 AURIELLE — Fixed Glass-Luxury Navbar -->
+<!-- 💎 AURIELLE — Fixed Glass-Luxury Navbar (Balanced Layout) -->
 <nav id="main-navbar"
      class="fixed top-0 inset-x-0 z-[1000] bg-gradient-to-r from-white/90 via-[rgba(250,245,255,0.85)] to-[rgba(245,235,255,0.85)] 
-            backdrop-blur-2xl border-b border-[rgba(200,180,255,0.3)] shadow-[0_2px_25px_rgba(160,120,255,0.1)] transition-all duration-300 font-[Poppins]">
+            backdrop-blur-2xl border-b border-[rgba(200,180,255,0.3)] shadow-[0_2px_25px_rgba(160,120,255,0.1)] 
+            transition-all duration-300 font-[Poppins]">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center py-3 sm:py-4 transition-all duration-500" id="navbar-inner">
+    <div class="flex justify-between items-center py-3 sm:py-3.5 transition-all duration-500" id="navbar-inner">
 
       <!-- 🍔 Mobile Menu -->
       <button id="menu-toggle"
@@ -95,21 +96,23 @@
         </svg>
       </button>
 
-      <!-- 👑 Logo -->
+      <!-- 👑 Logo + Title Inline -->
       <a href="{{ url_for('index') }}" 
-         class="flex flex-col items-center justify-center text-center group cursor-pointer transition-all duration-300">
+         class="flex items-center gap-3 sm:gap-4 text-center group cursor-pointer transition-all duration-300">
         {% if setting and setting.logo %}
         <img src="{{ setting.logo }}" alt="Aurielle Logo"
              id="nav-logo"
-             class="h-10 sm:h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(180,130,255,0.3)] mb-1 group-hover:scale-105 transition-all duration-500">
+             class="h-10 sm:h-11 w-auto object-contain drop-shadow-[0_0_10px_rgba(180,130,255,0.3)] group-hover:scale-105 transition-all duration-500">
         {% endif %}
-        <span class="bg-gradient-to-r from-[rgb(150,90,230)] via-[rgb(200,120,255)] to-[rgb(255,170,240)] 
-                     bg-clip-text text-transparent font-extrabold text-lg sm:text-2xl tracking-wide drop-shadow-sm transition-all duration-500">
-          {{ setting.website_name if setting else 'AURIELLE' }}
-        </span>
-        <p class="text-[11px] sm:text-xs text-[rgb(170,120,255)] italic mt-0.5 opacity-80">
-          A house of calm luxury & modern femininity. 🤍
-        </p>
+        <div class="flex flex-col items-start leading-tight">
+          <span class="bg-gradient-to-r from-[rgb(150,90,230)] via-[rgb(200,120,255)] to-[rgb(255,170,240)] 
+                       bg-clip-text text-transparent font-extrabold text-lg sm:text-2xl tracking-wide drop-shadow-sm transition-all duration-500">
+            {{ setting.website_name if setting else 'AURIELLE' }}
+          </span>
+          <p class="text-[10px] sm:text-xs text-[rgb(170,120,255)] italic mt-0.5 opacity-80 whitespace-nowrap">
+            A house of calm luxury ✨
+          </p>
+        </div>
       </a>
 
       <!-- 🛍️ Cart -->
