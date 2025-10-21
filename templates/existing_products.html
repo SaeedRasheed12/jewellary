@@ -13,6 +13,7 @@
     
     <!-- 📦 Header (Product summary row) -->
     <button 
+      type="button" 
       class="w-full flex justify-between items-center px-5 py-4 text-left hover:bg-gray-50 transition"
       onclick="toggleProductDetails('{{ product.id }}')">
       <div class="flex items-center gap-3">
@@ -27,7 +28,7 @@
     </button>
 
     <!-- 🔽 Hidden Details (expand on click) -->
-    <div id="details-{{ product.id }}" class="hidden border-t border-gray-100 bg-gray-50">
+    <div id="details-{{ product.id }}" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out bg-gray-50 border-t border-gray-100">
       <div class="p-5 md:p-6 space-y-5">
 
         <!-- 📸 Image + Status -->
@@ -160,7 +161,19 @@
 <script>
 function toggleProductDetails(id) {
   const section = document.getElementById('details-' + id);
-  section.classList.toggle('hidden');
+  const open = section.classList.contains('max-h-[5000px]');
+
+  // collapse all others first
+  document.querySelectorAll('[id^="details-"]').forEach(el => {
+    el.classList.add('max-h-0');
+    el.classList.remove('max-h-[5000px]');
+  });
+
+  // toggle current
+  if (!open) {
+    section.classList.remove('max-h-0');
+    section.classList.add('max-h-[5000px]');
+  }
 }
 </script>
 
