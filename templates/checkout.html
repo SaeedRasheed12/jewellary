@@ -8,87 +8,113 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Glass container */
+/* 🌸 Glass card */
 .checkout-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(230, 153, 255, 0.3);
-  box-shadow: 0 0 40px rgba(230, 153, 255, 0.15);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(230,153,255,0.3);
+  box-shadow: 0 0 40px rgba(230,153,255,0.15);
+  border-radius: 1.5rem;
 }
 
-/* Gradient buttons */
+/* 🌈 Buttons */
 .gradient-btn {
-  background: linear-gradient(90deg, rgb(204, 102, 255), rgb(255, 153, 204), rgb(255, 192, 230));
+  background: linear-gradient(90deg, rgb(170,100,255), rgb(235,120,255), rgb(255,170,220));
   color: white;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(230, 153, 255, 0.3);
+  box-shadow: 0 0 20px rgba(200,100,255,0.4);
 }
 .gradient-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 30px rgba(230, 153, 255, 0.4);
+  box-shadow: 0 0 30px rgba(200,100,255,0.6);
 }
 
-/* Text fields */
+/* ✨ Inputs */
 input, textarea {
-  border-color: rgba(230, 153, 255, 0.4) !important;
+  border-color: rgba(230,153,255,0.4)!important;
 }
 input:focus, textarea:focus {
-  border-color: rgb(204, 102, 255) !important;
-  box-shadow: 0 0 8px rgba(204, 102, 255, 0.3);
+  border-color: rgb(200,100,255)!important;
+  box-shadow: 0 0 8px rgba(200,100,255,0.3);
 }
 
-/* Coupon section */
-#couponMessage p {
-  transition: opacity 0.3s ease;
+/* 💫 Button shimmer */
+@keyframes orderShimmer {
+  0% { transform: translateX(-100%); opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0.3; }
+}
+
+/* 🎡 Coupon Loading Spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.coupon-loader {
+  border: 3px solid rgba(230,153,255,0.2);
+  border-top: 3px solid rgb(200,100,255);
+  border-right: 3px solid rgb(255,150,230);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  display: none;
+}
+
+/* Disabled Button */
+.disabled-btn {
+  background: #ccc !important;
+  color: #777 !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="max-w-4xl mx-auto px-4 py-16">
-  <!-- 🩷 Header -->
+
+  <!-- 💎 Header -->
   <div class="text-center mb-12">
-    <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] bg-clip-text text-transparent">
-      💳 Secure Checkout
+    <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(240,140,255)] to-[rgb(255,180,210)] bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(200,120,255,0.3)]">
+       Secure Checkout
     </h1>
-    <p class="text-gray-600 mt-2 italic">Complete your order safely & stylishly ✨</p>
+    <p class="text-gray-600 mt-2 italic">Complete your order securely & elegantly </p>
   </div>
 
-  <!-- Checkout Form -->
-  <form id="checkoutForm" method="POST" enctype="multipart/form-data"
-        class="checkout-card rounded-3xl p-8 sm:p-10 space-y-10">
+  <!-- 🛍️ Checkout Form -->
+  <form id="checkoutForm" method="POST" enctype="multipart/form-data" class="checkout-card p-8 sm:p-10 space-y-10">
 
-    <!-- 👤 Customer Info -->
+    <!-- 👑 Customer Info -->
     <div>
-      <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-5">Checkout Information</h2>
+      <h2 class="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent 
+                 bg-gradient-to-r from-[rgb(160,90,230)] via-[rgb(230,130,255)] to-[rgb(255,160,210)]
+                 tracking-wide drop-shadow-[0_0_8px_rgba(180,120,255,0.3)] mb-6">
+         Customer Information
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="block font-medium text-gray-700">Full Name</label>
-          <input type="text" name="name" required
-                 class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]" />
+          <input type="text" name="name" required class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]">
         </div>
         <div>
           <label class="block font-medium text-gray-700">Email Address</label>
-          <input type="email" name="email" required placeholder="you@example.com"
-                 class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]" />
+          <input type="email" name="email" required placeholder="you@example.com" class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]">
         </div>
         <div>
           <label class="block font-medium text-gray-700">Phone Number</label>
-          <input type="text" name="phone" required
-                 class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]" />
+          <input type="text" name="phone" required class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]">
         </div>
         <div class="md:col-span-2">
           <label class="block font-medium text-gray-700">Shipping Address</label>
-          <textarea name="address" rows="3" required
-                    class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]"></textarea>
+          <textarea name="address" rows="3" required class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]"></textarea>
         </div>
       </div>
     </div>
 
     <!-- 🧾 Order Summary -->
     <div class="border-t border-[rgba(230,153,255,0.2)] pt-8">
-      <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-5">🧾 Order Summary</h2>
+      <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-5"> Order Summary</h2>
       <div class="bg-white/70 rounded-2xl p-6 shadow-inner border border-[rgba(230,153,255,0.3)]">
         <ul class="divide-y divide-[rgba(230,153,255,0.2)] text-sm">
           {% for item in products %}
@@ -98,12 +124,12 @@ input:focus, textarea:focus {
           </li>
           {% endfor %}
           <li class="py-3 flex justify-between text-gray-700 font-medium">
-            <span>🚚 Delivery Fee</span>
+            <span> Delivery Fee</span>
             <span id="deliveryFee">{% if delivery_fee == 0 %}Free{% else %}PKR {{ "%.2f"|format(delivery_fee) }}{% endif %}</span>
           </li>
-          <li id="discountRow" class="py-3 flex justify-between text-green-700 font-semibold {% if not discount %}hidden{% endif %}">
-            <span>🎟️ Coupon (<span id="appliedCoupon">{{ applied_coupon or '' }}</span>)</span>
-            <span id="discountAmount">- PKR {{ "%.2f"|format(discount or 0) }}</span>
+          <li id="discountRow" class="py-3 flex justify-between text-green-700 font-semibold hidden">
+            <span>🎟️ Coupon (<span id="appliedCoupon"></span>)</span>
+            <span id="discountAmount"></span>
           </li>
         </ul>
         <div class="mt-5 text-right text-xl font-bold border-t border-[rgba(230,153,255,0.3)] pt-3 text-gray-900">
@@ -112,86 +138,105 @@ input:focus, textarea:focus {
       </div>
 
       <!-- 🎟️ Coupon Section -->
-      <div class="mt-8 bg-white/70 backdrop-blur-lg border border-[rgba(230,153,255,0.3)] rounded-2xl p-6 shadow-sm">
-        <h3 class="font-semibold text-[rgb(204,102,255)] mb-3 flex items-center gap-2">🎟️ Have a Coupon?</h3>
-        <div id="couponMessage" class="text-sm mt-2"></div>
-        <div class="flex flex-col sm:flex-row gap-3 mt-3">
-          <input type="text" id="couponInput" name="coupon_code" placeholder="Enter your coupon code"
-                 class="flex-1 border border-[rgba(230,153,255,0.3)] px-4 py-3 rounded-lg focus:ring focus:ring-[rgb(230,153,255)]">
+      <div class="mt-10 relative bg-gradient-to-br from-white/90 via-[rgb(255,245,255)/90] to-[rgb(250,240,255)/90] 
+                  backdrop-blur-xl border border-[rgba(230,153,255,0.3)] rounded-2xl p-8 shadow-[0_0_25px_rgba(230,153,255,0.15)] 
+                  transition-all duration-500 hover:shadow-[0_0_35px_rgba(230,153,255,0.25)]">
+
+        <h3 class="font-extrabold text-2xl sm:text-3xl mb-5 flex items-center gap-2 
+                   bg-clip-text text-transparent bg-gradient-to-r from-[rgb(190,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)] 
+                   tracking-wide"> Apply Coupon Code</h3>
+
+        <div id="couponMessage" class="text-sm mt-2 font-medium min-h-[22px]"></div>
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-4 items-center">
+          <input type="text" id="couponInput" placeholder="Enter your coupon code"
+                 class="flex-1 border border-[rgba(230,153,255,0.3)] px-5 py-3 rounded-xl focus:ring-2 focus:ring-[rgb(230,153,255)] 
+                        focus:outline-none transition-all duration-300 text-gray-800 placeholder:text-gray-400 shadow-inner">
+
           <button type="button" id="applyCouponBtn"
-                  class="gradient-btn px-6 py-3 rounded-lg text-white font-semibold">
-            Apply
+                  class="relative px-6 py-3 rounded-xl text-white font-semibold overflow-hidden
+                         bg-gradient-to-r from-[rgb(190,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)]
+                         shadow-[0_3px_15px_rgba(230,153,255,0.3)] transition-all duration-500 
+                         hover:scale-[1.05] hover:shadow-[0_5px_20px_rgba(230,153,255,0.5)] flex items-center justify-center gap-2">
+            <span class="relative z-10"> Apply</span>
+            <div id="couponLoader" class="coupon-loader"></div>
           </button>
+
           <button type="button" id="removeCouponBtn"
-                  class="hidden bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+                  class="hidden px-6 py-3 rounded-xl font-semibold bg-red-600 hover:bg-red-700 text-white transition-all duration-300">
             Remove
           </button>
         </div>
       </div>
     </div>
 
-    <!-- 🔒 Secure Checkout Note -->
+    <!-- 🔒 Secure Note -->
     <div class="flex items-center gap-2 text-sm text-gray-600 pt-2">
       🔒 Secure Checkout — Your details are protected with SSL encryption.
     </div>
 
-<!-- ✅ Place Order -->
-<div class="pt-4">
-  <button type="submit" name="place_order"
-          class="relative w-full py-4 px-6 rounded-xl text-lg font-semibold text-white tracking-wide 
-                 bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(255,150,230)] to-[rgb(255,190,200)]
-                 shadow-[0_4px_20px_rgba(200,100,255,0.4)] transition-all duration-700 overflow-hidden
-                 hover:shadow-[0_6px_25px_rgba(200,100,255,0.6)] hover:scale-[1.02]">
-    <span class="relative z-10 flex items-center justify-center gap-2">
-      🛍️ Place My Order
-    </span>
-    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent 
-                animate-[orderShimmer_2.8s_infinite]"></div>
-  </button>
-</div>
+    <!-- ✨ Place Order Button -->
+    <button id="placeOrderBtn" type="submit" name="place_order"
+            class="relative w-full py-4 px-6 rounded-2xl text-lg font-semibold text-white tracking-wide
+                   bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(255,150,230)] to-[rgb(255,190,200)]
+                   shadow-[0_4px_20px_rgba(200,100,255,0.4)] transition-all duration-700 overflow-hidden
+                   hover:shadow-[0_6px_25px_rgba(200,100,255,0.6)] hover:scale-[1.03] disabled:opacity-60 disabled:cursor-not-allowed">
+      <span class="relative z-10 flex items-center justify-center gap-2"> Place My Order</span>
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[orderShimmer_2.8s_infinite]"></div>
+    </button>
+  </form>
+</section>
 
-<style>
-@keyframes orderShimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-</style>
-
-<!-- ⚙️ JS for AJAX Coupon -->
+<!-- ⚙️ Coupon Logic -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const applyBtn = document.getElementById('applyCouponBtn');
   const removeBtn = document.getElementById('removeCouponBtn');
-  const couponInput = document.getElementById('couponInput');
+  const loader = document.getElementById('couponLoader');
   const totalEl = document.getElementById('totalAmount');
   const discountRow = document.getElementById('discountRow');
   const discountAmount = document.getElementById('discountAmount');
   const appliedCoupon = document.getElementById('appliedCoupon');
   const couponMessage = document.getElementById('couponMessage');
+  const couponInput = document.getElementById('couponInput');
 
   // Apply Coupon
   applyBtn.addEventListener('click', async () => {
     const code = couponInput.value.trim();
-    if (!code) return alert("Please enter a coupon code.");
+    if (!code) {
+      couponMessage.innerHTML = `<p class="text-gray-600 font-medium">No coupon entered. Proceeding without discount 💳</p>`;
+      return;
+    }
 
-    const res = await fetch(`/apply_coupon/${code}`);
-    const data = await res.json();
+    loader.style.display = 'inline-block';
+    applyBtn.disabled = true;
 
-    if (data.valid) {
-      totalEl.textContent = `PKR ${data.new_total.toFixed(2)}`;
-      discountRow.classList.remove('hidden');
-      discountAmount.textContent = `- PKR ${data.discount.toFixed(2)}`;
-      appliedCoupon.textContent = data.code;
-      couponMessage.innerHTML = `<p class="text-green-600 font-medium animate-pulse">🎉 Coupon '${data.code}' applied successfully!</p>`;
-      applyBtn.classList.add('hidden');
-      removeBtn.classList.remove('hidden');
-    } else {
-      couponMessage.innerHTML = `<p class="text-red-600 font-medium">❌ Invalid or expired coupon.</p>`;
+    try {
+      const res = await fetch(`/apply_coupon/${code}`);
+      const data = await res.json();
+
+      if (data.valid) {
+        totalEl.textContent = `PKR ${data.new_total.toFixed(2)}`;
+        discountRow.classList.remove('hidden');
+        discountAmount.textContent = `- PKR ${data.discount.toFixed(2)}`;
+        appliedCoupon.textContent = data.code;
+        couponMessage.innerHTML = `<p class="text-green-600 font-medium animate-pulse">🎉 Coupon '${data.code}' applied successfully! You saved PKR ${data.discount.toFixed(2)} 💰</p>`;
+        applyBtn.classList.add('hidden');
+        removeBtn.classList.remove('hidden');
+      } else {
+        couponMessage.innerHTML = `<p class="text-red-600 font-medium">❌ Invalid or expired coupon. Please check and try again.</p>`;
+      }
+    } catch {
+      couponMessage.innerHTML = `<p class="text-red-600 font-medium">⚠️ Network error. Try again shortly.</p>`;
+    } finally {
+      loader.style.display = 'none';
+      applyBtn.disabled = false;
     }
   });
 
   // Remove Coupon
   removeBtn.addEventListener('click', async () => {
+    loader.style.display = 'inline-block';
     const res = await fetch(`/remove_coupon`);
     const data = await res.json();
 
@@ -203,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
       removeBtn.classList.add('hidden');
       couponInput.value = '';
     }
+    loader.style.display = 'none';
   });
 });
 </script>
