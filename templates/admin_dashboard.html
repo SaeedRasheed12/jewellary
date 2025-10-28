@@ -52,6 +52,14 @@
          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
         🧾 Manage Products
       </a>
+      
+      <a href="{{ url_for('admin_inventory') }}"
+   class="flex flex-col items-center justify-center bg-gradient-to-r from-purple-500 to-pink-400 
+          text-white rounded-2xl shadow-lg p-6 hover:scale-105 transition">
+  <div class="text-3xl mb-2">📦</div>
+  <h3 class="text-lg font-semibold">Inventory</h3>
+  <p class="text-sm opacity-80">Add & manage saved items</p>
+</a>
 
       <a href="{{ url_for('admin_optician_inbox') }}"
          class="relative bg-pink-600 hover:bg-pink-700 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">

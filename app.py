@@ -113,7 +113,15 @@ class Coupon(db.Model):
     discount_value = db.Column(db.Float, nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
+class InventoryItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    image = db.Column(db.String(300))
+    price = db.Column(db.Float)
+    notes = db.Column(db.Text)
+    added_on = db.Column(db.DateTime, default=datetime.utcnow)
+   
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -1948,6 +1956,123 @@ def toggle_soldout(product_id):
     status = "Sold Out" if product.is_soldout else "Available"
     flash(f"Product '{product.name}' marked as {status}.", "success")
     return redirect(request.referrer or url_for('admin_dashboard'))
+
+@app.route("/admin/inventory", methods=["GET", "POST"])
+def admin_inventory():
+    if not session.get("admin_logged_in"):
+        flash("Please log in as admin first.", "warning")
+        return redirect(url_for("admin_login"))
+
+    # ✅ Add item
+    if request.method == "POST":
+        name = request.form.get("name")
+        price = request.form.get("price")
+        notes = request.form.get("notes")
+        image = request.files.get("image")
+
+        image_url = None
+        if image and image.filename != "":
+            upload_result = cloudinary.uploader.upload(
+                image,
+                folder="inventory_items",
+                public_id=secure_filename(image.filename).rsplit('.', 1)[0],
+                overwrite=True,
+                resource_type="image"
+            )
+            image_url = upload_result.get("secure_url")
+
+        item = InventoryItem(name=name, price=price, notes=notes, image=image_url)
+        db.session.add(item)
+        db.session.commit()
+        flash("Item added successfully!", "success")
+        return redirect(url_for("admin_inventory"))
+
+    # ✅ Filters
+    search_query = request.args.get("search", "").strip()
+    sort_by = request.args.get("sort", "newest")
+
+    items = InventoryItem.query
+
+    # 🔍 Search by name or notes
+    if search_query:
+        items = items.filter(
+            InventoryItem.name.ilike(f"%{search_query}%") |
+            InventoryItem.notes.ilike(f"%{search_query}%")
+        )
+
+    # 📊 Sorting logic
+    if sort_by == "name_asc":
+        items = items.order_by(InventoryItem.name.asc())
+    elif sort_by == "name_desc":
+        items = items.order_by(InventoryItem.name.desc())
+    elif sort_by == "price_low":
+        items = items.order_by(InventoryItem.price.asc())
+    elif sort_by == "price_high":
+        items = items.order_by(InventoryItem.price.desc())
+    else:  # newest
+        items = items.order_by(InventoryItem.added_on.desc())
+
+    items = items.all()
+    return render_template("admin_inventory.html", items=items, search_query=search_query, sort_by=sort_by)
+
+@app.route("/admin/inventory/delete/<int:item_id>")
+def delete_inventory_item(item_id):
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    item = InventoryItem.query.get_or_404(item_id)
+
+    # Optional: delete from Cloudinary
+    if item.image:
+        try:
+            public_id = item.image.split("/")[-1].rsplit(".", 1)[0]
+            cloudinary.uploader.destroy(f"inventory_items/{public_id}")
+        except Exception as e:
+            print("⚠️ Cloudinary delete failed:", e)
+
+    db.session.delete(item)
+    db.session.commit()
+    flash("Item deleted from inventory.", "info")
+    return redirect(url_for("admin_inventory"))
+
+from flask import jsonify
+
+@app.route("/admin/inventory/search")
+def admin_inventory_search():
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 403
+
+    query = request.args.get("q", "").strip()
+    sort_by = request.args.get("sort", "newest")
+
+    items = InventoryItem.query
+
+    if query:
+        items = items.filter(
+            InventoryItem.name.ilike(f"%{query}%") |
+            InventoryItem.notes.ilike(f"%{query}%")
+        )
+
+    if sort_by == "name_asc":
+        items = items.order_by(InventoryItem.name.asc())
+    elif sort_by == "name_desc":
+        items = items.order_by(InventoryItem.name.desc())
+    elif sort_by == "price_low":
+        items = items.order_by(InventoryItem.price.asc())
+    elif sort_by == "price_high":
+        items = items.order_by(InventoryItem.price.desc())
+    else:
+        items = items.order_by(InventoryItem.added_on.desc())
+
+    results = [{
+        "id": i.id,
+        "name": i.name,
+        "price": i.price,
+        "notes": i.notes,
+        "image": i.image
+    } for i in items.all()]
+
+    return jsonify(results)
 
 from datetime import datetime
 

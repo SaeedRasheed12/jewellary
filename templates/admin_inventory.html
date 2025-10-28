@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block title %}Admin Inventory - Aurielle{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+<style>
+  .glightbox-container { z-index: 9999 !important; }
+  .gslide-image img { max-height: 85vh; width: auto; object-fit: contain; margin: auto; }
+  .gdesc-inner { color: #fff; font-size: 0.9rem; text-align: center; margin-top: 10px; }
+  @keyframes fade-in { from {opacity: 0; transform: scale(0.95);} to {opacity: 1; transform: scale(1);} }
+  .animate-fade-in { animation: fade-in 0.3s ease-out; }
+
+  @media (max-width: 640px) {
+    table thead { display: none; }
+    table tr { display: block; margin-bottom: 1rem; background: white; border-radius: 1rem; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    table td { display: flex; justify-content: space-between; padding: 0.75rem 1rem; border: none; }
+    table td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #7e57c2;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-12 font-[Poppins]">
+
+  <!-- 🧾 Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-8 text-center sm:text-left">
+    <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-400 mb-3 sm:mb-0">
+      📦 Inventory Manager
+    </h1>
+    <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+            class="bg-gradient-to-r from-purple-500 to-pink-400 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:scale-105 transition">
+      ➕ Add Item
+    </button>
+  </div>
+
+  <!-- 🔍 Live Search + Sort -->
+  <div class="flex flex-col sm:flex-row gap-3 items-center mb-8">
+    <input type="text" id="liveSearch" placeholder="Search by name or notes..."
+           class="w-full sm:w-2/3 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition" />
+    <select id="sortSelect"
+            class="w-full sm:w-1/3 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2 bg-white focus:ring-2 focus:ring-purple-400 focus:border-transparent transition">
+      <option value="newest">Newest First</option>
+      <option value="name_asc">Name A → Z</option>
+      <option value="name_desc">Name Z → A</option>
+      <option value="price_low">Price: Low to High</option>
+      <option value="price_high">Price: High to Low</option>
+    </select>
+  </div>
+
+  <!-- 📋 Inventory Table -->
+  <div id="inventoryTable"
+       class="overflow-x-auto bg-white/80 backdrop-blur-xl shadow-md rounded-2xl border border-[rgba(230,153,255,0.3)] transition-all duration-500">
+    <table class="w-full text-left text-sm sm:text-base">
+      <thead class="bg-gradient-to-r from-purple-50 to-pink-50 sticky top-0">
+        <tr class="text-gray-700">
+          <th class="p-4">Image</th>
+          <th class="p-4">Name</th>
+          <th class="p-4">Price (Rs)</th>
+          <th class="p-4">Notes</th>
+          <th class="p-4 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="inventoryBody">
+        {% for item in items %}
+        <tr class="border-b border-gray-100 hover:bg-purple-50/40 transition">
+          <td class="p-4" data-label="Image">
+            {% if item.image %}
+              <a href="{{ item.image }}" class="glightbox" data-gallery="inventory-gallery"
+                 data-title="{{ item.name }}" data-description="Rs {{ item.price|int }}">
+                <img src="{{ item.image }}" alt="{{ item.name }}" 
+                     class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm cursor-pointer hover:scale-105 transition-all duration-300" />
+              </a>
+            {% else %}
+              <div class="w-16 h-16 flex items-center justify-center rounded-lg bg-gray-100 text-gray-400">📦</div>
+            {% endif %}
+          </td>
+          <td class="p-4 font-semibold break-words" data-label="Name">{{ item.name }}</td>
+          <td class="p-4 text-purple-700 font-bold" data-label="Price">Rs {{ item.price|int }}</td>
+          <td class="p-4 text-gray-600 break-words" data-label="Notes">{{ item.notes }}</td>
+          <td class="p-4 text-center" data-label="Actions">
+            <a href="{{ url_for('delete_inventory_item', item_id=item.id) }}"
+               class="text-red-500 hover:text-red-600 font-medium">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if not items %}
+  <p class="text-center text-gray-500 italic mt-10">No items found yet.</p>
+  {% endif %}
+</section>
+
+<!-- 📋 Add Modal -->
+<div id="addModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative animate-fade-in">
+    <h2 class="text-2xl font-bold text-purple-700 mb-4 text-center">Add Inventory Item</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-5">
+      <div>
+        <label class="block font-medium mb-1">Product Name</label>
+        <input type="text" name="name" required
+               class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Price (Rs)</label>
+        <input type="number" name="price" step="0.01" required
+               class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Image</label>
+        <input type="file" name="image" accept="image/*"
+               class="w-full border rounded-xl px-4 py-2 bg-gray-50" />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Notes</label>
+        <textarea name="notes" rows="3"
+                  class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400"></textarea>
+      </div>
+
+      <div class="flex justify-center gap-3 pt-4">
+        <button type="submit"
+                class="bg-gradient-to-r from-purple-500 to-pink-400 text-white font-semibold px-6 py-2 rounded-xl hover:scale-105 transition">
+          Save Item
+        </button>
+        <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')"
+                class="bg-gray-200 text-gray-700 px-6 py-2 rounded-xl hover:bg-gray-300 transition">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const lightbox = GLightbox({
+    selector: ".glightbox",
+    touchNavigation: true,
+    loop: true,
+    openEffect: "zoom",
+    closeEffect: "fade",
+    zoomable: true,
+    width: "90vw",
+    height: "90vh",
+  });
+
+  const searchInput = document.getElementById("liveSearch");
+  const sortSelect = document.getElementById("sortSelect");
+  const tableBody = document.getElementById("inventoryBody");
+
+  async function fetchInventory() {
+    const query = searchInput.value.trim();
+    const sort = sortSelect.value;
+    const res = await fetch(`/admin/inventory/search?q=${encodeURIComponent(query)}&sort=${sort}`);
+    const data = await res.json();
+
+    tableBody.innerHTML = "";
+    if (data.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-gray-500 italic py-6">
+            No matching items found.
+          </td>
+        </tr>`;
+      return;
+    }
+
+    data.forEach(item => {
+      const row = `
+        <tr class="border-b border-gray-100 hover:bg-purple-50/40 transition">
+          <td class="p-4">
+            ${item.image 
+              ? `<a href="${item.image}" class="glightbox" data-gallery="inventory-gallery"
+                   data-title="${item.name}" data-description="Rs ${Math.round(item.price)}">
+                   <img src="${item.image}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm cursor-pointer hover:scale-105 transition-all duration-300">
+                 </a>`
+              : `<div class='w-16 h-16 flex items-center justify-center rounded-lg bg-gray-100 text-gray-400'>📦</div>`}
+          </td>
+          <td class="p-4 font-semibold break-words">${item.name}</td>
+          <td class="p-4 text-purple-700 font-bold">Rs ${Math.round(item.price)}</td>
+          <td class="p-4 text-gray-600 break-words">${item.notes || ""}</td>
+          <td class="p-4 text-center">
+            <a href="/admin/inventory/delete/${item.id}" class="text-red-500 hover:text-red-600 font-medium">Delete</a>
+          </td>
+        </tr>`;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+
+    GLightbox({ selector: ".glightbox", loop: true });
+  }
+
+  let debounceTimer;
+  searchInput.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fetchInventory, 300);
+  });
+  sortSelect.addEventListener("change", fetchInventory);
+});
+</script>
+{% endblock %}
