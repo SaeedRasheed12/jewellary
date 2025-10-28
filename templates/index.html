@@ -458,7 +458,8 @@
          class="pt-14 sm:pt-16 pb-16 sm:pb-20 px-3 sm:px-6 bg-gradient-to-br 
                 from-[rgba(255,250,255,0.85)] via-[rgba(250,245,255,0.9)] to-[rgba(245,240,255,0.95)]
                 backdrop-blur-2xl rounded-3xl shadow-[0_0_40px_rgba(230,153,255,0.15)] 
-                border border-[rgba(255,255,255,0.3)] max-w-7xl mx-auto mt-12 sm:mt-16 transition-all duration-500 overflow-hidden">
+                border border-[rgba(255,255,255,0.3)] max-w-7xl mx-auto mt-12 sm:mt-16 
+                transition-all duration-500 overflow-hidden font-[Poppins]">
 
   <!-- 🌸 Section Heading -->
   <div class="flex flex-col sm:flex-row justify-between items-center mb-10 sm:mb-14 gap-4 sm:gap-0">
@@ -548,8 +549,8 @@
           <!-- 💎 Product Image -->
           <div class="relative overflow-hidden">
             <img src="{{ product.image }}" alt="{{ product.name }}"
-                 class="w-full aspect-[3/4] sm:aspect-[4/5] object-cover rounded-t-2xl transition-transform 
-                        duration-[1500ms] ease-out group-hover:scale-110" />
+                 class="w-full aspect-[3/4] sm:aspect-[4/5] object-cover rounded-t-2xl 
+                        transition-transform duration-[1500ms] ease-out group-hover:scale-110" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent 
                         opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
               <span class="text-white text-xs sm:text-sm font-semibold bg-[rgba(255,255,255,0.2)] 
@@ -560,7 +561,7 @@
           </div>
 
           <!-- 💫 Product Info -->
-          <div class="p-3 sm:p-4 flex-grow flex flex-col">
+          <div class="p-3 sm:p-4 flex-grow flex flex-col text-center sm:text-left">
             <h2 class="font-bold text-gray-900 text-sm sm:text-base truncate">{{ product.name }}</h2>
 
             {% if product.category %}
@@ -576,7 +577,7 @@
             <!-- ⭐ Rating -->
             {% if product.reviews and product.reviews|length > 0 %}
               {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
-              <div class="flex items-center gap-1 mt-2">
+              <div class="flex items-center justify-center sm:justify-start gap-1 mt-2">
                 <div class="flex text-[rgb(255,179,217)] text-xs sm:text-sm">
                   {% for i in range(1,6) %}
                     {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
@@ -622,15 +623,23 @@
 @media (max-width: 640px) {
   #products-section {
     border-radius: 1rem;
+    padding: 1rem 0.75rem;
   }
   #products-section h2 {
     font-size: 1.7rem;
+    line-height: 2rem;
   }
   #products-section select {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
   #products-section .grid {
     gap: 1rem;
+  }
+  #products-section .grid a {
+    min-height: 370px;
+  }
+  #products-section img {
+    border-radius: 1rem;
   }
 }
 </style>
