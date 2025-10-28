@@ -2076,17 +2076,27 @@ def admin_inventory_search():
 
 @app.route('/admin/performance_data')
 def admin_performance_data():
+    # ✅ Count all products
     total_products = Product.query.count()
-    active_orders = Order.query.filter_by(status='active').count()
+
+    # ✅ Count active orders
+    active_orders = Order.query.filter(
+        Order.status.in_(["pending", "processing", "active"])
+    ).count()
+
+    # ✅ Count active coupons
     active_coupons = Coupon.query.filter_by(active=True).count()
+
+    # ✅ Calculate total revenue
     total_revenue = db.session.query(db.func.sum(Order.total_amount)).scalar() or 0
 
     return jsonify({
-        'total_products': total_products,
-        'active_orders': active_orders,
-        'active_coupons': active_coupons,
-        'total_revenue': int(total_revenue)
+        "total_products": total_products,
+        "active_orders": active_orders,
+        "active_coupons": active_coupons,
+        "total_revenue": int(total_revenue)
     })
+
 
 from datetime import datetime
 
