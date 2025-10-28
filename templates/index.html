@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ setting.website_name if setting else 'Aurielle' }}{% endblock %}
+{% block title %}{{ setting.website_name if setting else 'Bin Ahmed' }}{% endblock %}
 
 {% block content %}
 
@@ -453,42 +453,40 @@
 }
 </style>
 
-<!-- 💍 AURIELLE — Category-Wise Product Showcase (Luxe Responsive Upgrade) -->
+<!-- 💍 AURIELLE — Category-Wise Product Showcase -->
 <section id="products-section" 
-         class="pt-14 sm:pt-16 pb-16 sm:pb-20 px-3 sm:px-6 bg-gradient-to-br 
-                from-[rgba(255,250,255,0.85)] via-[rgba(250,245,255,0.9)] to-[rgba(245,240,255,0.95)]
-                backdrop-blur-2xl rounded-3xl shadow-[0_0_40px_rgba(230,153,255,0.15)] 
-                border border-[rgba(255,255,255,0.3)] max-w-7xl mx-auto mt-12 sm:mt-16 
-                transition-all duration-500 overflow-hidden font-[Poppins]">
+         class="pt-16 pb-20 px-4 bg-gradient-to-br 
+                from-[rgba(255,250,255,0.8)] via-[rgba(250,245,255,0.9)] to-[rgba(245,240,255,0.95)]
+                backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(230,153,255,0.15)] 
+                border border-[rgba(255,255,255,0.3)] max-w-7xl mx-auto mt-16 transition-all duration-500">
 
   <!-- 🌸 Section Heading -->
-  <div class="flex flex-col sm:flex-row justify-between items-center mb-10 sm:mb-14 gap-4 sm:gap-0">
-    <h2 class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-center sm:text-left 
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-10">
+    <h2 class="text-3xl sm:text-5xl font-extrabold text-center sm:text-left 
                bg-clip-text text-transparent bg-gradient-to-r 
                from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
                tracking-wide drop-shadow-md">
        Elegant Jewelry Collection
     </h2>
     <a href="{{ url_for('index') }}#products-section"
-       class="inline-block px-5 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r 
+       class="mt-4 sm:mt-0 inline-block px-6 py-2 bg-gradient-to-r 
               from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-              text-white rounded-full text-sm sm:text-base font-semibold shadow-md 
-              hover:scale-105 hover:shadow-[0_0_25px_rgba(230,153,255,0.5)] transition-all duration-300">
+              text-white rounded-full text-sm font-semibold shadow-md hover:scale-105 transition-all duration-300">
        See All Products
     </a>
   </div>
 
   <!-- 🔍 Filter Dropdown -->
-  <div class="max-w-xs sm:max-w-sm mx-auto mb-12 sm:mb-14">
+  <div class="max-w-sm mx-auto mb-14">
     <label for="categoryDropdown" 
-           class="block text-sm sm:text-base font-semibold text-center text-[rgb(153,102,204)] mb-2">
+           class="block text-sm font-semibold text-center text-[rgb(153,102,204)] mb-2">
        Filter by Category
     </label>
     <select id="categoryDropdown"
-            class="w-full border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2.5 sm:py-3 
+            class="w-full border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-3 
                    bg-white/70 backdrop-blur-md text-gray-700 font-medium shadow-sm 
                    focus:outline-none focus:ring-2 focus:ring-[rgb(230,153,255)] 
-                   focus:border-[rgb(230,153,255)] transition-all duration-300 text-sm sm:text-base">
+                   focus:border-[rgb(230,153,255)] transition-all duration-300">
       <option value="">-- All Categories --</option>
       {% for cat in categories %}
       <option value="{{ url_for('index', category_id=cat.id) }}#products-section"
@@ -504,109 +502,104 @@
     {% for cat in categories %}
       {% set cat_products = products | selectattr('category_id', 'equalto', cat.id) | list %}
       {% if cat_products|length > 0 %}
+<!-- 🌼 Category Header (with soft gradient glow, no Imgur link) -->
+<div class="mb-8 mt-16 text-center relative">
+  <div class="relative inline-block px-6 py-3">
+    <!-- ✨ Soft pastel glow background -->
+    <div class="absolute inset-0 rounded-full bg-gradient-to-r 
+                from-[rgba(221,126,255,0.15)] via-[rgba(255,169,218,0.15)] to-[rgba(255,199,238,0.15)]
+                blur-xl animate-pulse"></div>
 
-      <!-- 🌼 Category Header -->
-      <div class="mb-8 mt-16 text-center relative">
-        <div class="relative inline-block px-5 py-3">
-          <div class="absolute inset-0 rounded-full bg-gradient-to-r 
-                      from-[rgba(221,126,255,0.15)] via-[rgba(255,169,218,0.15)] to-[rgba(255,199,238,0.15)]
-                      blur-xl animate-pulse"></div>
+    <!-- 🩷 Category Name -->
+    <h3 class="relative text-3xl sm:text-4xl font-extrabold 
+               bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)]
+               bg-clip-text text-transparent drop-shadow-sm capitalize tracking-wide">
+      ✨ {{ cat.name }}
+    </h3>
 
-          <h3 class="relative text-2xl sm:text-3xl md:text-4xl font-extrabold 
-                     bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)]
-                     bg-clip-text text-transparent drop-shadow-sm capitalize tracking-wide">
-             {{ cat.name }}
-          </h3>
+    <!-- 🌈 Underline Accent -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-[3px] 
+                bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full"></div>
+  </div>
 
-          <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 sm:w-20 h-[3px] 
-                      bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full"></div>
-        </div>
+  <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
+     class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-[rgb(204,102,255)] hover:underline font-medium">
+    View All →
+  </a>
+</div>
 
-        <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
-           class="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-xs sm:text-sm 
-                  text-[rgb(204,102,255)] hover:underline font-medium">
-          View All →
-        </a>
-      </div>
+        <!-- 🧿 Product Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+          {% for product in cat_products %}
+          <a href="{{ url_for('product_detail', product_id=product.id) }}"
+             class="group bg-white/50 backdrop-blur-xl rounded-2xl shadow-lg border border-[rgba(255,255,255,0.3)] 
+                    hover:shadow-[0_0_30px_rgba(230,153,255,0.25)] transform hover:scale-[1.03] 
+                    transition-all duration-500 overflow-hidden relative flex flex-col">
 
-      <!-- 🧿 Product Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-8">
-        {% for product in cat_products %}
-        <a href="{{ url_for('product_detail', product_id=product.id) }}"
-           class="group bg-white/60 backdrop-blur-xl rounded-2xl shadow-lg border border-[rgba(255,255,255,0.3)] 
-                  hover:shadow-[0_0_30px_rgba(230,153,255,0.25)] transform hover:scale-[1.03] 
-                  transition-all duration-500 overflow-hidden flex flex-col relative">
-
-          <!-- 🔥 SALE Tag -->
-          {% if product.before_price and product.today_price %}
-          <div class="absolute top-3 right-3 bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] 
-                      text-white text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-md 
-                      font-semibold tracking-wide animate-pulse z-10">
-            SALE
-          </div>
-          {% endif %}
-
-          <!-- 💎 Product Image -->
-          <div class="relative overflow-hidden">
-            <img src="{{ product.image }}" alt="{{ product.name }}"
-                 class="w-full aspect-[3/4] sm:aspect-[4/5] object-cover rounded-t-2xl 
-                        transition-transform duration-[1500ms] ease-out group-hover:scale-110" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent 
-                        opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
-              <span class="text-white text-xs sm:text-sm font-semibold bg-[rgba(255,255,255,0.2)] 
-                           backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow">
-                 View Details
-              </span>
+            <!-- 🔥 SALE Tag -->
+            {% if product.before_price and product.today_price %}
+            <div class="absolute top-3 right-3 bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] 
+                        text-white text-[10px] sm:text-xs px-3 py-1 rounded-full shadow-md font-semibold 
+                        tracking-wide animate-pulse z-10">
+              SALE
             </div>
-          </div>
-
-          <!-- 💫 Product Info -->
-          <div class="p-3 sm:p-4 flex-grow flex flex-col text-center sm:text-left">
-            <h2 class="font-bold text-gray-900 text-sm sm:text-base truncate">{{ product.name }}</h2>
-
-            {% if product.category %}
-            <p class="text-[rgb(153,102,204)] text-xs sm:text-sm mt-1 font-medium">
-               {{ product.category.name }}
-            </p>
             {% endif %}
 
-            <p class="text-gray-500 text-xs sm:text-sm mt-1 truncate italic leading-snug">
-              {{ product.description[:60] }}
-            </p>
+            <!-- 💎 Product Image -->
+            <div class="relative overflow-hidden">
+              <img src="{{ product.image }}" alt="{{ product.name }}"
+                   class="w-full h-44 sm:h-56 object-cover rounded-t-2xl transition-transform duration-[1500ms] ease-out group-hover:scale-110" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent 
+                          opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
+                <span class="text-white text-sm font-semibold bg-[rgba(255,255,255,0.2)] 
+                             backdrop-blur-md px-4 py-2 rounded-full shadow">
+                   View Details
+                </span>
+              </div>
+            </div>
 
-            <!-- ⭐ Rating -->
-            {% if product.reviews and product.reviews|length > 0 %}
-              {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
-              <div class="flex items-center justify-center sm:justify-start gap-1 mt-2">
-                <div class="flex text-[rgb(255,179,217)] text-xs sm:text-sm">
-                  {% for i in range(1,6) %}
-                    {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
-                  {% endfor %}
-                </div>
-                <span class="text-[10px] sm:text-xs text-gray-600 ml-1">({{ product.reviews|length }})</span>
-              </div>
-            {% else %}
-              <div class="flex items-center justify-center sm:justify-start gap-1 mt-2 text-[rgb(255,179,217)] text-xs sm:text-sm">
-                ☆☆☆☆☆
-                <span class="text-[10px] sm:text-xs text-gray-600 ml-1">(0)</span>
-              </div>
-            {% endif %}
+            <!-- 💫 Product Info -->
+            <div class="p-4 flex-grow flex flex-col">
+              <h2 class="font-bold text-gray-900 text-sm sm:text-base truncate">{{ product.name }}</h2>
 
-            <!-- 💰 Price -->
-            <div class="mt-auto pt-3 sm:pt-4">
-              <div class="text-base sm:text-lg md:text-xl font-extrabold text-[rgb(204,102,255)]">
-                Rs {{ product.today_price | int }}
-              </div>
-              {% if product.before_price %}
-              <div class="text-[10px] sm:text-xs text-gray-400 line-through">
-                Rs {{ product.before_price | int }}
-              </div>
+              {% if product.category %}
+              <p class="text-[rgb(153,102,204)] text-xs sm:text-sm mt-1 font-medium">
+                 {{ product.category.name }}
+              </p>
               {% endif %}
+
+              <p class="text-gray-500 text-xs sm:text-sm mt-1 truncate italic">
+                {{ product.description[:60] }}
+              </p>
+
+              <!-- ⭐ Rating -->
+              {% if product.reviews and product.reviews|length > 0 %}
+                {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
+                <div class="flex items-center gap-1 mt-2">
+                  <div class="flex text-[rgb(255,179,217)] text-xs">
+                    {% for i in range(1,6) %}
+                      {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="text-xs text-gray-600">({{ product.reviews|length }})</span>
+                </div>
+              {% endif %}
+
+              <!-- 💰 Price -->
+              <div class="mt-auto pt-3">
+                <div class="text-lg sm:text-xl font-extrabold text-[rgb(204,102,255)]">
+                  Rs {{ product.today_price | int }}
+                </div>
+                {% if product.before_price %}
+                <div class="text-xs sm:text-sm text-gray-400 line-through">
+                  Rs {{ product.before_price | int }}
+                </div>
+                {% endif %}
+              </div>
             </div>
-          </div>
-        </a>
-        {% endfor %}
-      </div>
+          </a>
+          {% endfor %}
+        </div>
       {% endif %}
     {% endfor %}
   {% endif %}
@@ -622,30 +615,6 @@
 .animate-sparkle {
   animation: sparkle 10s linear infinite;
   background-size: 300px 300px;
-}
-
-/* 🌿 Mobile Optimizations */
-@media (max-width: 640px) {
-  #products-section {
-    border-radius: 1rem;
-    padding: 1rem 0.75rem;
-  }
-  #products-section h2 {
-    font-size: 1.7rem;
-    line-height: 2rem;
-  }
-  #products-section select {
-    font-size: 0.9rem;
-  }
-  #products-section .grid {
-    gap: 1rem;
-  }
-  #products-section .grid a {
-    min-height: 370px;
-  }
-  #products-section img {
-    border-radius: 1rem;
-  }
 }
 </style>
 
