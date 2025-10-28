@@ -19,6 +19,32 @@
     </div>
   </div>
 
+  <!-- 📈 Performance Summary -->
+  <div class="mb-12">
+    <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+      📊 Performance Summary
+    </h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
+      <div class="aurielle-card text-center p-6 rounded-2xl">
+        <h4 class="text-purple-600 font-semibold text-lg">🛍 Products</h4>
+        <p id="totalProducts" class="text-4xl font-extrabold text-gray-900 mt-2">0</p>
+      </div>
+      <div class="aurielle-card text-center p-6 rounded-2xl">
+        <h4 class="text-pink-600 font-semibold text-lg">📦 Active Orders</h4>
+        <p id="activeOrders" class="text-4xl font-extrabold text-gray-900 mt-2">0</p>
+      </div>
+      <div class="aurielle-card text-center p-6 rounded-2xl">
+        <h4 class="text-indigo-600 font-semibold text-lg">🎟 Coupons</h4>
+        <p id="activeCoupons" class="text-4xl font-extrabold text-gray-900 mt-2">0</p>
+      </div>
+      <div class="aurielle-card text-center p-6 rounded-2xl">
+        <h4 class="text-emerald-600 font-semibold text-lg">💰 Revenue</h4>
+        <p id="totalRevenue" class="text-4xl font-extrabold text-gray-900 mt-2">Rs 0</p>
+      </div>
+    </div>
+  </div>
+
   <!-- 📊 Website Visits -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
     <div class="aurielle-card text-center p-8 rounded-2xl shadow-lg hover:scale-[1.02] transition">
@@ -31,20 +57,6 @@
     </div>
   </div>
 
-  <script>
-    function updateVisits() {
-      fetch("/admin/visits_data")
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("todayVisits").innerText = data.today_visits;
-          document.getElementById("totalVisits").innerText = data.total_visits;
-        })
-        .catch(err => console.error("❌ Visit stats fetch failed:", err));
-    }
-    setInterval(updateVisits, 5000);
-    updateVisits();
-  </script>
-
   <!-- ⚡ Quick Actions -->
   <div>
     <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
@@ -53,21 +65,18 @@
 
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
 
-      <!-- Add Product -->
       <a href="{{ url_for('add_product') }}" 
          class="aurielle-btn from-green-500 to-emerald-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">➕</div>
         <h3 class="text-lg">Add Product</h3>
       </a>
 
-      <!-- Manage Products -->
       <a href="{{ url_for('existing_products') }}" 
          class="aurielle-btn from-blue-500 to-indigo-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">🧾</div>
         <h3 class="text-lg">Manage Products</h3>
       </a>
 
-      <!-- Inventory -->
       <a href="{{ url_for('admin_inventory') }}"
          class="aurielle-btn from-purple-500 to-pink-400 text-white rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">📦</div>
@@ -75,41 +84,35 @@
         <p class="text-sm opacity-80">Add & manage saved items</p>
       </a>
 
-      <!-- Categories -->
       <a href="{{ url_for('manage_categories') }}" 
          class="aurielle-btn from-violet-500 to-indigo-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">📂</div>
         <h3 class="text-lg">Manage Categories</h3>
       </a>
 
-      <!-- Promo Banners -->
       <a href="{{ url_for('manage_promo_banners') }}" 
          class="aurielle-btn from-amber-400 to-yellow-500 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">📸</div>
         <h3 class="text-lg">Promo Banners</h3>
       </a>
 
-      <!-- Website Settings -->
       <a href="{{ url_for('admin_settings') }}" 
          class="aurielle-btn from-gray-700 to-gray-900 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">⚙️</div>
         <h3 class="text-lg">Website Settings</h3>
       </a>
 
-      <!-- Coupons -->
       <a href="{{ url_for('admin_coupons') }}" 
          class="aurielle-btn from-yellow-500 to-orange-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">🎟️</div>
         <h3 class="text-lg">Manage Coupons</h3>
       </a>
 
-      <!-- Orders -->
       <a href="{{ url_for('admin_orders') }}" 
          class="aurielle-btn from-blue-500 to-sky-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
         <div class="text-3xl mb-2">📦</div>
         <h3 class="text-lg">Customer Orders</h3>
       </a>
-
     </div>
   </div>
 </section>
@@ -136,4 +139,35 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 </style>
+
+<!-- ⚡ Live Stats Script -->
+<script>
+function updateVisits() {
+  fetch("/admin/visits_data")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("todayVisits").innerText = data.today_visits;
+      document.getElementById("totalVisits").innerText = data.total_visits;
+    });
+}
+
+function updatePerformance() {
+  fetch("/admin/performance_data")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("totalProducts").innerText = data.total_products;
+      document.getElementById("activeOrders").innerText = data.active_orders;
+      document.getElementById("activeCoupons").innerText = data.active_coupons;
+      document.getElementById("totalRevenue").innerText = "Rs " + data.total_revenue.toLocaleString();
+    });
+}
+
+setInterval(() => {
+  updateVisits();
+  updatePerformance();
+}, 5000);
+
+updateVisits();
+updatePerformance();
+</script>
 {% endblock %}
