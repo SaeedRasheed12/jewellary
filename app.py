@@ -1452,7 +1452,7 @@ def checkout():
             )
             send_email(
                 to_email=customer_email,
-                subject=f"🛍️ Your Order Confirmation - {setting.website_name if setting else 'Bin Ahmed'}",
+                subject=f"🛍️ Your Order Confirmation - {setting.website_name if setting else 'Aurielle'}",
                 html_content=customer_html
             )
 
