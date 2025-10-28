@@ -1,26 +1,33 @@
 {% extends 'base.html' %}
-{% block title %}Admin Dashboard - Eyecon Optical{% endblock %}
+{% block title %}Admin Dashboard - Aurielle{% endblock %}
 
 {% block content %}
-<section class="max-w-7xl mx-auto p-4 sm:p-6">
+<section class="max-w-7xl mx-auto p-6 sm:p-10 font-[Poppins] 
+         bg-gradient-to-br from-[#fff8ff] via-[#fdf6ff] to-[#faf1ff] 
+         rounded-3xl shadow-xl mt-10">
 
-  <!-- 🧠 Header -->
-  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 flex items-center gap-2">
-      🛠️ Admin Dashboard
-    </h1>
-    <p class="text-sm text-gray-500 mt-1 sm:mt-0">Manage your store efficiently and monitor performance</p>
+  <!-- 💎 Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
+    <div>
+      <h1 class="text-4xl font-extrabold bg-clip-text text-transparent 
+                 bg-gradient-to-r from-purple-500 to-pink-400 flex items-center gap-2">
+        💎 Aurielle Admin Dashboard
+      </h1>
+      <p class="text-sm text-gray-500 mt-1">
+        Manage your collections, promotions, and website settings in style ✨
+      </p>
+    </div>
   </div>
 
   <!-- 📊 Website Visits -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
-    <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-lg text-center transform transition hover:scale-[1.02] hover:shadow-2xl">
-      <h4 class="text-lg font-semibold flex justify-center items-center gap-2">👁️ Visits Today</h4>
-      <p id="todayVisits" class="text-4xl font-extrabold mt-3">0</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+    <div class="aurielle-card text-center p-8 rounded-2xl shadow-lg hover:scale-[1.02] transition">
+      <h4 class="text-lg font-semibold text-purple-600">👁️ Visits Today</h4>
+      <p id="todayVisits" class="text-5xl font-extrabold text-gray-900 mt-2">0</p>
     </div>
-    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg text-center transform transition hover:scale-[1.02] hover:shadow-2xl">
-      <h4 class="text-lg font-semibold flex justify-center items-center gap-2">🌍 Total Visits</h4>
-      <p id="totalVisits" class="text-4xl font-extrabold mt-3">0</p>
+    <div class="aurielle-card text-center p-8 rounded-2xl shadow-lg hover:scale-[1.02] transition">
+      <h4 class="text-lg font-semibold text-pink-600">🌍 Total Visits</h4>
+      <p id="totalVisits" class="text-5xl font-extrabold text-gray-900 mt-2">0</p>
     </div>
   </div>
 
@@ -39,65 +46,94 @@
   </script>
 
   <!-- ⚡ Quick Actions -->
-  <div class="mb-10">
-    <h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">⚡ Quick Actions</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+  <div>
+    <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+      ⚡ Quick Actions
+    </h2>
 
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+
+      <!-- Add Product -->
       <a href="{{ url_for('add_product') }}" 
-         class="bg-green-600 hover:bg-green-700 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
-        ➕ Add Product
+         class="aurielle-btn from-green-500 to-emerald-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">➕</div>
+        <h3 class="text-lg">Add Product</h3>
       </a>
 
+      <!-- Manage Products -->
       <a href="{{ url_for('existing_products') }}" 
-         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
-        🧾 Manage Products
+         class="aurielle-btn from-blue-500 to-indigo-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">🧾</div>
+        <h3 class="text-lg">Manage Products</h3>
       </a>
-      
+
+      <!-- Inventory -->
       <a href="{{ url_for('admin_inventory') }}"
-   class="flex flex-col items-center justify-center bg-gradient-to-r from-purple-500 to-pink-400 
-          text-white rounded-2xl shadow-lg p-6 hover:scale-105 transition">
-  <div class="text-3xl mb-2">📦</div>
-  <h3 class="text-lg font-semibold">Inventory</h3>
-  <p class="text-sm opacity-80">Add & manage saved items</p>
-</a>
-
-      <a href="{{ url_for('admin_optician_inbox') }}"
-         class="relative bg-pink-600 hover:bg-pink-700 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
-        💬 Support Chat
-        {% if unread_count > 0 %}
-        <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center shadow-md">
-          {{ unread_count }}
-        </span>
-        {% endif %}
+         class="aurielle-btn from-purple-500 to-pink-400 text-white rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">📦</div>
+        <h3 class="text-lg font-semibold">Inventory</h3>
+        <p class="text-sm opacity-80">Add & manage saved items</p>
       </a>
 
-      <a href="{{ url_for('manage_categories') }}"
-         class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
-        📂 Manage Categories
+      <!-- Categories -->
+      <a href="{{ url_for('manage_categories') }}" 
+         class="aurielle-btn from-violet-500 to-indigo-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">📂</div>
+        <h3 class="text-lg">Manage Categories</h3>
       </a>
 
-      <a href="{{ url_for('manage_promo_banners') }}"
-         class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
-        📸 Promo Banners
+      <!-- Promo Banners -->
+      <a href="{{ url_for('manage_promo_banners') }}" 
+         class="aurielle-btn from-amber-400 to-yellow-500 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">📸</div>
+        <h3 class="text-lg">Promo Banners</h3>
       </a>
 
-      <a href="{{ url_for('admin_settings') }}"
-         class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
-        ⚙️ Website Settings
-      </a>
-      
-      <a href="{{ url_for('admin_coupons') }}"
-        class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-5 py-2 rounded-lg shadow transition">
-        🎟 Manage Coupons
+      <!-- Website Settings -->
+      <a href="{{ url_for('admin_settings') }}" 
+         class="aurielle-btn from-gray-700 to-gray-900 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">⚙️</div>
+        <h3 class="text-lg">Website Settings</h3>
       </a>
 
-      <a href="{{ url_for('admin_orders') }}"
-         class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-5 rounded-2xl shadow-md text-center font-semibold transition transform hover:-translate-y-1 hover:shadow-lg">
-        📦 Customer Orders
+      <!-- Coupons -->
+      <a href="{{ url_for('admin_coupons') }}" 
+         class="aurielle-btn from-yellow-500 to-orange-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">🎟️</div>
+        <h3 class="text-lg">Manage Coupons</h3>
+      </a>
+
+      <!-- Orders -->
+      <a href="{{ url_for('admin_orders') }}" 
+         class="aurielle-btn from-blue-500 to-sky-400 text-white font-semibold rounded-2xl text-center p-6 shadow-lg hover:scale-105 transition">
+        <div class="text-3xl mb-2">📦</div>
+        <h3 class="text-lg">Customer Orders</h3>
       </a>
 
     </div>
   </div>
-
 </section>
+
+<!-- 💅 Aurielle Glow Style -->
+<style>
+  .aurielle-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(230, 153, 255, 0.3);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 25px rgba(230, 153, 255, 0.15);
+    transition: all 0.3s ease;
+  }
+  .aurielle-card:hover {
+    box-shadow: 0 0 40px rgba(230, 153, 255, 0.25);
+  }
+  .aurielle-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(to right, var(--tw-gradient-stops));
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+</style>
 {% endblock %}
