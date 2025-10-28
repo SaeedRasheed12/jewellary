@@ -129,30 +129,33 @@ class Order(db.Model):
     email = db.Column(db.String(120))
     address = db.Column(db.Text, nullable=False)
 
-    # 👇 Totals
-    product_total = db.Column(db.Float, default=0.0)  # 🆕 Products only
+    # 🏙️ City field (required for city-based delivery logic)
+    city = db.Column(db.String(100), nullable=True)
+
+    # 💰 Totals
+    product_total = db.Column(db.Float, default=0.0)
     delivery_fee = db.Column(db.Float, default=0.0)
     total = db.Column(db.Float)  # Grand total (products + delivery)
-    
-    # ✅ Add these two new fields:
+
+    # 🎟️ Coupons & Discounts
     coupon_code = db.Column(db.String(50), nullable=True)
     discount = db.Column(db.Float, default=0.0)
 
-
-    # 🆕 Tracking number
+    # 📦 Tracking & Status
     tracking_number = db.Column(db.String(50), unique=True, nullable=False)
-
-    # 🆕 Order Status
     status = db.Column(db.String(20), default="Pending")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # 🔗 Relationships
+    # 🔗 Relationship with OrderItem
     items = db.relationship(
         'OrderItem',
         backref='order',
         lazy=True,
         cascade="all, delete-orphan"
     )
+
+    def __repr__(self):
+        return f"<Order {self.id} - {self.name} ({self.city})>"
 
 class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -675,7 +678,7 @@ def admin_settings():
             if file and file.filename.strip():
                 upload_result = cloudinary.uploader.upload(
                     file,
-                    folder="bin_ahmed/banners",
+                    folder="Aurielle/banners",
                     resource_type="image"
                 )
                 setting.hero_banner = upload_result.get("secure_url")
@@ -687,7 +690,7 @@ def admin_settings():
             if bg_file and bg_file.filename.strip():
                 upload_result = cloudinary.uploader.upload(
                     bg_file,
-                    folder="bin_ahmed/backgrounds",
+                    folder="Aurielle/backgrounds",
                     resource_type="image"
                 )
                 setting.background_image = upload_result.get("secure_url")
@@ -699,7 +702,7 @@ def admin_settings():
             if about_file and about_file.filename.strip():
                 upload_result = cloudinary.uploader.upload(
                     about_file,
-                    folder="bin_ahmed/about",
+                    folder="Aurielle/about",
                     resource_type="image"
                 )
                 setting.about_image = upload_result.get("secure_url")
@@ -711,7 +714,7 @@ def admin_settings():
             if perfume_img and perfume_img.filename.strip():
                 upload_result = cloudinary.uploader.upload(
                     perfume_img,
-                    folder="bin_ahmed/know_your_perfume",
+                    folder="Aurielle/know_your_perfume",
                     resource_type="image"
                 )
                 setting.perfume_image = upload_result.get("secure_url")
@@ -723,7 +726,7 @@ def admin_settings():
             if perfume_vid and perfume_vid.filename.strip():
                 upload_result = cloudinary.uploader.upload(
                     perfume_vid,
-                    folder="bin_ahmed/know_your_perfume",
+                    folder="Aurielle/know_your_perfume",
                     resource_type="video"
                 )
                 setting.perfume_video = upload_result.get("secure_url")
@@ -1291,7 +1294,7 @@ def generate_tracking_number():
 # 🔹 Utility: Send Email via SendGrid
 def send_email(to_email, subject, html_content):
     message = Mail(
-        from_email="no-reply@bin-ahmed.store",  # ⚠️ must be verified in SendGrid
+        from_email="no-reply@auriellebyshsa.shop",  # ⚠️ must be verified in SendGrid
         to_emails=to_email,
         subject=subject,
         html_content=html_content
@@ -1305,7 +1308,8 @@ def send_email(to_email, subject, html_content):
         return False
 
 from decimal import Decimal
-from flask import jsonify
+from flask import jsonify, request, render_template, redirect, url_for, flash, session
+from datetime import datetime
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
@@ -1332,17 +1336,31 @@ def checkout():
             print(f"Checkout cart error: {e}")
             continue
 
-    # 🔹 Delivery fee logic
+    # 🔹 Load site settings
     setting = Setting.query.first()
+
+    # 🏙️ Get city from form (if available)
+    selected_city = None
+    if request.method == 'POST':
+        selected_city = request.form.get('city', '').strip()
+
+    # 💰 Base delivery fee and threshold
     delivery_fee = Decimal(str(setting.delivery_fee)) if setting and setting.delivery_fee else Decimal('0.00')
     free_threshold = Decimal(str(setting.free_delivery_threshold)) if setting and setting.free_delivery_threshold else Decimal('0.00')
+
+    # ✅ City-based Delivery Fee Logic
     if product_total >= free_threshold:
         delivery_fee = Decimal('0.00')
+    elif selected_city and selected_city.lower() == 'karachi':
+        delivery_fee = Decimal('150.00')
+    else:
+        delivery_fee = Decimal(str(setting.delivery_fee)) if setting and setting.delivery_fee else Decimal('0.00')
 
+    # 🎟️ Coupon Section
     discount_amount = Decimal('0.00')
     applied_coupon = None
 
-    # 🔹 Coupon check (from POST or Session)
+    # 🔹 Apply coupon (manual apply)
     if request.method == 'POST' and 'apply_coupon' in request.form:
         coupon_code = request.form.get('coupon_code', '').upper().strip()
         coupon = Coupon.query.filter_by(code=coupon_code, is_active=True).first()
@@ -1356,7 +1374,7 @@ def checkout():
 
         return redirect(url_for('checkout'))
 
-    # 🔹 If coupon exists in session, apply it
+    # 🔹 If coupon already stored in session, apply it automatically
     if 'coupon_code' in session:
         coupon = Coupon.query.filter_by(code=session['coupon_code'], is_active=True).first()
         if coupon:
@@ -1366,17 +1384,18 @@ def checkout():
             else:
                 discount_amount = Decimal(str(coupon.discount_value))
 
-    # 🔹 Calculate grand total after discount
+    # 💸 Final total calculation
     grand_total = (product_total + delivery_fee) - discount_amount
     if grand_total < 0:
         grand_total = Decimal('0.00')
 
-    # 🔹 Final checkout submission (placing order)
+    # 🧾 Final order placement
     if request.method == 'POST' and 'place_order' in request.form:
         name = request.form['name']
         customer_email = request.form['email']
         phone = request.form['phone']
         address = request.form['address']
+        city = request.form.get('city', '').strip()
 
         tracking_number = generate_tracking_number()
 
@@ -1385,6 +1404,7 @@ def checkout():
             phone=phone,
             email=customer_email,
             address=address,
+            city=city,  # ✅ Added city field
             product_total=float(product_total),
             delivery_fee=float(delivery_fee),
             total=float(grand_total),
@@ -1442,6 +1462,7 @@ def checkout():
                 customer_email=customer_email,
                 phone=phone,
                 address=address,
+                city=city,
                 order_items=products,
                 total_amount=grand_total,
                 delivery_fee=delivery_fee,
@@ -1453,7 +1474,7 @@ def checkout():
                 logo_url=logo_url
             )
             send_email(
-                to_email="BinAhmedandco@gmail.com",
+                to_email="Saeedrasheed225@gmail.com",
                 subject=f"📦 New Order from {name}",
                 html_content=admin_html
             )
@@ -1833,7 +1854,7 @@ def delete_about_image():
         # Delete from Cloudinary if desired
         try:
             public_id = setting.about_image.split('/')[-1].split('.')[0]
-            cloudinary.uploader.destroy(f"bin_ahmed/about/{public_id}")
+            cloudinary.uploader.destroy(f"Aurielle/about/{public_id}")
         except Exception as e:
             print("Cloudinary deletion skipped:", e)
 
@@ -1914,13 +1935,19 @@ def delete_perfume_video():
         flash("🗑️ Perfume video deleted successfully!", "success")
     return redirect(url_for('admin_settings'))
 
-from datetime import datetime  # ⬅️ add this import at the top of app.py
+from datetime import datetime  # already added
 
 @app.route('/admin/invoice/<int:order_id>')
 def admin_invoice(order_id):
     order = Order.query.get_or_404(order_id)
     setting = Setting.query.first()
-    return render_template('admin_invoice.html', order=order, setting=setting, datetime=datetime)
+    current_time = datetime.utcnow()  # get real-time when invoice is loaded
+    return render_template(
+        'admin_invoice.html',
+        order=order,
+        setting=setting,
+        datetime_now=current_time
+    )
 
 @app.route("/refund-policy")
 def refund_policy():

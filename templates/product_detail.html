@@ -5,26 +5,30 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
 <style>
   body {
-    background: linear-gradient(to bottom right, #fff8ff, #fdf6ff, #faf1ff);
+    background: linear-gradient(to bottom right, #fff9ff, #fef6ff, #f9f2ff);
     font-family: 'Poppins', sans-serif;
+    color: #3a2d55;
+    scroll-behavior: smooth;
   }
 
-  /* 💎 Glow Card */
+  /* 💎 Elevated Glass Card */
   .aurielle-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    border-radius: 1.75rem;
+    position: relative;
+    background: linear-gradient(145deg, rgba(255,255,255,0.85), rgba(255,250,255,0.75));
+    backdrop-filter: blur(22px);
+    border-radius: 2rem;
     border: 1px solid rgba(230, 153, 255, 0.25);
-    box-shadow: 0 0 40px rgba(230, 153, 255, 0.25);
-    transition: all 0.4s ease;
+    box-shadow: 0 10px 45px rgba(210, 130, 255, 0.25);
+    transition: all 0.5s ease;
   }
   .aurielle-card:hover {
-    box-shadow: 0 0 60px rgba(230, 153, 255, 0.4);
+    box-shadow: 0 20px 65px rgba(200, 120, 255, 0.4);
+    transform: translateY(-2px);
   }
 
-  /* 🌸 Gradient Text */
+  /* 🌈 Gradient Headings */
   .aurielle-gradient {
-    background: linear-gradient(to right, rgb(210,126,255), rgb(255,160,210), rgb(255,210,240));
+    background: linear-gradient(90deg, rgb(200,100,255), rgb(255,150,210), rgb(255,200,240));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -32,30 +36,16 @@
   /* ✨ Buttons */
   .aurielle-btn {
     display: inline-block;
-    padding: 0.9rem 1.2rem;
+    padding: 1rem 1.5rem;
     border-radius: 1rem;
     font-weight: 600;
     color: white;
     text-align: center;
+    letter-spacing: 0.3px;
     transition: all 0.4s ease;
   }
-  .aurielle-btn:hover { transform: scale(1.05); }
-
-  .buy-btn {
-    background: linear-gradient(90deg, rgb(230,140,255), rgb(255,180,230), rgb(255,210,240));
-    box-shadow: 0 0 20px rgba(230,140,255,0.4);
-  }
-  .cart-btn {
-    background: linear-gradient(90deg, rgb(200,100,255), rgb(255,150,210), rgb(255,190,230));
-    box-shadow: 0 0 20px rgba(200,100,255,0.3);
-  }
-  .soldout-btn {
-    background: linear-gradient(90deg, #d8d8d8, #e4e4e4);
-    color: #777;
-    cursor: not-allowed;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    box-shadow: none;
+  .aurielle-btn:hover {
+    transform: scale(1.05) translateY(-1px);
   }
 
   /* 🎥 Video */
@@ -63,342 +53,259 @@
     position: relative;
     width: 100%;
     padding-top: 56.25%;
-    border-radius: 20px;
     overflow: hidden;
-    background: #000;
-    box-shadow: 0 0 25px rgba(230,153,255,0.3);
+    border-radius: 1.5rem;
+    box-shadow: 0 0 35px rgba(230,153,255,0.25);
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(245,230,255,0.7));
   }
   .video-wrapper video {
-    position: absolute;
-    top: 0; left: 0;
+    position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
     object-fit: contain;
   }
 
-  /* ⭐ Stars */
-  .star { color: #ffd966; }
+  /* 🌸 Price Glow */
+  .price-glow {
+    text-shadow: 0 0 10px rgba(204,102,255,0.4);
+  }
+
+  /* 💬 Reviews Box */
+  .review-box {
+    background: linear-gradient(160deg, rgba(255,255,255,0.9), rgba(255,245,255,0.8));
+    border: 1px solid rgba(230,153,255,0.3);
+    border-radius: 1.5rem;
+    box-shadow: 0 0 30px rgba(230,153,255,0.15);
+  }
 
   /* 🌷 Policy Box */
   .policy-box {
-    background: linear-gradient(to right, #fff9ff, #fef2ff, #fbeaff);
-    border: 1px solid rgba(230,153,255,0.3);
+    background: linear-gradient(to right, #fff9ff, #fef3ff, #fcefff);
     border-radius: 1.5rem;
-    padding: 2rem;
-    margin-top: 3rem;
-    box-shadow: 0 0 25px rgba(230,153,255,0.1);
+    border: 1px solid rgba(230,153,255,0.3);
+    box-shadow: 0 0 40px rgba(230,153,255,0.15);
+    padding: 2.5rem;
   }
 
-  /* 💖 Small Note */
-  .note {
-    font-size: 0.85rem;
-    color: #666;
+  /* 🩵 Smooth Gradient Animations */
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  /* ✨ Shimmer Line */
+  @keyframes aurielleShimmer {
+    0% { transform: translateX(-100%); opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0.4; }
+  }
+
+  /* 🪞 Subtle Fade Animation */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeInUp { animation: fadeInUp 0.7s ease forwards; }
+
+  .star { color: #ffd966; }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="max-w-6xl mx-auto px-4 py-14">
+<section class="max-w-6xl mx-auto px-5 sm:px-8 py-14 animate-fadeInUp">
 
 <!-- 🛍️ Product Showcase -->
-<div class="aurielle-card relative overflow-hidden p-8 md:p-10">
-  <!-- Soft background shimmer -->
-  <div class="absolute inset-0 bg-gradient-to-br from-[rgba(255,245,255,0.6)] via-[rgba(255,240,250,0.5)] to-[rgba(245,235,255,0.6)] blur-xl"></div>
+<div class="aurielle-card p-8 md:p-10 relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-[rgba(255,245,255,0.6)] via-[rgba(255,240,250,0.5)] to-[rgba(245,235,255,0.6)] blur-2xl"></div>
 
-  <div class="relative grid grid-cols-1 md:grid-cols-2 gap-10 items-start z-10">
+  <div class="relative grid grid-cols-1 md:grid-cols-2 gap-12 items-start z-10">
 
-    <!-- 💫 Left: Product Media -->
+    <!-- 💫 Left: Media -->
     <div class="space-y-6">
-
-      <!-- Main Product Image -->
       {% if product.image %}
       <div class="relative group">
-        <div class="absolute inset-0 bg-gradient-to-tr from-[rgba(230,153,255,0.2)] via-[rgba(255,180,240,0.2)] to-transparent 
-                    opacity-0 group-hover:opacity-100 transition duration-700 rounded-2xl"></div>
         <a href="{{ product.image }}" class="glightbox block" data-gallery="product-gallery">
           <img src="{{ product.image }}" alt="{{ product.name }}"
-               class="rounded-2xl w-full h-[450px] object-contain shadow-xl hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(230,153,255,0.4)] transition-all duration-700 ease-out bg-white/80 backdrop-blur-md" />
+               class="rounded-2xl w-full h-[450px] object-contain shadow-2xl hover:scale-[1.03] transition-all duration-700 ease-out bg-white/70 backdrop-blur-md border border-[rgba(230,153,255,0.3)]">
         </a>
+        <div class="absolute inset-0 bg-gradient-to-tr from-[rgba(230,153,255,0.25)] via-[rgba(255,180,240,0.25)] to-transparent opacity-0 group-hover:opacity-100 transition duration-700 rounded-2xl"></div>
       </div>
       {% endif %}
 
-      <!-- Additional Views -->
       {% if product.images %}
       <div>
-        <h3 class="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">
-          More Views & Finishes
-        </h3>
+        <h3 class="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">More Views</h3>
         <div class="flex flex-wrap gap-4 justify-center sm:justify-start">
           {% for img in product.images %}
           <a href="{{ img.filename }}" class="glightbox relative group" data-gallery="product-gallery">
-            <div class="absolute inset-0 bg-gradient-to-tr from-[rgba(230,153,255,0.25)] to-[rgba(255,180,220,0.25)]
-                        opacity-0 group-hover:opacity-100 rounded-xl blur-sm transition duration-500"></div>
             <img src="{{ img.filename }}" alt="{{ product.name }}"
-                 class="h-20 w-20 object-cover rounded-xl border border-[rgba(230,153,255,0.25)] 
-                        shadow-sm hover:scale-110 hover:shadow-[0_0_15px_rgba(230,153,255,0.4)] 
-                        transition-all duration-500 ease-out cursor-pointer bg-white/70" />
+                 class="h-20 w-20 object-cover rounded-xl border border-[rgba(230,153,255,0.25)] shadow-sm hover:scale-110 hover:shadow-[0_0_15px_rgba(230,153,255,0.4)] transition-all duration-500 bg-white/70 cursor-pointer">
           </a>
           {% endfor %}
         </div>
       </div>
       {% endif %}
 
-      <!-- Product Showcase Video -->
       {% if product.video_url %}
-      <div class="mt-6">
+      <div class="mt-8">
         <h3 class="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">Visual Preview</h3>
-        <div class="video-wrapper relative overflow-hidden rounded-2xl border border-[rgba(230,153,255,0.3)] shadow-lg">
+        <div class="video-wrapper">
           <video controls playsinline preload="metadata"
                  poster="{{ product.image if product.image else '' }}"
-                 class="w-full h-[320px] object-contain bg-black/5 rounded-2xl transition-all duration-500 hover:scale-[1.01]">
+                 class="rounded-2xl">
             <source src="{{ product.video_url }}" type="video/mp4">
           </video>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
         </div>
         <p class="text-xs text-gray-600 mt-3 text-center italic">
-          A closer look at the craftsmanship, finish, and reflection under natural light.
+          A cinematic look at craftsmanship, finish, and reflection under natural light.
         </p>
       </div>
       {% endif %}
-
-      <!-- Lifestyle Note -->
-      <div class="mt-8 text-center px-2">
-        <p class="text-sm text-gray-600 leading-relaxed italic">
-          Designed for moments that deserve to be remembered. Each piece blends modern elegance 
-          with timeless character — a reflection of individuality, confidence, and subtle grace.  
-          Let it complement your story.
-        </p>
-      </div>
-
     </div>
-  </div>
-</div>
 
-      <!-- 💎 Product Info -->
-      <div>
-        <h1 class="text-4xl font-extrabold aurielle-gradient mb-4">{{ product.name }}</h1>
+    <!-- 💎 Product Info -->
+    <div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold aurielle-gradient mb-4 leading-tight">{{ product.name }}</h1>
 
-        {% if product.before_price and product.before_price > product.today_price %}
-          {% set discount = ((product.before_price - product.today_price) / product.before_price) * 100 %}
-          <div class="flex items-center gap-3 mb-4">
-            <span class="line-through text-gray-400 text-lg">Rs {{ product.before_price|int }}</span>
-            <span class="text-3xl font-extrabold text-[rgb(204,102,255)]">Rs {{ product.today_price|int }}</span>
-            <span class="bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] text-white text-xs font-bold px-2.5 py-1 rounded-full animate-pulse">
-              -{{ discount|round(0) }}%
-            </span>
+      {% if product.before_price and product.before_price > product.today_price %}
+        {% set discount = ((product.before_price - product.today_price) / product.before_price) * 100 %}
+        <div class="flex items-center gap-3 mb-4">
+          <span class="line-through text-gray-400 text-lg">Rs {{ product.before_price|int }}</span>
+          <span class="text-3xl sm:text-4xl font-extrabold text-[rgb(204,102,255)] price-glow">Rs {{ product.today_price|int }}</span>
+          <span class="bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
+            -{{ discount|round(0) }}%
+          </span>
+        </div>
+      {% else %}
+        <p class="text-3xl font-extrabold text-[rgb(204,102,255)] mb-4 price-glow">Rs {{ product.today_price|int }}</p>
+      {% endif %}
+
+      {% if product.reviews %}
+        {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
+        <div class="flex items-center gap-2 mb-4">
+          <div class="flex text-yellow-400 text-lg">
+            {% for i in range(1,6) %}
+              {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
+            {% endfor %}
           </div>
+          <span class="text-sm text-gray-600">{{ "%.1f"|format(avg_rating) }}/5 ({{ product.reviews|length }} Reviews)</span>
+        </div>
+      {% endif %}
+
+      <div class="prose max-w-none text-gray-700 leading-relaxed mb-6">
+        {% if '<p>' in product.description or '<br>' in product.description %}
+          {{ product.description | safe }}
         {% else %}
-          <p class="text-3xl font-extrabold text-[rgb(204,102,255)] mb-4">Rs {{ product.today_price|int }}</p>
+          <p class="whitespace-pre-line break-words">{{ product.description }}</p>
         {% endif %}
-
-        {% if product.reviews %}
-          {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
-          <div class="flex items-center gap-2 mb-4">
-            <div class="flex text-yellow-400 text-lg">
-              {% for i in range(1,6) %}
-                {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
-              {% endfor %}
-            </div>
-            <span class="text-sm text-gray-600">
-              {{ "%.1f"|format(avg_rating) }}/5 ({{ product.reviews|length }} Reviews)
-            </span>
-          </div>
-        {% endif %}
-
-        <div class="prose max-w-none text-gray-700 leading-relaxed mb-6">
-          {% if '<p>' in product.description or '<br>' in product.description %}
-            {{ product.description | safe }}
-          {% else %}
-            <p class="whitespace-pre-line break-words">{{ product.description }}</p>
-          {% endif %}
-        </div>
-
-<!-- 🛒 Add to Cart / Buy Now / Sold Out -->
-<div class="mt-8 flex flex-col sm:flex-row items-center gap-4">
-  {% if product.is_soldout %}
-    <!-- ✨ SOLD OUT (Luxury Style) -->
-    <div class="w-full text-center">
-      <button 
-        class="w-full relative text-white text-base font-semibold py-3 rounded-xl cursor-not-allowed 
-               flex items-center justify-center gap-2 overflow-hidden border border-[rgba(190,130,255,0.4)]
-               bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(230,140,255)] to-[rgb(255,180,230)]
-               shadow-[0_0_20px_rgba(210,140,255,0.4)] tracking-wide uppercase select-none">
-        <span class="relative z-10 flex items-center gap-2 drop-shadow-[0_0_4px_rgba(255,255,255,0.6)]">
-          ❌ Sold&nbsp;Out
-        </span>
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent 
-                    animate-[aurielleShimmer_2.8s_infinite]"></div>
-      </button>
-
-      <!-- 💬 Sold-Out Note -->
-      <p class="mt-3 text-sm text-[rgb(110,80,160)] italic font-medium">
-        This piece is currently unavailable — but don’t worry, it’ll be back soon! 💫  
-        <br class="hidden sm:block">
-        Stay tuned or message us on <span class="text-[rgb(180,100,255)] font-semibold">WhatsApp</span> for restock alerts.
-      </p>
-    </div>
-
-  {% else %}
-    <!-- 🛍️ Add to Cart -->
-    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2 relative group">
-      <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(255,140,210)] to-[rgb(240,190,255)]
-                   opacity-70 blur-md transition-all duration-700 group-hover:opacity-100 group-hover:blur-lg animate-gradient"></span>
-      <button type="submit" 
-        class="relative w-full aurielle-btn bg-white text-[rgb(130,50,200)] border-2 border-transparent rounded-xl 
-               py-3 text-base font-semibold flex items-center justify-center gap-2
-               shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden z-10">
-         <span>Add to Cart</span>
-      </button>
-    </form>
-
-    <!-- 💖 Buy Now -->
-    <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2 relative group">
-      <span class="absolute inset-0 rounded-xl bg-gradient-to-r from-[rgb(255,110,190)] via-[rgb(240,150,255)] to-[rgb(255,200,230)]
-                   opacity-70 blur-md transition-all duration-700 group-hover:opacity-100 group-hover:blur-lg animate-gradient"></span>
-      <button type="submit" 
-        class="relative w-full aurielle-btn bg-white text-[rgb(160,70,220)] border-2 border-transparent rounded-xl 
-               py-3 text-base font-semibold flex items-center justify-center gap-2
-               shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden z-10">
-         <span>Buy It Now</span>
-      </button>
-    </form>
-  {% endif %}
-</div>
-
-<style>
-/* 🌈 Smooth Gradient Animation */
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradientShift 3s ease infinite;
-}
-
-/* ✨ Soft shimmer sweep for Sold-Out */
-@keyframes aurielleShimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-</style>
-
-<!-- 💬 Customer Reviews -->
-<div class="mt-14 aurielle-card p-8">
-  <h2 class="text-2xl font-bold aurielle-gradient mb-8 text-center">Customer Reviews</h2>
-
-  {% if product.reviews %}
-  <div class="divide-y divide-[rgba(230,153,255,0.2)]">
-    {% for review in product.reviews %}
-    <div class="py-5">
-      <div class="flex items-center justify-between mb-1">
-        <div class="flex text-yellow-400 text-lg">
-          {% for i in range(1,6) %}
-            {% if i <= review.rating %}★{% else %}☆{% endif %}
-          {% endfor %}
-        </div>
-        <span class="text-sm text-gray-600">{{ review.rating }}/5</span>
       </div>
-      <p class="text-gray-800 leading-relaxed">{{ review.comment }}</p>
-      <p class="text-xs text-gray-500 mt-1">— {{ review.user_name or "Anonymous" }}, {{ review.created_at.strftime('%Y-%m-%d') }}</p>
+
+      <!-- 🛒 Buttons -->
+      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        {% if product.is_soldout %}
+          <button disabled class="w-full sm:w-1/2 soldout-btn py-3 text-center rounded-xl font-semibold bg-gradient-to-r from-gray-300 to-gray-200 text-gray-600 uppercase shadow-inner">
+            ❌ Sold Out
+          </button>
+        {% else %}
+          <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2">
+            <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(255,150,210)] to-[rgb(255,190,230)] shadow-[0_0_25px_rgba(200,100,255,0.4)]">Add to Cart</button>
+          </form>
+          <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2">
+            <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(255,110,190)] via-[rgb(240,150,255)] to-[rgb(255,200,230)] shadow-[0_0_25px_rgba(240,150,255,0.4)]">Buy Now</button>
+          </form>
+        {% endif %}
+      </div>
     </div>
-    {% endfor %}
   </div>
+</div>
+
+<!-- 💬 Reviews Section -->
+<div class="review-box mt-14 p-8">
+  <h2 class="text-2xl font-bold aurielle-gradient mb-8 text-center">Customer Reviews</h2>
+  {% if product.reviews %}
+    <div class="divide-y divide-[rgba(230,153,255,0.2)]">
+      {% for review in product.reviews %}
+      <div class="py-5">
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex text-yellow-400 text-lg">
+            {% for i in range(1,6) %}
+              {% if i <= review.rating %}★{% else %}☆{% endif %}
+            {% endfor %}
+          </div>
+          <span class="text-sm text-gray-600">{{ review.rating }}/5</span>
+        </div>
+        <p class="text-gray-800 leading-relaxed">{{ review.comment }}</p>
+        <p class="text-xs text-gray-500 mt-1">— {{ review.user_name or "Anonymous" }}, {{ review.created_at.strftime('%Y-%m-%d') }}</p>
+      </div>
+      {% endfor %}
+    </div>
   {% else %}
-  <p class="text-gray-500 italic text-center mb-8">No reviews yet. Be the first to share your sparkle.</p>
+    <p class="text-gray-500 italic text-center">No reviews yet — be the first to sparkle ✨</p>
   {% endif %}
+</div>
 
-  <!-- ✍️ Review Form -->
-  <div class="mt-10">
-    <h3 class="text-xl font-semibold aurielle-gradient mb-6 text-center">Write a Review</h3>
+<!-- ✍️ Review Form -->
+<div class="mt-10 aurielle-card p-8">
+  <h3 class="text-xl font-semibold aurielle-gradient mb-6 text-center">Write a Review</h3>
+  <form method="POST" action="{{ url_for('add_review', product_id=product.id) }}" class="space-y-5 max-w-lg mx-auto">
+    <div>
+      <label class="block text-sm font-semibold text-gray-700 mb-2">Rating</label>
+      <select name="rating" required class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/80 focus:ring-2 focus:ring-[rgb(204,102,255)]">
+        <option value="">Select Rating</option>
+        <option value="5">★★★★★ Excellent</option>
+        <option value="4">★★★★☆ Good</option>
+        <option value="3">★★★☆☆ Average</option>
+        <option value="2">★★☆☆☆ Poor</option>
+        <option value="1">★☆☆☆☆ Terrible</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700 mb-2">Your Review</label>
+      <textarea name="comment" rows="4" required placeholder="Share your experience..." class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/80 focus:ring-2 focus:ring-[rgb(204,102,255)] resize-none"></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-semibold text-gray-700 mb-2">Name (optional)</label>
+      <input type="text" name="user_name" placeholder="Your name" class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/80 focus:ring-2 focus:ring-[rgb(204,102,255)]">
+    </div>
+    <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(240,150,255)] to-[rgb(255,190,240)] shadow-[0_0_25px_rgba(200,100,255,0.4)]">Submit Review</button>
+  </form>
+</div>
 
-    <form method="POST" action="{{ url_for('add_review', product_id=product.id) }}" class="space-y-5 max-w-lg mx-auto">
-      
-      <!-- ⭐ Rating -->
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">Rating</label>
-        <select name="rating" required
-          class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-[rgb(204,102,255)] focus:border-transparent bg-white/70 backdrop-blur-sm transition">
-          <option value="">Select your rating</option>
-          <option value="5">★★★★★ Excellent</option>
-          <option value="4">★★★★☆ Good</option>
-          <option value="3">★★★☆☆ Average</option>
-          <option value="2">★★☆☆☆ Poor</option>
-          <option value="1">★☆☆☆☆ Terrible</option>
-        </select>
-      </div>
-
-      <!-- 💬 Review Text -->
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">Your Review</label>
-        <textarea name="comment" rows="4" placeholder="Share your experience..."
-          class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-[rgb(204,102,255)] focus:border-transparent bg-white/70 backdrop-blur-sm transition resize-none" required></textarea>
-      </div>
-
-      <!-- 👤 Name -->
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">Name (optional)</label>
-        <input type="text" name="user_name" placeholder="Your name (optional)"
-          class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-[rgb(204,102,255)] focus:border-transparent bg-white/70 backdrop-blur-sm transition">
-      </div>
-
-<!-- Submit -->
-<button type="submit" 
-  class="w-full text-base font-semibold py-3 rounded-xl transition-all duration-500 shadow-md hover:shadow-xl
-         bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(240,150,255)] to-[rgb(255,190,240)]
-         text-white hover:from-[rgb(180,90,250)] hover:via-[rgb(230,130,255)] hover:to-[rgb(255,170,240)]
-         border border-[rgba(230,153,255,0.3)] backdrop-blur-md">
-  Submit Review
-</button>
-
-
-<!-- 🚚 Delivery & Exchange Policy -->
-<div class="policy-box px-5 sm:px-8 py-8 sm:py-10 rounded-3xl bg-white/70 backdrop-blur-xl border border-[rgba(230,153,255,0.3)] shadow-[0_0_30px_rgba(230,153,255,0.15)]">
-
-  <h2 class="text-2xl sm:text-3xl font-bold aurielle-gradient mb-4 text-center">
-    Delivery & Exchange Policy
-  </h2>
-
-  <p class="text-gray-700 leading-relaxed mb-5 text-center text-sm sm:text-base">
-    At <strong>Aurielle</strong>, we ensure your precious order arrives safely and on time.  
-    Standard delivery takes <strong>2 – 7 business days</strong> across Pakistan.
+<!-- 🚚 Delivery & Exchange -->
+<div class="policy-box mt-14">
+  <h2 class="text-3xl font-bold aurielle-gradient mb-4 text-center">Delivery & Exchange Policy</h2>
+  <p class="text-gray-700 text-center mb-5">
+    At <strong>Aurielle</strong>, every order is shipped with love and care. Standard delivery within <strong>2–7 business days</strong> across Pakistan.
   </p>
-
-  <ul class="list-disc pl-6 sm:pl-8 space-y-2 text-gray-700 text-sm sm:text-base">
-    <li>If your parcel doesn’t arrive within 7 days, please contact us via  
-      <strong class="text-[rgb(204,102,255)]">WhatsApp (link on homepage)</strong> for instant assistance.</li>
-    <li>Delivery timelines may vary slightly for custom or pre-order pieces.</li>
+  <ul class="list-disc pl-8 text-gray-700 space-y-2">
+    <li>Track orders easily via WhatsApp for quick updates.</li>
+    <li>Delivery times may vary for custom or pre-order pieces.</li>
   </ul>
 
-  <h3 class="text-xl sm:text-2xl font-semibold aurielle-gradient mt-8 mb-3 text-center">
-    Exchange Policy
-  </h3>
-
-  <ul class="list-disc pl-6 sm:pl-8 space-y-2 text-gray-700 text-sm sm:text-base">
-    <li>Exchange available within <strong>24 hours</strong> of delivery for unused, unworn jewelry.</li>
-    <li>Items must be returned in their original packaging with all tags, boxes, and pouches intact.</li>
-    <li>Customized, engraved, or sale items are not eligible for exchange.</li>
-    <li>Please inform us via WhatsApp before initiating an exchange.</li>
-    <li>Exchange shipping charges are covered by the customer unless the item is defective or incorrect.</li>
+  <h3 class="text-2xl font-semibold aurielle-gradient mt-8 mb-3 text-center">Exchange Policy</h3>
+  <ul class="list-disc pl-8 text-gray-700 space-y-2">
+    <li>Exchange available within 24 hours of delivery for unused items.</li>
+    <li>Original packaging and tags must be intact.</li>
+    <li>Customized or sale items are non-refundable.</li>
   </ul>
-
-  <p class="note mt-6 text-center italic text-gray-600 text-xs sm:text-sm leading-relaxed">
-    For any queries, contact our official WhatsApp (shown on homepage).  
-    We’re always here to help — your satisfaction is our sparkle.
+  <p class="text-center mt-5 italic text-gray-500 text-sm">
+    Questions? Message us on WhatsApp anytime — we’re always here for you 💖
   </p>
 </div>
 
-<!-- 🛍️ Continue Shopping Button -->
-<div class="mt-10 flex justify-center">
-  <a href="{{ url_for('index') }}"
-     class="w-full sm:w-auto aurielle-btn text-white text-base sm:text-lg font-semibold px-10 py-3 rounded-xl 
-            transition-all duration-500 text-center shadow-lg hover:shadow-[0_0_25px_rgba(160,70,220,0.6)] 
-            hover:scale-[1.03]"
-     style="background: linear-gradient(90deg, rgb(150,60,220), rgb(200,100,255), rgb(245,180,255));
-            box-shadow: 0 0 25px rgba(160,70,220,0.4);">
+<!-- 🛍️ Continue Shopping -->
+<div class="mt-12 text-center">
+  <a href="{{ url_for('index') }}" class="aurielle-btn text-white text-lg font-semibold px-10 py-3 rounded-xl 
+            shadow-[0_0_30px_rgba(160,70,220,0.4)] hover:scale-105 
+            bg-gradient-to-r from-[rgb(150,60,220)] via-[rgb(200,100,255)] to-[rgb(245,180,255)]">
     ← Continue Shopping
   </a>
 </div>
+
 </section>
 {% endblock %}
 

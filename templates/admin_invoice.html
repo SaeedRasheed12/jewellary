@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Invoice #{{ order.tracking_number }} — {{ setting.website_name if setting else 'Bin Ahmed' }}</title>
+  <title>Invoice #{{ order.tracking_number }} — {{ setting.website_name if setting else 'Aurielle' }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    body { font-family: 'Poppins', sans-serif; background-color: #f9fafb; color: #1f2937; }
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: linear-gradient(to bottom right, #fdf9ff, #faf5ff, #fff);
+      color: #3b2e5a;
+    }
     @media print {
       .no-print { display: none !important; }
       body { background: white; margin: 0; }
@@ -16,29 +19,27 @@
 </head>
 
 <body class="p-4 sm:p-8">
-  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-200">
-    
-    <!-- 🧾 Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-center bg-gray-50 border-b border-gray-200 p-6">
+  <div class="max-w-4xl mx-auto bg-white/90 shadow-xl rounded-3xl overflow-hidden border border-[rgba(230,153,255,0.3)] backdrop-blur-xl">
+
+    <!-- 💎 Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-[rgb(240,230,255)] via-[rgb(250,240,255)] to-[rgb(255,245,250)] border-b border-[rgba(230,153,255,0.25)] p-6">
       <div class="flex items-center gap-4">
         {% if setting and setting.logo %}
-        <img src="{{ setting.logo }}" alt="Logo" class="h-16 w-auto rounded-md shadow-sm">
+        <img src="{{ setting.logo }}" alt="Aurielle Logo" class="h-16 w-auto rounded-lg shadow-sm border border-[rgba(230,153,255,0.3)]">
         {% endif %}
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">
-            {{ setting.website_name if setting else 'Bin Ahmed Store' }}
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-[rgb(180,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)] text-transparent bg-clip-text">
+            {{ setting.website_name if setting else 'Aurielle' }}
           </h1>
           <p class="text-sm text-gray-500">Invoice #{{ order.tracking_number }}</p>
         </div>
       </div>
 
-      <div class="mt-4 sm:mt-0 text-right">
-        <p class="text-sm text-gray-600">
-          Date: {{ order.created_at.strftime('%Y-%m-%d %I:%M %p') }}
-        </p>
-        <p class="text-sm">
+      <div class="mt-4 sm:mt-0 text-right text-sm text-gray-700">
+        <p>Date: {{ order.created_at.strftime('%Y-%m-%d %I:%M %p') }}</p>
+        <p>
           Status:
-          <span class="{% if order.status == 'Delivered' %}text-green-600{% elif order.status == 'Cancelled' %}text-red-600{% else %}text-yellow-600{% endif %} font-semibold">
+          <span class="{% if order.status == 'Delivered' %}text-green-600{% elif order.status == 'Cancelled' %}text-red-600{% else %}text-purple-600{% endif %} font-semibold">
             {{ order.status }}
           </span>
         </p>
@@ -46,18 +47,19 @@
     </div>
 
     <!-- 👤 Customer + Order Info -->
-    <div class="p-6 grid sm:grid-cols-2 gap-6 border-b border-gray-200">
+    <div class="p-6 grid sm:grid-cols-2 gap-6 border-b border-[rgba(230,153,255,0.2)]">
       <div>
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Customer Information</h2>
+        <h2 class="text-lg font-semibold text-purple-700 mb-2">Customer Information</h2>
         <div class="space-y-1 text-sm text-gray-700">
           <p><strong>Name:</strong> {{ order.name }}</p>
           <p><strong>Phone:</strong> {{ order.phone }}</p>
+          <p><strong>City:</strong> {{ order.city if order.city else '—' }}</p>
           <p><strong>Address:</strong> {{ order.address }}</p>
         </div>
       </div>
 
       <div>
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Order Details</h2>
+        <h2 class="text-lg font-semibold text-purple-700 mb-2">Order Details</h2>
         <div class="space-y-1 text-sm text-gray-700">
           <p><strong>Tracking #:</strong> {{ order.tracking_number }}</p>
           {% if order.coupon_code %}
@@ -78,29 +80,29 @@
 
     <!-- 📦 Order Items -->
     <div class="p-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4">Ordered Items</h2>
-      <div class="overflow-x-auto rounded-lg border border-gray-200">
+      <h2 class="text-lg font-semibold text-purple-700 mb-4">Ordered Items</h2>
+      <div class="overflow-x-auto rounded-xl border border-[rgba(230,153,255,0.2)] shadow-inner">
         <table class="w-full text-sm">
-          <thead class="bg-gray-100 border-b border-gray-200 text-gray-700">
+          <thead class="bg-gradient-to-r from-[rgb(245,240,255)] via-[rgb(250,245,255)] to-[rgb(255,250,255)] text-[rgb(90,70,130)] border-b border-[rgba(230,153,255,0.25)]">
             <tr>
-              <th class="py-3 px-4 text-left">Product</th>
-              <th class="py-3 px-4 text-center">Quantity</th>
-              <th class="py-3 px-4 text-center">Unit Price</th>
-              <th class="py-3 px-4 text-right">Subtotal</th>
+              <th class="py-3 px-4 text-left font-medium">Product</th>
+              <th class="py-3 px-4 text-center font-medium">Quantity</th>
+              <th class="py-3 px-4 text-center font-medium">Unit Price</th>
+              <th class="py-3 px-4 text-right font-medium">Subtotal</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-[rgba(230,153,255,0.15)]">
             {% for item in order.items %}
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-[rgba(245,230,255,0.4)] transition">
               <td class="py-3 px-4 flex items-center gap-3">
                 {% if item.product_image %}
-                <img src="{{ item.product_image }}" alt="{{ item.product_name }}" class="w-10 h-10 rounded-md border">
+                <img src="{{ item.product_image }}" alt="{{ item.product_name }}" class="w-10 h-10 rounded-md border border-[rgba(230,153,255,0.3)]">
                 {% endif %}
                 <span class="font-medium text-gray-800">{{ item.product_name }}</span>
               </td>
               <td class="py-3 px-4 text-center">{{ item.quantity }}</td>
               <td class="py-3 px-4 text-center">Rs {{ "%.2f"|format(item.price) }}</td>
-              <td class="py-3 px-4 text-right font-semibold text-gray-900">
+              <td class="py-3 px-4 text-right font-semibold text-purple-700">
                 Rs {{ "%.2f"|format(item.price * item.quantity) }}
               </td>
             </tr>
@@ -111,8 +113,8 @@
     </div>
 
     <!-- 💰 Totals -->
-    <div class="bg-gray-50 border-t border-gray-200 p-6">
-      <div class="max-w-sm ml-auto text-sm space-y-2">
+    <div class="bg-gradient-to-r from-[rgb(250,245,255)] via-[rgb(255,250,255)] to-[rgb(255,240,250)] border-t border-[rgba(230,153,255,0.25)] p-6">
+      <div class="max-w-sm ml-auto text-sm space-y-2 text-gray-700">
         <div class="flex justify-between">
           <span>Subtotal:</span>
           <span>Rs {{ "%.2f"|format(order.product_total or (order.total + (order.discount or 0) - order.delivery_fee)) }}</span>
@@ -130,15 +132,15 @@
         </div>
 
         {% if order.coupon_code %}
-        <div class="flex justify-between text-green-700 font-medium">
+        <div class="flex justify-between text-green-600 font-medium">
           <span>Discount ({{ order.coupon_code }}):</span>
           <span>- Rs {{ "%.2f"|format(order.discount or 0) }}</span>
         </div>
         {% endif %}
 
-        <hr class="my-2 border-gray-300">
+        <hr class="my-2 border-[rgba(230,153,255,0.25)]">
 
-        <div class="flex justify-between text-lg font-bold text-green-700">
+        <div class="flex justify-between text-lg font-bold text-purple-700">
           <span>Total Amount:</span>
           <span>Rs {{ "%.2f"|format(order.total) }}</span>
         </div>
@@ -146,16 +148,16 @@
     </div>
 
     <!-- 🧾 Footer -->
-    <div class="p-6 text-center text-sm text-gray-500 border-t border-gray-200">
-      <p>&copy; {{ setting.website_name if setting else 'Bin Ahmed' }} — All Rights Reserved.</p>
-      <p class="mt-1">
-        Generated on {{ datetime.utcnow().strftime('%Y-%m-%d %I:%M %p') }} | Digital Copy
+    <div class="p-6 text-center text-sm text-[rgb(90,70,130)] border-t border-[rgba(230,153,255,0.2)] bg-[rgb(250,245,255)]">
+      <p>&copy; {{ setting.website_name if setting else 'Aurielle' }} — All Rights Reserved.</p>
+      <p class="mt-1 text-gray-600">
+        Generated on {{ datetime_now.strftime('%Y-%m-%d %I:%M %p') }} | Digital Copy
       </p>
       <p class="mt-2 text-xs italic text-gray-400">
         This is a computer-generated invoice — no signature required.
       </p>
       <button onclick="window.print()" 
-              class="no-print mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+              class="no-print mt-4 px-6 py-2 bg-gradient-to-r from-[rgb(180,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)] text-white rounded-lg shadow hover:scale-105 transition-all">
         🖨️ Print Invoice
       </button>
     </div>
