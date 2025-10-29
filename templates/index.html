@@ -477,12 +477,6 @@
                 bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full"></div>
   </div>
 
-  <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
-     class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-[rgb(204,102,255)] hover:underline font-medium">
-    View All →
-  </a>
-</div>
-
         <!-- 🧿 Product Grid -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
           {% for product in cat_products %}
