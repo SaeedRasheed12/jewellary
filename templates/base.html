@@ -257,6 +257,7 @@
   });
   </script>
 
+{% if setting and setting.line_banner_text %}
 <!-- 💜 AURIELLE — Elegant Scrolling Line Banner -->
 <div id="line-banner"
      class="fixed top-[72px] sm:top-[80px] inset-x-0 z-[1040]
@@ -266,12 +267,10 @@
   <div class="banner-marquee-wrapper">
     <div class="banner-marquee-text flex animate-marquee">
       <span class="banner-marquee-content mx-6 sm:mx-8">
-        {{ setting.line_banner_text if setting and setting.line_banner_text else 
-        "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
+        {{ setting.line_banner_text }}
       </span>
       <span class="banner-marquee-content mx-6 sm:mx-8" aria-hidden="true">
-        {{ setting.line_banner_text if setting and setting.line_banner_text else 
-        "💎 AURIELLE — Luxury You Deserve ✨ | Mid Season Sale Up To 50% Off 💖" }}
+        {{ setting.line_banner_text }}
       </span>
     </div>
   </div>
@@ -322,6 +321,7 @@
   50% { opacity: 1; filter: blur(3px); }
 }
 </style>
+{% endif %}
 
 <!-- 💎 AURIELLE — Page Content Area -->
 <main class="flex-grow max-w-6xl mx-auto px-4 py-10 bg-gradient-to-br 
