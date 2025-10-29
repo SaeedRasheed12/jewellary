@@ -226,6 +226,7 @@ class Setting(db.Model):
     line_banner_text = db.Column(db.String(255))
     background_image = db.Column(db.String(200)) 
     hero_banner = db.Column(db.String(255))  # Hero banner filename
+    hero_video = db.Column(db.String(500))
     about_image = db.Column(db.String(500))
     perfume_image = db.Column(db.String(500))
     perfume_video = db.Column(db.String(500))
@@ -260,9 +261,10 @@ def index():
 
     now = datetime.now()
 
+    # 🕒 Product visibility timer logic
     if setting and setting.timer_enabled and setting.product_visibility_start:
         start = setting.product_visibility_start
-        end = setting.product_visibility_end
+        end = getattr(setting, 'product_visibility_end', None)
 
         if now >= start and (not end or now <= end):
             if category_id:
@@ -277,12 +279,16 @@ def index():
         else:
             products = Product.query.all()
 
+    # ✅ Ensure hero_video is accessible in template
+    hero_video = setting.hero_video if setting and hasattr(setting, 'hero_video') else None
+
     return render_template(
         'index.html',
         products=products,
         categories=categories,
         setting=setting,
         promo_banners=promo_banners,
+        hero_video=hero_video,  # 🎥 pass new video field
         selected_category=category_id
     )
 
@@ -683,6 +689,18 @@ def admin_settings():
                 )
                 setting.hero_banner = upload_result.get("secure_url")
                 flash("✅ Hero banner updated!", "success")
+
+        # 🎥 ✅ Handle Hero Video Upload (Cloudinary)
+        if 'hero_video' in request.files:
+            video_file = request.files['hero_video']
+            if video_file and video_file.filename.strip():
+                upload_result = cloudinary.uploader.upload(
+                    video_file,
+                    folder="Aurielle/hero_videos",
+                    resource_type="video"
+                )
+                setting.hero_video = upload_result.get("secure_url")
+                flash("🎬 Hero video uploaded successfully!", "success")
 
         # ✅ Handle Background Image Upload (Cloudinary)
         if 'background_image' in request.files:

@@ -8,12 +8,20 @@
 <section class="relative w-full overflow-hidden mb-16 h-[60vh] sm:h-[75vh] rounded-3xl shadow-2xl 
                 bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100 flex items-center justify-center">
 
-  <!-- 🌷 Hero Image (Now Fits Screen Nicely) -->
+  <!-- 🎥 Hero Video (If Uploaded by Admin) -->
+  {% if setting.hero_video %}
+  <video autoplay muted loop playsinline preload="auto"
+         class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-[0.85] transition-all duration-[3000ms] ease-in-out hover:scale-[1.02]">
+    <source src="{{ setting.hero_video }}" type="video/mp4">
+  </video>
+  {% else %}
+  <!-- 🌷 Hero Image (Fallback) -->
   <img src="{{ setting.hero_banner }}"
        alt="Aurielle Hero Banner"
        class="absolute inset-0 w-full h-full object-contain sm:object-cover md:object-contain 
               rounded-3xl transition-transform duration-[3000ms] ease-in-out hover:scale-[1.02] 
               bg-white/30 backdrop-blur-sm" />
+  {% endif %}
 
   <!-- ✨ Layered Gradient Overlays (Improved for Text Visibility) -->
   <div class="absolute inset-0 bg-black/40 rounded-3xl z-10"></div>
