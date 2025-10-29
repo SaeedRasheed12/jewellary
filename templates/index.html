@@ -3,27 +3,70 @@
 
 {% block content %}
 
-<!-- 🌸 AURIELLE Hero Banner — Luxe Glow Edition -->
-{% if setting and setting.hero_banner %}
+<!-- 🌸 AURIELLE Hero Banner — Luxe Glow + Smart Media Edition -->
+{% if setting and (setting.hero_banner or setting.hero_video) %}
 <section class="relative w-full overflow-hidden mb-16 h-[60vh] sm:h-[75vh] rounded-3xl shadow-2xl 
                 bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100 flex items-center justify-center">
 
-  <!-- 🎥 Hero Video (If Uploaded by Admin) -->
-  {% if setting.hero_video %}
-  <video autoplay muted loop playsinline preload="auto"
-         class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-[0.85] transition-all duration-[3000ms] ease-in-out hover:scale-[1.02]">
+  <!-- 🌈 Media Carousel (if both image + video exist) -->
+  {% if setting.hero_banner and setting.hero_video %}
+  <div id="heroCarousel" class="relative w-full h-full overflow-hidden rounded-3xl">
+    <div class="carousel-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out" id="slide-image">
+      <img src="{{ setting.hero_banner }}"
+           alt="Aurielle Hero Banner"
+           class="w-full h-full object-cover rounded-3xl brightness-95" />
+    </div>
+    <div class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out" id="slide-video">
+      <video autoplay muted loop playsinline 
+             class="w-full h-full object-cover rounded-3xl brightness-95">
+        <source src="{{ setting.hero_video }}" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- ◀ ▶ Controls -->
+    <button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white z-40 text-3xl">❮</button>
+    <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white z-40 text-3xl">❯</button>
+  </div>
+
+  <!-- 💎 Auto Slide Script -->
+  <script>
+    let slides = ["slide-image", "slide-video"];
+    let current = 0;
+    const showSlide = (index) => {
+      slides.forEach((id, i) => {
+        document.getElementById(id).style.opacity = (i === index) ? "1" : "0";
+      });
+    };
+    document.getElementById("prevSlide").onclick = () => {
+      current = (current - 1 + slides.length) % slides.length;
+      showSlide(current);
+    };
+    document.getElementById("nextSlide").onclick = () => {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    };
+    // Auto-switch every 8 seconds
+    setInterval(() => {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }, 8000);
+  </script>
+
+  {% elif setting.hero_video %}
+  <!-- 🎥 Hero Video -->
+  <video autoplay muted loop playsinline
+         class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95">
     <source src="{{ setting.hero_video }}" type="video/mp4">
   </video>
-  {% else %}
-  <!-- 🌷 Hero Image (Fallback) -->
+
+  {% elif setting.hero_banner %}
+  <!-- 🌷 Hero Image -->
   <img src="{{ setting.hero_banner }}"
        alt="Aurielle Hero Banner"
-       class="absolute inset-0 w-full h-full object-contain sm:object-cover md:object-contain 
-              rounded-3xl transition-transform duration-[3000ms] ease-in-out hover:scale-[1.02] 
-              bg-white/30 backdrop-blur-sm" />
+       class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95" />
   {% endif %}
 
-  <!-- ✨ Layered Gradient Overlays (Improved for Text Visibility) -->
+  <!-- ✨ Gradient & Glow Overlays -->
   <div class="absolute inset-0 bg-black/40 rounded-3xl z-10"></div>
   <div class="absolute inset-0 bg-gradient-to-t from-[rgba(255,200,240,0.6)] via-[rgba(255,240,255,0.3)] 
               to-transparent z-10 rounded-3xl"></div>
