@@ -2273,15 +2273,36 @@ def admin_performance_data():
     # ✅ Count active coupons
     active_coupons = Coupon.query.filter_by(is_active=True).count()
 
-    # ✅ Calculate total revenue
-    total_revenue = db.session.query(db.func.sum(Order.total_amount)).scalar() or 0
+    # ✅ Calculate total revenue from the `total` column instead of `total_amount`
+    total_revenue = db.session.query(db.func.sum(Order.total)).with_entities(db.func.sum(Order.total)).scalar() or 0
 
     return jsonify({
         "total_products": total_products,
         "active_orders": active_orders,
         "active_coupons": active_coupons,
-        "total_revenue": int(total_revenue)
+        "total_revenue": round(total_revenue, 2)
     })
+
+# ==========================================
+# 🌐 GLOBAL IMAGE SPEED BOOSTER FOR CLOUDINARY
+# ==========================================
+def optimize_cloudinary_url(url, width=800, quality='auto'):
+    """
+    Automatically optimize any Cloudinary URL for fastest delivery.
+    Applies f_auto (auto-format), q_auto (smart quality), and width limit.
+    Example:
+      https://res.cloudinary.com/demo/image/upload/v12345/photo.jpg
+      → https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,w_800/v12345/photo.jpg
+    """
+    if not url or "cloudinary" not in url:
+        return url
+    return url.replace("/upload/", f"/upload/f_auto,q_{quality},w_{width}/")
+    
+
+# ✅ Optional: register as Jinja2 filter so templates can use {{ image|optimize(600) }}
+@app.template_filter("optimize")
+def optimize_filter(url, width=600):
+    return optimize_cloudinary_url(url, width)
 
 from datetime import datetime
 
