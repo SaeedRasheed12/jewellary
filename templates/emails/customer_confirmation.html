@@ -35,6 +35,7 @@
     .logo {
       max-height: 70px;
       margin-bottom: 10px;
+      border-radius: 10px;
     }
 
     .heading {
@@ -158,8 +159,10 @@
       
       <!-- Header -->
       <div class="header">
-        {% if logo_url %}
-          <img src="{{ logo_url }}" alt="Aurielle Logo" class="logo">
+        {% if setting and setting.logo %}
+          <img src="{{ setting.logo }}" alt="{{ setting.website_name or 'Aurielle' }} Logo" class="logo">
+        {% elif logo_url %}
+          <img src="{{ logo_url }}" alt="{{ setting.website_name or 'Aurielle' }} Logo" class="logo">
         {% endif %}
         <div class="heading">Thank You, {{ customer_name }}!</div>
         <p style="margin: 0;">Your order has been confirmed 💎</p>
@@ -179,14 +182,19 @@
         </div>
 
         <div style="text-align:center;">
-          <a href="https://www.auriellebyshsa.shop/track_order" class="btn">🔍 Track Your Order</a>
+          <a href="{{ setting.website_url or 'https://www.auriellebyshsa.shop/track_order' }}" class="btn">🔍 Track Your Order</a>
         </div>
 
         <!-- Order Summary -->
         <h3 style="font-size: 20px; margin-top: 35px; text-align: left; color: rgb(150,70,230);">🛍️ Order Summary</h3>
         <ul class="order-summary">
           {% for item in order_items %}
-            <li>{{ item.product.name }} ({{ item.qty }} pcs) — Rs. {{ "%.2f"|format(item.subtotal) }}</li>
+            <li>
+              {{ item.product.name }} 
+              {% if item.color %} <span style="color:#8b6bc4;">| {{ item.color }}</span>{% endif %}
+              {% if item.size %} <span style="color:#8b6bc4;">, Size: {{ item.size }}</span>{% endif %}
+              ({{ item.qty }} pcs) — Rs. {{ "%.2f"|format(item.subtotal) }}
+            </li>
           {% endfor %}
         </ul>
 

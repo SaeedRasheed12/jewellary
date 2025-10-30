@@ -1584,7 +1584,7 @@ def checkout():
                 logo_url=logo_url
             )
             send_email(
-                to_email="sk5431251@gmail.com",
+                to_email="saeedrasheed225@gmail.com",
                 subject=f"📦 New Order from {name}",
                 html_content=admin_html
             )
