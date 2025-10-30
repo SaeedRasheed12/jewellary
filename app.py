@@ -2142,7 +2142,6 @@ def admin_performance_data():
         "total_revenue": int(total_revenue)
     })
 
-
 from datetime import datetime
 
 @app.context_processor
