@@ -2,46 +2,62 @@
 {% block title %}🎟 Coupon Management{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-6 py-10">
-  <h1 class="text-3xl font-extrabold text-gray-800 mb-6 flex items-center gap-2">
-    🎟 Manage Coupons
-  </h1>
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-10 font-[Poppins]">
 
-  <!-- Add Coupon Form -->
-  <form method="POST" class="bg-white border border-gray-200 rounded-2xl shadow-md p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <!-- 🏷️ Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-8 text-center sm:text-left">
+    <h1 class="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-400">
+      🎟 Manage Coupons
+    </h1>
+  </div>
+
+  <!-- ➕ Add Coupon Form -->
+  <form method="POST"
+        class="bg-white/80 backdrop-blur-xl border border-[rgba(230,153,255,0.25)]
+               rounded-2xl shadow-[0_4px_25px_rgba(230,153,255,0.15)]
+               p-6 sm:p-8 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <input type="hidden" name="add_coupon">
+
     <div>
       <label class="block text-sm font-semibold text-gray-700">Coupon Code</label>
       <input type="text" name="code" required placeholder="SAVE10"
-             class="w-full mt-1 border px-3 py-2 rounded-lg focus:ring focus:ring-blue-400" />
+             class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent transition">
     </div>
+
     <div>
       <label class="block text-sm font-semibold text-gray-700">Type</label>
-      <select name="discount_type" class="w-full mt-1 border px-3 py-2 rounded-lg focus:ring focus:ring-blue-400">
+      <select name="discount_type"
+              class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent transition">
         <option value="percent">Percentage (%)</option>
         <option value="flat">Flat (PKR)</option>
       </select>
     </div>
+
     <div>
       <label class="block text-sm font-semibold text-gray-700">Value</label>
       <input type="number" name="discount_value" step="0.01" min="0" required
-             class="w-full mt-1 border px-3 py-2 rounded-lg focus:ring focus:ring-blue-400" />
+             class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent transition">
     </div>
-    <div class="flex items-center justify-between gap-3">
-      <label class="text-sm font-semibold text-gray-700">Active</label>
-      <input type="checkbox" name="is_active" class="w-5 h-5 accent-green-600">
+
+    <div class="flex flex-col justify-center gap-2">
+      <label class="flex items-center justify-between text-sm font-semibold text-gray-700">
+        <span>Active</span>
+        <input type="checkbox" name="is_active" class="w-5 h-5 accent-green-600">
+      </label>
       <button type="submit"
-              class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition shadow-md">
+              class="bg-gradient-to-r from-purple-600 to-pink-400 hover:from-purple-700 hover:to-pink-500
+                     text-white py-2 rounded-lg font-semibold transition shadow-md hover:shadow-lg">
         ➕ Add Coupon
       </button>
     </div>
   </form>
 
-  <!-- Coupon List -->
+  <!-- 🎯 Coupon Table -->
   {% if coupons %}
-  <div class="overflow-x-auto bg-white border border-gray-200 rounded-2xl shadow-md">
-    <table class="min-w-full text-sm">
-      <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+  <div class="overflow-x-auto bg-white/90 backdrop-blur-lg border border-[rgba(230,153,255,0.25)]
+              rounded-2xl shadow-[0_2px_20px_rgba(230,153,255,0.1)]">
+    <table class="min-w-full text-sm sm:text-base">
+      <thead class="bg-gradient-to-r from-purple-50 to-pink-50 text-gray-700 uppercase text-xs sm:text-sm">
         <tr>
           <th class="py-3 px-4 text-left">Code</th>
           <th class="py-3 px-4 text-left">Type</th>
@@ -52,10 +68,10 @@
       </thead>
       <tbody>
         {% for c in coupons %}
-        <tr class="border-t hover:bg-gray-50">
-          <td class="py-3 px-4 font-semibold">{{ c.code }}</td>
+        <tr class="border-t border-gray-100 hover:bg-purple-50/50 transition-all">
+          <td class="py-3 px-4 font-semibold text-gray-800">{{ c.code }}</td>
           <td class="py-3 px-4">{{ c.discount_type|capitalize }}</td>
-          <td class="py-3 px-4">
+          <td class="py-3 px-4 text-gray-700">
             {% if c.discount_type == 'percent' %}
               {{ c.discount_value }}%
             {% else %}
@@ -64,12 +80,12 @@
           </td>
           <td class="py-3 px-4 text-center">
             {% if c.is_active %}
-              <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Active</span>
+              <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold">Active</span>
             {% else %}
-              <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">Inactive</span>
+              <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold">Inactive</span>
             {% endif %}
           </td>
-          <td class="py-3 px-4 text-center flex items-center justify-center gap-2">
+          <td class="py-3 px-4 text-center flex items-center justify-center gap-2 sm:gap-3">
             <form method="POST">
               <input type="hidden" name="toggle_coupon" value="1">
               <input type="hidden" name="coupon_id" value="{{ c.id }}">
@@ -93,7 +109,9 @@
     </table>
   </div>
   {% else %}
-  <p class="text-gray-500 text-sm mt-4 text-center">No coupons added yet.</p>
+  <p class="text-gray-500 text-sm sm:text-base mt-6 text-center italic">
+    No coupons added yet — create your first one above 
+  </p>
   {% endif %}
-</div>
+</section>
 {% endblock %}
