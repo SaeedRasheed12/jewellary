@@ -221,61 +221,117 @@
 }
 </style>
 
-    <!-- 💎 Product Info -->
-    <div>
-      <h1 class="text-4xl sm:text-5xl font-extrabold aurielle-gradient mb-4 leading-tight">{{ product.name }}</h1>
+<!-- 💎 Product Info -->
+<div x-data="{ selectedColor: '', selectedSize: '' }">
+  <h1 class="text-4xl sm:text-5xl font-extrabold aurielle-gradient mb-4 leading-tight">{{ product.name }}</h1>
 
-      {% if product.before_price and product.before_price > product.today_price %}
-        {% set discount = ((product.before_price - product.today_price) / product.before_price) * 100 %}
-        <div class="flex items-center gap-3 mb-4">
-          <span class="line-through text-gray-400 text-lg">Rs {{ product.before_price|int }}</span>
-          <span class="text-3xl sm:text-4xl font-extrabold text-[rgb(204,102,255)] price-glow">Rs {{ product.today_price|int }}</span>
-          <span class="bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
-            -{{ discount|round(0) }}%
-          </span>
-        </div>
-      {% else %}
-        <p class="text-3xl font-extrabold text-[rgb(204,102,255)] mb-4 price-glow">Rs {{ product.today_price|int }}</p>
-      {% endif %}
-
-      {% if product.reviews %}
-        {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
-        <div class="flex items-center gap-2 mb-4">
-          <div class="flex text-yellow-400 text-lg">
-            {% for i in range(1,6) %}
-              {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
-            {% endfor %}
-          </div>
-          <span class="text-sm text-gray-600">{{ "%.1f"|format(avg_rating) }}/5 ({{ product.reviews|length }} Reviews)</span>
-        </div>
-      {% endif %}
-
-      <div class="prose max-w-none text-gray-700 leading-relaxed mb-6">
-        {% if '<p>' in product.description or '<br>' in product.description %}
-          {{ product.description | safe }}
-        {% else %}
-          <p class="whitespace-pre-line break-words">{{ product.description }}</p>
-        {% endif %}
-      </div>
-
-      <!-- 🛒 Buttons -->
-      <div class="mt-8 flex flex-col sm:flex-row gap-4">
-        {% if product.is_soldout %}
-          <button disabled class="w-full sm:w-1/2 soldout-btn py-3 text-center rounded-xl font-semibold bg-gradient-to-r from-gray-300 to-gray-200 text-gray-600 uppercase shadow-inner">
-            ❌ Sold Out
-          </button>
-        {% else %}
-          <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2">
-            <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(255,150,210)] to-[rgb(255,190,230)] shadow-[0_0_25px_rgba(200,100,255,0.4)]">Add to Cart</button>
-          </form>
-          <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2">
-            <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(255,110,190)] via-[rgb(240,150,255)] to-[rgb(255,200,230)] shadow-[0_0_25px_rgba(240,150,255,0.4)]">Buy Now</button>
-          </form>
-        {% endif %}
-      </div>
+  {% if product.before_price and product.before_price > product.today_price %}
+    {% set discount = ((product.before_price - product.today_price) / product.before_price) * 100 %}
+    <div class="flex items-center gap-3 mb-4">
+      <span class="line-through text-gray-400 text-lg">Rs {{ product.before_price|int }}</span>
+      <span class="text-3xl sm:text-4xl font-extrabold text-[rgb(204,102,255)] price-glow">Rs {{ product.today_price|int }}</span>
+      <span class="bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
+        -{{ discount|round(0) }}%
+      </span>
     </div>
+  {% else %}
+    <p class="text-3xl font-extrabold text-[rgb(204,102,255)] mb-4 price-glow">Rs {{ product.today_price|int }}</p>
+  {% endif %}
+
+  <!-- 🎨 Color & Size Display -->
+  <div class="flex flex-col sm:flex-row flex-wrap sm:items-center gap-4 mb-6">
+
+    {% if product.color %}
+    <div class="flex flex-col gap-2">
+      <span class="text-sm font-semibold text-[rgb(120,80,160)]">🎨 Color:</span>
+      <div class="flex flex-wrap gap-3">
+        {% for clr in product.color.split(',') %}
+        <button type="button"
+                @click="selectedColor = '{{ clr.strip() }}'"
+                :class="selectedColor === '{{ clr.strip() }}' 
+                        ? 'ring-2 ring-[rgb(204,102,255)] scale-110' 
+                        : 'opacity-90 hover:opacity-100'"
+                class="w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-all duration-200"
+                style="background-color: {{ clr.strip() | lower }};"
+                title="{{ clr.strip() }}">
+        </button>
+        {% endfor %}
+      </div>
+      <p x-show="selectedColor" class="text-xs text-gray-600 mt-1">
+        Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedColor"></span>
+      </p>
+    </div>
+    {% endif %}
+
+    {% if product.size %}
+    <div class="flex flex-col gap-2">
+      <span class="text-sm font-semibold text-[rgb(120,80,160)]">📏 Size:</span>
+      <div class="flex flex-wrap gap-2">
+        {% for sz in product.size.split(',') %}
+        <button type="button"
+                @click="selectedSize = '{{ sz.strip() }}'"
+                :class="selectedSize === '{{ sz.strip() }}'
+                        ? 'bg-gradient-to-r from-[rgb(200,100,255)] to-[rgb(255,150,210)] text-white scale-105'
+                        : 'bg-gradient-to-r from-[rgba(255,240,255,0.9)] to-[rgba(250,230,255,0.9)] text-[rgb(100,70,150)] hover:scale-105'"
+                class="px-3 py-1.5 rounded-full border border-[rgba(230,153,255,0.4)] shadow-sm font-semibold text-sm transition-all duration-200">
+          {{ sz.strip() }}
+        </button>
+        {% endfor %}
+      </div>
+      <p x-show="selectedSize" class="text-xs text-gray-600 mt-1">
+        Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedSize"></span>
+      </p>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if product.reviews %}
+    {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
+    <div class="flex items-center gap-2 mb-4">
+      <div class="flex text-yellow-400 text-lg">
+        {% for i in range(1,6) %}
+          {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
+        {% endfor %}
+      </div>
+      <span class="text-sm text-gray-600">{{ "%.1f"|format(avg_rating) }}/5 ({{ product.reviews|length }} Reviews)</span>
+    </div>
+  {% endif %}
+
+  <div class="prose max-w-none text-gray-700 leading-relaxed mb-6">
+    {% if '<p>' in product.description or '<br>' in product.description %}
+      {{ product.description | safe }}
+    {% else %}
+      <p class="whitespace-pre-line break-words">{{ product.description }}</p>
+    {% endif %}
+  </div>
+
+  <!-- 🛒 Buttons -->
+  <div class="mt-8 flex flex-col sm:flex-row gap-4">
+    {% if product.is_soldout %}
+      <button disabled class="w-full sm:w-1/2 soldout-btn py-3 text-center rounded-xl font-semibold bg-gradient-to-r from-gray-300 to-gray-200 text-gray-600 uppercase shadow-inner">
+        ❌ Sold Out
+      </button>
+    {% else %}
+      <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2">
+        <input type="hidden" name="color" :value="selectedColor">
+        <input type="hidden" name="size" :value="selectedSize">
+        <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(255,150,210)] to-[rgb(255,190,230)] shadow-[0_0_25px_rgba(200,100,255,0.4)]">
+          Add to Cart
+        </button>
+      </form>
+      <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2">
+        <input type="hidden" name="color" :value="selectedColor">
+        <input type="hidden" name="size" :value="selectedSize">
+        <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(255,110,190)] via-[rgb(240,150,255)] to-[rgb(255,200,230)] shadow-[0_0_25px_rgba(240,150,255,0.4)]">
+          Buy Now
+        </button>
+      </form>
+    {% endif %}
   </div>
 </div>
+
+<!-- ✅ Alpine.js for interactivity -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 <!-- 💬 Reviews Section -->
 <div class="review-box mt-14 p-8">

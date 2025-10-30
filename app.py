@@ -128,7 +128,9 @@ class Order(db.Model):
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120))
     address = db.Column(db.Text, nullable=False)
-
+     # 🟣 NEW: store user's selected options
+    color = db.Column(db.String(50), nullable=True)
+    size = db.Column(db.String(50), nullable=True)
     # 🏙️ City field (required for city-based delivery logic)
     city = db.Column(db.String(100), nullable=True)
 
@@ -164,12 +166,19 @@ class OrderItem(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     product_image = db.Column(db.String(255))  # optional, for image path
 
-    # ✅ Cascade delete
+    # 🟣 NEW: store user's selected options
+    color = db.Column(db.String(50), nullable=True)
+    size = db.Column(db.String(50), nullable=True)
+
+    # 🔗 Relation to parent order
     order_id = db.Column(
         db.Integer,
         db.ForeignKey("order.id", ondelete="CASCADE"),
         nullable=False
     )
+
+    def __repr__(self):
+        return f"<OrderItem {self.product_name} ({self.color or '-'}, {self.size or '-'})>"
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -180,20 +189,25 @@ class Product(db.Model):
     description = db.Column(db.Text, nullable=True)
     is_soldout = db.Column(db.Boolean, default=False)
 
+    # 🖼️ Main Image & Video
     image = db.Column(db.String(200), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
-
-    # ✅ Optional product video (Cloudinary URL)
     video_url = db.Column(db.String(255), nullable=True)
 
-    # ✅ Product Images
+    # 📦 Category Link
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
+
+    # 🎨 Variants
+    color = db.Column(db.String(100), nullable=True)  # e.g. "Black", "Rose Gold", "Silver"
+    size = db.Column(db.String(100), nullable=True)   # e.g. "S, M, L" or "One Size"
+
+    # 🖼️ Extra Images
     images = db.relationship(
         'ProductImage',
         backref='product',
         lazy=True
     )
 
-    # ✅ Customer Reviews (fixed backref conflict)
+    # ⭐ Customer Reviews
     reviews = db.relationship(
         'Review',
         back_populates='product',
@@ -771,12 +785,26 @@ def product_detail(product_id):
     # 💬 Load product reviews (latest first)
     reviews = Review.query.filter_by(product_id=product.id).order_by(Review.created_at.desc()).all()
 
+    # 🎨 Parse color and size lists (for display in dropdowns or labels)
+    color_options = []
+    size_options = []
+
+    if product.color:
+        # Split by comma → handle multiple colors like "Gold, Silver, Rose"
+        color_options = [c.strip() for c in product.color.split(',') if c.strip()]
+
+    if product.size:
+        # Split by comma → handle "Small, Medium, Large"
+        size_options = [s.strip() for s in product.size.split(',') if s.strip()]
+
     return render_template(
         "product_detail.html",
         product=product,
         product_images=product_images,
         reviews=reviews,
-        setting=setting
+        setting=setting,
+        color_options=color_options,
+        size_options=size_options
     )
 
 @app.route('/delete_order/<int:order_id>', methods=['POST'])
@@ -1002,40 +1030,64 @@ def edit_product(product_id):
 
     # ✅ Update basic fields
     product.name = request.form.get('name', product.name)
-
-    today_price = float(request.form.get('today_price') or product.today_price or 0)
-    before_price = float(request.form.get('before_price') or product.before_price or 0)
-    product.today_price = today_price
-    product.before_price = before_price
-    product.price = today_price
     product.description = request.form.get('description', product.description)
-    product.category_id = request.form.get('category_id', product.category_id)
+
+    # ✅ Prices
+    try:
+        today_price = float(request.form.get('today_price') or product.today_price or 0)
+        before_price = float(request.form.get('before_price') or product.before_price or 0)
+        product.today_price = today_price
+        product.before_price = before_price
+        product.price = today_price  # keep synced
+    except ValueError:
+        flash("⚠️ Invalid price entered.", "warning")
+
+    # ✅ Category
+    category_id = request.form.get('category_id')
+    if category_id:
+        product.category_id = int(category_id)
+
+    # ✅ NEW: Color and Size (comma-separated)
+    color = request.form.get('color')
+    size = request.form.get('size')
+    if color is not None:
+        product.color = color.strip()
+    if size is not None:
+        product.size = size.strip()
 
     # ✅ Main image upload to Cloudinary
     image_file = request.files.get('image')
     if image_file and image_file.filename:
         try:
-            # Delete old image from Cloudinary
+            # Delete old Cloudinary image
             if product.image:
-                public_id = product.image.split("/")[-1].split(".")[0]
-                cloudinary.uploader.destroy(public_id)
+                try:
+                    public_id = product.image.split("/")[-1].split(".")[0]
+                    cloudinary.uploader.destroy(public_id)
+                except Exception as e:
+                    print(f"⚠️ Cloudinary image delete failed: {e}")
+
+            result = cloudinary.uploader.upload(
+                image_file,
+                folder="products",
+                resource_type="image"
+            )
+            product.image = result.get("secure_url")
         except Exception as e:
-            print(f"❌ Failed to delete old image: {e}")
+            print(f"❌ Image upload failed: {e}")
+            flash("⚠️ Image upload failed. Please try again.", "warning")
 
-        result = cloudinary.uploader.upload(image_file, folder="products", resource_type="image")
-        product.image = result.get("secure_url")
-
-    # 🎥 Optional: Product video upload to Cloudinary
+    # 🎥 Optional: Product video upload
     video_file = request.files.get('video')
     if video_file and video_file.filename:
         try:
-            # Delete old video from Cloudinary (if any)
+            # Delete old Cloudinary video
             if product.video_url:
                 try:
                     public_id = product.video_url.split("/")[-1].split(".")[0]
                     cloudinary.uploader.destroy(public_id, resource_type="video")
                 except Exception as e:
-                    print(f"❌ Failed to delete old video: {e}")
+                    print(f"⚠️ Cloudinary video delete failed: {e}")
 
             v_result = cloudinary.uploader.upload(
                 video_file,
@@ -1047,19 +1099,24 @@ def edit_product(product_id):
             print(f"❌ Video upload failed: {e}")
             flash("⚠️ Video upload failed. Please try again.", "warning")
 
-    # ✅ Gallery images
+    # ✅ Gallery images (multi-upload)
     gallery_files = request.files.getlist('gallery_images')
     if gallery_files and gallery_files[0].filename:
         for gfile in gallery_files:
             try:
-                result = cloudinary.uploader.upload(gfile, folder="products/gallery", resource_type="image")
+                result = cloudinary.uploader.upload(
+                    gfile,
+                    folder="products/gallery",
+                    resource_type="image"
+                )
                 new_img = ProductImage(filename=result.get("secure_url"), product_id=product.id)
                 db.session.add(new_img)
             except Exception as e:
                 print(f"❌ Gallery upload failed: {e}")
 
+    # 💾 Commit all changes
     db.session.commit()
-    flash("✅ Product updated successfully!", "success")
+    flash(f"✅ {product.name} updated successfully!", "success")
     return redirect(url_for('admin_dashboard'))
 
 # 📦 Existing Products
@@ -1085,6 +1142,8 @@ def add_product():
         today_price = request.form.get('today_price')
         description = request.form.get('description')
         category_id = request.form.get('category_id')
+        color = request.form.get('color') or None
+        size = request.form.get('size') or None
 
         # 🚨 Validate required fields
         if not name or not today_price or not category_id:
@@ -1097,10 +1156,18 @@ def add_product():
             flash("⚠️ Main product image is required.", "warning")
             return redirect(request.url)
 
-        result = cloudinary.uploader.upload(image_file, folder="products", resource_type="image")
-        main_image_url = result.get("secure_url")
+        try:
+            result = cloudinary.uploader.upload(
+                image_file,
+                folder="products",
+                resource_type="image"
+            )
+            main_image_url = result.get("secure_url")
+        except Exception as e:
+            flash(f"❌ Image upload failed: {e}", "danger")
+            return redirect(request.url)
 
-        # 🎥 Optional: Upload video to Cloudinary
+        # 🎥 Optional: Upload product video
         video_file = request.files.get('video')
         video_url = None
         if video_file and video_file.filename != "":
@@ -1108,7 +1175,7 @@ def add_product():
                 v_result = cloudinary.uploader.upload(
                     video_file,
                     folder="products/videos",
-                    resource_type="video"  # 👈 important for video
+                    resource_type="video"
                 )
                 video_url = v_result.get("secure_url")
             except Exception as e:
@@ -1120,16 +1187,18 @@ def add_product():
             name=name,
             before_price=float(before_price) if before_price else None,
             today_price=float(today_price),
-            price=float(today_price),   # keep consistent
+            price=float(today_price),
             description=description,
             category_id=int(category_id),
+            color=color,
+            size=size,
             image=main_image_url,
-            video_url=video_url   # ✅ save video if uploaded
+            video_url=video_url
         )
         db.session.add(product)
         db.session.commit()
 
-        # 🚀 Handle gallery images
+        # 📸 Handle gallery uploads
         gallery_files = request.files.getlist('gallery_images')
         if gallery_files and gallery_files[0].filename != "":
             for gfile in gallery_files:
@@ -1139,7 +1208,10 @@ def add_product():
                         folder="products/gallery",
                         resource_type="image"
                     )
-                    db.session.add(ProductImage(product_id=product.id, filename=g_result.get("secure_url")))
+                    db.session.add(ProductImage(
+                        product_id=product.id,
+                        filename=g_result.get("secure_url")
+                    ))
                 except Exception as e:
                     print(f"❌ Gallery upload failed: {e}")
 
@@ -1177,11 +1249,12 @@ def delete_gallery_image(image_id):
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     product = Product.query.get_or_404(product_id)
-    lens_id = request.form.get('lens_category_id') or 'none'
+    color = request.form.get('color') or 'none'
+    size = request.form.get('size') or 'none'
 
     # ✅ Use composite key if lenses are selected
     cart = session.get('cart', {})
-    cart_key = f"{product_id}-{lens_id}"
+    cart_key = f"{product_id}-{color}-{size}"
 
     # ✅ Add or increment quantity
     cart[cart_key] = cart.get(cart_key, 0) + 1
@@ -1201,11 +1274,15 @@ def cart():
 
     for key, qty in cart.items():
         try:
-            product_id = int(key.split('-')[0])  # handle lens composite keys
-            product = Product.query.get(product_id)
+            # 🧩 Support composite keys like "12-Red-M"
+            parts = key.split('-')
+            product_id = int(parts[0])
+            color = parts[1] if len(parts) > 1 else None
+            size = parts[2] if len(parts) > 2 else None
 
+            product = Product.query.get(product_id)
             if product:
-                # ✅ Prefer today_price, fallback to price
+                # ✅ Prefer today's price, fallback to standard price
                 product_price = Decimal(str(product.today_price or product.price))
                 subtotal = product_price * qty
 
@@ -1213,19 +1290,21 @@ def cart():
                     'key': key,
                     'product': product,
                     'qty': qty,
-                    'subtotal': subtotal
+                    'subtotal': subtotal,
+                    'color': color,
+                    'size': size
                 })
                 total += subtotal
         except Exception as e:
-            print(f"Cart item error: {e}")
+            print(f"⚠️ Cart item error: {e}")
             continue
 
-    # ✅ Fetch delivery settings
+    # ✅ Delivery configuration
     setting = Setting.query.first()
     delivery_fee = Decimal(str(setting.delivery_fee)) if setting and setting.delivery_fee else Decimal("0.00")
     free_delivery_threshold = Decimal(str(setting.free_delivery_threshold)) if setting and setting.free_delivery_threshold else Decimal("0.00")
 
-    # ✅ Apply free delivery rule
+    # ✅ Free delivery logic
     if total >= free_delivery_threshold:
         delivery_fee = Decimal("0.00")
 
@@ -1342,13 +1421,24 @@ def checkout():
     # 🔹 Calculate product subtotal
     for key, qty in cart.items():
         try:
-            product_id = int(key.split('-')[0])  # supports lens_id
+            # 🧩 Support composite keys: "12-Red-M"
+            parts = key.split('-')
+            product_id = int(parts[0])
+            color = parts[1] if len(parts) > 1 else None
+            size = parts[2] if len(parts) > 2 else None
+
             product = Product.query.get(product_id)
 
             if product:
                 price = Decimal(str(product.today_price or product.price))
                 subtotal = price * qty
-                products.append({'product': product, 'qty': qty, 'subtotal': subtotal})
+                products.append({
+                    'product': product,
+                    'qty': qty,
+                    'subtotal': subtotal,
+                    'color': color,
+                    'size': size
+                })
                 product_total += subtotal
         except Exception as e:
             print(f"Checkout cart error: {e}")
@@ -1434,13 +1524,15 @@ def checkout():
         db.session.add(order)
         db.session.flush()
 
-        # 🧾 Save order items
+        # 🧾 Save order items (with color & size)
         for item in products:
             db.session.add(OrderItem(
                 product_name=item['product'].name,
                 price=float(item['product'].today_price or item['product'].price),
                 product_image=item['product'].image or "https://via.placeholder.com/100",
                 quantity=item['qty'],
+                color=item.get('color'),
+                size=item.get('size'),
                 order_id=order.id
             ))
 
@@ -1492,7 +1584,7 @@ def checkout():
                 logo_url=logo_url
             )
             send_email(
-                to_email="Saeedrasheed225@gmail.com",
+                to_email="sk5431251@gmail.com",
                 subject=f"📦 New Order from {name}",
                 html_content=admin_html
             )

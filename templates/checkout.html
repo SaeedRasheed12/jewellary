@@ -7,8 +7,6 @@ body {
   background: linear-gradient(to bottom right, #fff5fa, #fce4ec, #f3e5f5);
   font-family: 'Poppins', sans-serif;
 }
-
-/* 🌸 Glass card */
 .checkout-card {
   background: rgba(255,255,255,0.85);
   backdrop-filter: blur(25px);
@@ -16,8 +14,6 @@ body {
   box-shadow: 0 0 40px rgba(230,153,255,0.15);
   border-radius: 1.5rem;
 }
-
-/* 🌈 Buttons */
 .gradient-btn {
   background: linear-gradient(90deg, rgb(170,100,255), rgb(235,120,255), rgb(255,170,220));
   color: white;
@@ -29,8 +25,6 @@ body {
   transform: scale(1.05);
   box-shadow: 0 0 30px rgba(200,100,255,0.6);
 }
-
-/* ✨ Inputs */
 input, textarea, select {
   border-color: rgba(230,153,255,0.4)!important;
 }
@@ -38,15 +32,11 @@ input:focus, textarea:focus, select:focus {
   border-color: rgb(200,100,255)!important;
   box-shadow: 0 0 8px rgba(200,100,255,0.3);
 }
-
-/* 💫 Button shimmer */
 @keyframes orderShimmer {
   0% { transform: translateX(-100%); opacity: 0.3; }
   50% { opacity: 1; }
   100% { transform: translateX(100%); opacity: 0.3; }
 }
-
-/* 🎡 Coupon Loading Spinner */
 @keyframes spin { to { transform: rotate(360deg); } }
 .coupon-loader {
   border: 3px solid rgba(230,153,255,0.2);
@@ -57,16 +47,12 @@ input:focus, textarea:focus, select:focus {
   animation: spin 1s linear infinite;
   display: none;
 }
-
-/* Disabled Button */
 .disabled-btn {
   background: #ccc !important;
   color: #777 !important;
   box-shadow: none !important;
   cursor: not-allowed !important;
 }
-
-/* 🌟 Total Pulse */
 @keyframes totalPulse {
   0% { background-color: rgba(230,153,255,0.15); }
   100% { background-color: transparent; }
@@ -78,7 +64,6 @@ input:focus, textarea:focus, select:focus {
 {% block content %}
 <section class="max-w-4xl mx-auto px-4 py-16">
 
-  <!-- 💎 Header -->
   <div class="text-center mb-12">
     <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(240,140,255)] to-[rgb(255,180,210)] bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(200,120,255,0.3)]">
        Secure Checkout
@@ -86,10 +71,8 @@ input:focus, textarea:focus, select:focus {
     <p class="text-gray-600 mt-2 italic">Complete your order securely & elegantly</p>
   </div>
 
-  <!-- 🛍️ Checkout Form -->
   <form id="checkoutForm" method="POST" enctype="multipart/form-data" class="checkout-card p-8 sm:p-10 space-y-10">
 
-    <!-- 👑 Customer Info -->
     <div>
       <h2 class="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent 
                  bg-gradient-to-r from-[rgb(160,90,230)] via-[rgb(230,130,255)] to-[rgb(255,160,210)]
@@ -110,7 +93,6 @@ input:focus, textarea:focus, select:focus {
           <input type="text" name="phone" required class="w-full mt-1 border px-4 py-3 rounded-lg shadow-sm focus:ring focus:ring-[rgb(230,153,255)]">
         </div>
 
-        <!-- 🏙️ City Dropdown -->
         <div>
           <label class="block font-medium text-gray-700">City</label>
           <select id="citySelect" name="city" required 
@@ -147,15 +129,35 @@ input:focus, textarea:focus, select:focus {
       </div>
     </div>
 
-    <!-- 🧾 Order Summary -->
     <div class="border-t border-[rgba(230,153,255,0.2)] pt-8">
       <h2 class="text-2xl font-semibold text-[rgb(204,102,255)] mb-5">Order Summary</h2>
       <div class="bg-white/70 rounded-2xl p-6 shadow-inner border border-[rgba(230,153,255,0.3)]">
         <ul class="divide-y divide-[rgba(230,153,255,0.2)] text-sm">
           {% for item in products %}
-          <li class="py-3 flex justify-between">
-            <span class="font-medium text-gray-800">{{ item.product.name }} × {{ item.qty }}</span>
-            <span class="text-gray-700">PKR {{ "%.2f"|format(item.subtotal) }}</span>
+          <li class="py-4 flex items-center justify-between">
+            <div class="flex items-start gap-3">
+              <img src="{{ item.product.image or 'https://via.placeholder.com/80' }}" alt="{{ item.product.name }}"
+                   class="w-16 h-16 rounded-lg object-cover border border-[rgba(230,153,255,0.2)] shadow-sm">
+              <div>
+                <p class="font-semibold text-gray-800">{{ item.product.name }} × {{ item.qty }}</p>
+                {% if item.color or item.size %}
+                <div class="flex flex-wrap gap-2 mt-1 text-xs">
+                  {% if item.color %}
+                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-[rgba(230,153,255,0.3)] bg-[rgba(250,240,255,0.9)] text-[rgb(120,80,160)]">
+                    <span class="w-3 h-3 rounded-full border border-gray-300" style="background: {{ item.color }}"></span>
+                    {{ item.color }}
+                  </span>
+                  {% endif %}
+                  {% if item.size %}
+                  <span class="inline-block px-2 py-1 rounded-full border border-[rgba(230,153,255,0.3)] bg-[rgba(250,240,255,0.9)] text-[rgb(120,80,160)]">
+                    📏 Size: {{ item.size }}
+                  </span>
+                  {% endif %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <span class="text-gray-700 font-medium whitespace-nowrap">PKR {{ "%.2f"|format(item.subtotal) }}</span>
           </li>
           {% endfor %}
           <li class="py-3 flex justify-between text-gray-700 font-medium">
@@ -178,27 +180,19 @@ input:focus, textarea:focus, select:focus {
       <div class="mt-10 relative bg-gradient-to-br from-white/90 via-[rgb(255,245,255)/90] to-[rgb(250,240,255)/90] 
                   backdrop-blur-xl border border-[rgba(230,153,255,0.3)] rounded-2xl p-8 shadow-[0_0_25px_rgba(230,153,255,0.15)] 
                   transition-all duration-500 hover:shadow-[0_0_35px_rgba(230,153,255,0.25)]">
-
         <h3 class="font-extrabold text-2xl sm:text-3xl mb-5 flex items-center gap-2 
-                   bg-clip-text text-transparent bg-gradient-to-r from-[rgb(190,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)] 
-                   tracking-wide">Apply Coupon Code</h3>
-
+                   bg-clip-text text-transparent bg-gradient-to-r from-[rgb(190,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)]">
+          Apply Coupon Code
+        </h3>
         <div id="couponMessage" class="text-sm mt-2 font-medium min-h-[22px]"></div>
-
         <div class="flex flex-col sm:flex-row gap-3 mt-4 items-center">
           <input type="text" id="couponInput" placeholder="Enter your coupon code"
-                 class="flex-1 border border-[rgba(230,153,255,0.3)] px-5 py-3 rounded-xl focus:ring-2 focus:ring-[rgb(230,153,255)] 
-                        focus:outline-none transition-all duration-300 text-gray-800 placeholder:text-gray-400 shadow-inner">
-
+                 class="flex-1 border border-[rgba(230,153,255,0.3)] px-5 py-3 rounded-xl focus:ring-2 focus:ring-[rgb(230,153,255)] text-gray-800 placeholder:text-gray-400 shadow-inner">
           <button type="button" id="applyCouponBtn"
-                  class="relative px-6 py-3 rounded-xl text-white font-semibold overflow-hidden
-                         bg-gradient-to-r from-[rgb(190,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)]
-                         shadow-[0_3px_15px_rgba(230,153,255,0.3)] transition-all duration-500 
-                         hover:scale-[1.05] hover:shadow-[0_5px_20px_rgba(230,153,255,0.5)] flex items-center justify-center gap-2">
+                  class="relative px-6 py-3 rounded-xl text-white font-semibold overflow-hidden bg-gradient-to-r from-[rgb(190,90,255)] via-[rgb(240,140,255)] to-[rgb(255,180,220)] shadow-[0_3px_15px_rgba(230,153,255,0.3)] hover:scale-[1.05] flex items-center justify-center gap-2 transition-all duration-500">
             <span class="relative z-10">Apply</span>
             <div id="couponLoader" class="coupon-loader"></div>
           </button>
-
           <button type="button" id="removeCouponBtn"
                   class="hidden px-6 py-3 rounded-xl font-semibold bg-red-600 hover:bg-red-700 text-white transition-all duration-300">
             Remove
@@ -207,24 +201,18 @@ input:focus, textarea:focus, select:focus {
       </div>
     </div>
 
-    <!-- 🔒 Secure Note -->
     <div class="flex items-center gap-2 text-sm text-gray-600 pt-2">
       🔒 Secure Checkout — Your details are protected with SSL encryption.
     </div>
 
-    <!-- ✨ Place Order Button -->
     <button id="placeOrderBtn" type="submit" name="place_order"
-            class="relative w-full py-4 px-6 rounded-2xl text-lg font-semibold text-white tracking-wide
-                   bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(255,150,230)] to-[rgb(255,190,200)]
-                   shadow-[0_4px_20px_rgba(200,100,255,0.4)] transition-all duration-700 overflow-hidden
-                   hover:shadow-[0_6px_25px_rgba(200,100,255,0.6)] hover:scale-[1.03] disabled:opacity-60 disabled:cursor-not-allowed">
+            class="relative w-full py-4 px-6 rounded-2xl text-lg font-semibold text-white tracking-wide bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(255,150,230)] to-[rgb(255,190,200)] shadow-[0_4px_20px_rgba(200,100,255,0.4)] hover:shadow-[0_6px_25px_rgba(200,100,255,0.6)] hover:scale-[1.03] transition-all duration-700 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed">
       <span class="relative z-10 flex items-center justify-center gap-2">Place My Order</span>
       <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[orderShimmer_2.8s_infinite]"></div>
     </button>
   </form>
 </section>
 
-<!-- ⚙️ Logic -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const applyBtn = document.getElementById('applyCouponBtn');
@@ -239,41 +227,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const deliveryFeeEl = document.getElementById('deliveryFee');
   const totalContainer = document.getElementById('totalContainer');
   const citySelect = document.getElementById('citySelect');
-
   const defaultFee = parseFloat(deliveryFeeEl.dataset.default) || 0;
   const initialTotal = parseFloat(totalEl.textContent.replace(/[^\d.]/g, '')) || 0;
-
-  // 👑 Admin-defined Free Delivery Minimum (from backend or default to 4000)
   const freeDeliveryMin = parseFloat('{{ setting.free_delivery_minimum if setting and setting.free_delivery_minimum else 4000 }}');
-
-  // 💡 Calculate base subtotal (remove delivery from initial total)
   const baseSubtotal = defaultFee > 0 ? initialTotal - defaultFee : initialTotal;
 
-  // 🏙️ City Delivery Logic with Free Delivery Condition
   citySelect.addEventListener('change', () => {
     const selected = citySelect.value.trim();
     let deliveryFee = 0;
-
-    // ✅ Free delivery if total >= admin threshold
-    if (baseSubtotal >= freeDeliveryMin) {
-      deliveryFee = 0;
-    } else {
-      // 💸 Normal city-wise delivery logic
-      deliveryFee = selected === "Karachi" ? 150 : defaultFee;
-    }
-
-    // 🧮 Recalculate final total
+    if (baseSubtotal >= freeDeliveryMin) deliveryFee = 0;
+    else deliveryFee = selected === "Karachi" ? 150 : defaultFee;
     const newTotal = baseSubtotal + deliveryFee;
-
     deliveryFeeEl.textContent = deliveryFee === 0 ? "Free" : `PKR ${deliveryFee.toFixed(2)}`;
     totalEl.textContent = `PKR ${newTotal.toFixed(2)}`;
-
-    // 🎨 Animate total change
     totalContainer.classList.add('total-pulse');
     setTimeout(() => totalContainer.classList.remove('total-pulse'), 1000);
   });
 
-  // 🎟️ Apply Coupon
   applyBtn.addEventListener('click', async () => {
     const code = couponInput.value.trim();
     if (!code) {
@@ -304,7 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 🧹 Remove Coupon
   removeBtn.addEventListener('click', async () => {
     loader.style.display = 'inline-block';
     const res = await fetch(`/remove_coupon`);

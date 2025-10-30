@@ -2,60 +2,63 @@
 {% block title %}Add Product{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto mt-8">
-  <h2 class="text-3xl font-bold mb-6">📦 Add New Product</h2>
+<div class="max-w-3xl mx-auto mt-10 font-[Poppins]">
+  <h2 class="text-3xl font-bold mb-8 text-gray-800 flex items-center gap-2">
+    📦 Add New Product
+  </h2>
 
   <form method="POST" enctype="multipart/form-data"
-        class="bg-white p-6 rounded-xl shadow-lg space-y-5">
+        class="bg-white/90 backdrop-blur-lg p-6 rounded-2xl shadow-xl space-y-6 border border-[rgba(200,200,255,0.3)]">
 
     <!-- 🏷️ Product Name -->
     <div>
-      <label class="block font-semibold">Name <span class="text-red-500">*</span></label>
-      <input type="text" name="name" required 
-             class="w-full mt-1 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400" />
+      <label class="block font-semibold text-gray-700">Product Name <span class="text-red-500">*</span></label>
+      <input type="text" name="name" required placeholder="e.g. Golden Rose Necklace"
+             class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
     </div>
 
     <!-- Prices -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label class="block font-semibold">Before Price (optional)</label>
+        <label class="block font-semibold text-gray-700">Before Price (optional)</label>
         <input type="number" name="before_price" step="0.01" placeholder="e.g. 2000"
-               class="w-full mt-1 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400" />
+               class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
       </div>
       <div>
-        <label class="block font-semibold">Today Price <span class="text-red-500">*</span></label>
+        <label class="block font-semibold text-gray-700">Today Price <span class="text-red-500">*</span></label>
         <input type="number" name="today_price" step="0.01" placeholder="e.g. 1500" required
-               class="w-full mt-1 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400" />
+               class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" />
       </div>
     </div>
 
-<!-- Rich Description Field -->
-<div>
-  <label class="block font-semibold">Description</label>
-  <textarea id="description" name="description" rows="10"
-    class="w-full mt-1 border rounded-lg"></textarea>
-</div>
+    <!-- 🎨 Color & Size -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block font-semibold text-gray-700">Color (Optional)</label>
+        <input type="text" name="color" placeholder="e.g. Silver, Gold, Rose Gold"
+               class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent" />
+        <p class="text-xs text-gray-500 mt-1">Use commas for multiple colors.</p>
+      </div>
+      <div>
+        <label class="block font-semibold text-gray-700">Size (Optional)</label>
+        <input type="text" name="size" placeholder="e.g. S, M, L, One Size"
+               class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent" />
+        <p class="text-xs text-gray-500 mt-1">Use commas for multiple sizes.</p>
+      </div>
+    </div>
 
-<!-- TinyMCE Integration (Disabled Temporarily)
-<script src="https://cdn.tiny.cloud/1/ea8lvzpeukfhja4w3hpe3gu10tio0lzy104pi7s0ksue34ep/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-tinymce.init({
-  selector: '#description',
-  height: 300,
-  menubar: false,
-  plugins: 'lists link image code',
-  toolbar: 'undo redo | bold italic underline | bullist numlist | link | code',
-  content_style: "body { font-family: Poppins, sans-serif; font-size: 14px; }"
-});
-</script>
--->
-
-
-    <!-- Category -->
+    <!-- 📝 Description -->
     <div>
-      <label class="block font-semibold">Category</label>
+      <label class="block font-semibold text-gray-700">Description</label>
+      <textarea id="description" name="description" rows="8" placeholder="Write product details, materials, or story..."
+        class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-transparent"></textarea>
+    </div>
+
+    <!-- 🗂️ Category -->
+    <div>
+      <label class="block font-semibold text-gray-700">Category <span class="text-red-500">*</span></label>
       <select name="category_id" required
-              class="w-full mt-1 border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400">
+              class="w-full mt-1 border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
         <option value="">-- Select Category --</option>
         {% for cat in categories %}
           <option value="{{ cat.id }}">{{ cat.name }}</option>
@@ -63,33 +66,34 @@ tinymce.init({
       </select>
     </div>
 
-    <!-- Cover Image -->
+    <!-- 🖼️ Cover Image -->
     <div>
-      <label class="block font-semibold">Cover Image <span class="text-red-500">*</span></label>
+      <label class="block font-semibold text-gray-700">Cover Image <span class="text-red-500">*</span></label>
       <input type="file" name="image" accept="image/*" required
-             class="w-full mt-1 border p-2 rounded-lg bg-gray-50 cursor-pointer" />
-      <p class="text-xs text-gray-500 mt-1">Uploaded to Cloudinary on submit</p>
+             class="w-full mt-1 border border-gray-300 p-2 rounded-lg bg-gray-50 cursor-pointer" />
+      <p class="text-xs text-gray-500 mt-1">Your main product display image. Uploaded to Cloudinary on submit.</p>
     </div>
 
-    <!-- Gallery Images -->
+    <!-- 🖼️ Gallery Images -->
     <div>
-      <label class="block font-semibold">Gallery Images (Optional)</label>
+      <label class="block font-semibold text-gray-700">Gallery Images (Optional)</label>
       <input type="file" name="gallery_images" accept="image/*" multiple
-             class="w-full mt-1 border p-2 rounded-lg bg-gray-50 cursor-pointer" />
-      <p class="text-xs text-gray-500 mt-1">You can select multiple images, they’ll upload to Cloudinary.</p>
+             class="w-full mt-1 border border-gray-300 p-2 rounded-lg bg-gray-50 cursor-pointer" />
+      <p class="text-xs text-gray-500 mt-1">You can select multiple images — all upload to Cloudinary automatically.</p>
     </div>
 
     <!-- 🎥 Product Video -->
     <div>
-      <label class="block font-semibold">Product Video (Optional)</label>
+      <label class="block font-semibold text-gray-700">Product Video (Optional)</label>
       <input type="file" name="video" accept="video/*"
-             class="w-full mt-1 border p-2 rounded-lg bg-gray-50 cursor-pointer" />
-      <p class="text-xs text-gray-500 mt-1">Upload a demo or promotional video (mp4, mov, etc). Stored in Cloudinary.</p>
+             class="w-full mt-1 border border-gray-300 p-2 rounded-lg bg-gray-50 cursor-pointer" />
+      <p class="text-xs text-gray-500 mt-1">Upload a demo or promo video (mp4, mov, etc). Stored in Cloudinary.</p>
     </div>
 
-    <!-- Submit -->
+    <!-- ✅ Submit -->
     <button type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow transition">
+            class="w-full bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 
+                   text-white font-semibold py-3 rounded-xl shadow-md transition-transform hover:scale-[1.02]">
       🚀 Upload Product
     </button>
   </form>
