@@ -1121,17 +1121,45 @@ def edit_product(product_id):
     flash(f"✅ {product.name} updated successfully!", "success")
     return redirect(url_for('admin_dashboard'))
 
-# 📦 Existing Products
+# 📦 Existing Products (Search + Filters)
 @app.route('/admin/existing-products')
 def existing_products():
     if not session.get('admin_logged_in'):
         flash("Unauthorized access", "danger")
         return redirect(url_for('admin_login'))
 
-    products = Product.query.all()
-    categories = Category.query.all()
-    return render_template('existing_products.html', products=products, categories=categories)
+    # 🔍 Get filter params
+    q = request.args.get("q", "").strip()
+    category_id = request.args.get("category_id", type=int)
+    min_price = request.args.get("min_price", type=float)
+    max_price = request.args.get("max_price", type=float)
 
+    # 🔎 Start query
+    query = Product.query
+
+    # 🧠 Filter by name (case-insensitive)
+    if q:
+        query = query.filter(Product.name.ilike(f"%{q}%"))
+
+    # 🗂️ Filter by category
+    if category_id:
+        query = query.filter(Product.category_id == category_id)
+
+    # 💰 Filter by price range
+    if min_price is not None:
+        query = query.filter(Product.today_price >= min_price)
+    if max_price is not None:
+        query = query.filter(Product.today_price <= max_price)
+
+    # 🔄 Sort latest first
+    products = query.order_by(Product.id.desc()).all()
+    categories = Category.query.all()
+
+    return render_template(
+        'existing_products.html',
+        products=products,
+        categories=categories
+    )
 
 # ➕ Add Product
 @app.route('/admin/add-product', methods=['GET', 'POST'])
@@ -2243,7 +2271,7 @@ def admin_performance_data():
     ).count()
 
     # ✅ Count active coupons
-    active_coupons = Coupon.query.filter_by(active=True).count()
+    active_coupons = Coupon.query.filter_by(is_active=True).count()
 
     # ✅ Calculate total revenue
     total_revenue = db.session.query(db.func.sum(Order.total_amount)).scalar() or 0
