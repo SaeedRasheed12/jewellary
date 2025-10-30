@@ -26,6 +26,7 @@
       max-height: 70px;
       display: block;
       margin: 0 auto 20px auto;
+      border-radius: 10px;
     }
 
     .heading {
@@ -151,8 +152,10 @@
 <body>
   <div class="container">
 
-    {% if logo_url %}
-      <img src="{{ logo_url }}" alt="Aurielle Logo" class="logo">
+    {% if setting and setting.logo %}
+      <img src="{{ setting.logo }}" alt="{{ setting.website_name or 'Aurielle' }} Logo" class="logo">
+    {% elif logo_url %}
+      <img src="{{ logo_url }}" alt="{{ setting.website_name or 'Aurielle' }} Logo" class="logo">
     {% endif %}
 
     <div class="heading">💌 New Order Notification</div>
@@ -185,7 +188,11 @@
         <tbody>
           {% for item in order_items %}
           <tr>
-            <td>{{ item.product.name }}</td>
+            <td>
+              {{ item.product.name }}
+              {% if item.color %}<br><small style="color:#8b6bc4;">🎨 {{ item.color }}</small>{% endif %}
+              {% if item.size %}<br><small style="color:#8b6bc4;">📏 Size: {{ item.size }}</small>{% endif %}
+            </td>
             <td>{{ item.qty }}</td>
             <td>{{ "%.2f"|format(item.subtotal) }}</td>
           </tr>
@@ -219,7 +226,7 @@
     <div class="footer">
       {{ setting.website_name if setting else 'Aurielle' }}<br>
       This order was placed via the checkout system.<br>
-      Includes coupon and discount details for admin recordkeeping.
+      Includes coupon, color & size details for admin recordkeeping.
     </div>
 
   </div>

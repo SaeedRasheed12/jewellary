@@ -2,111 +2,149 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Order Delivered - {{ setting.website_name if setting else 'Bin Ahmed' }}</title>
+  <title>Order Delivered - {{ setting.website_name if setting else 'Aurielle by SHSA' }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-      background-color: #f8fafc;
+      font-family: 'Poppins', 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: #fff8ff;
       color: #333;
       margin: 0;
       padding: 0;
     }
+
     .email-container {
       max-width: 600px;
       margin: 0 auto;
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(to bottom right, #ffffff, #fdf6ff, #faf1ff);
+      border-radius: 18px;
+      box-shadow: 0 6px 25px rgba(230,153,255,0.25);
       overflow: hidden;
+      border: 1px solid rgba(230,153,255,0.25);
     }
+
     .header {
-      background: linear-gradient(90deg, #065f46, #059669, #10b981);
+      background: linear-gradient(90deg, rgb(204,102,255), rgb(255,153,204), rgb(255,192,230));
       color: #fff;
       text-align: center;
-      padding: 30px 15px;
+      padding: 40px 20px 30px;
     }
+
     .logo {
       max-height: 70px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      border-radius: 10px;
     }
+
     .heading {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 700;
       margin: 10px 0;
+      letter-spacing: 0.5px;
     }
+
     .body {
-      padding: 25px 20px;
+      padding: 35px 25px;
     }
+
     .message {
       font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.8;
       text-align: center;
-      color: #444;
+      color: #4b3b70;
+      margin-bottom: 25px;
     }
-    .tracking-badge {
-      display: inline-block;
-      background-color: #10b981;
-      color: #fff;
-      font-weight: bold;
-      font-size: 18px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      margin: 15px auto;
-    }
+
     .btn {
       display: inline-block;
-      background-color: #059669;
+      background: linear-gradient(90deg, rgb(204,102,255), rgb(255,153,204), rgb(255,192,230));
       color: #fff !important;
       text-decoration: none;
       font-weight: 600;
-      padding: 12px 20px;
-      border-radius: 6px;
-      margin: 20px auto;
-      transition: 0.3s;
+      padding: 12px 24px;
+      border-radius: 8px;
+      margin: 15px 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(230,153,255,0.35);
     }
-    .btn:hover { background-color: #047857; }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: rgb(204,102,255);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(90deg, #25d366, #22c55e);
+      box-shadow: 0 4px 15px rgba(37,211,102,0.35);
+    }
+
     .footer {
-      background-color: #f3f4f6;
-      color: #6b7280;
+      background-color: #faf5ff;
+      color: #7a6ca0;
       font-size: 13px;
       text-align: center;
-      padding: 15px 10px;
-      border-top: 1px solid #e5e7eb;
+      padding: 20px 10px;
+      border-top: 1px solid rgba(230,153,255,0.25);
+      line-height: 1.6;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .heading { font-size: 22px; }
+      .message { font-size: 14px; }
+      .btn { font-size: 14px; padding: 10px 18px; }
     }
   </style>
 </head>
 <body>
-  <div style="padding: 15px; background-color: #f3f4f6;">
+  <div style="padding: 15px; background-color: #fff3ff;">
     <div class="email-container">
+
+      <!-- Header -->
       <div class="header">
-        {% if logo_url %}
-          <img src="{{ logo_url }}" alt="Logo" class="logo">
+        {% if setting and setting.logo %}
+          <img src="{{ setting.logo }}" alt="{{ setting.website_name or 'Aurielle by SHSA' }} Logo" class="logo">
+        {% elif logo_url %}
+          <img src="{{ logo_url }}" alt="{{ setting.website_name or 'Aurielle by SHSA' }} Logo" class="logo">
         {% endif %}
+
         <div class="heading">✅ Your Order Has Been Delivered!</div>
-        <p style="margin: 0;">We hope you love your purchase 💚</p>
+        <p style="margin: 0;">We hope you adore your new piece 💖</p>
       </div>
 
+      <!-- Body -->
       <div class="body">
         <p class="message">
           Hello <strong>{{ order.name }}</strong>,<br>
-          your order <b>#{{ order.tracking_number }}</b> has been successfully delivered.
+          your order <b>#{{ order.tracking_number }}</b> has been successfully delivered.<br>
+          We’re beyond thrilled to have you as part of the <strong>Aurielle family ✨</strong>
         </p>
 
         <div style="text-align:center;">
-          <a href="https://www.bin-ahmed.store" class="btn">🛍️ Shop Again</a>
+          <a href="{{ setting.website_url or 'https://www.auriellebyshsa.shop' }}" class="btn">💎 Shop Again</a>
+          <a href="{{ setting.review_url or 'https://www.auriellebyshsa.shop/reviews' }}" class="btn" style="background: linear-gradient(90deg, #ff99cc, #ffb6d9, #ffcce6);">⭐ Leave a Review</a>
+          <a href="https://wa.me/923701018456" class="btn btn-whatsapp">💬 Contact via WhatsApp</a>
         </div>
 
         <p class="message">
-          Thank you for trusting <strong>{{ setting.website_name if setting else 'Bin Ahmed' }}</strong>.<br>
-          We hope to see you again soon!
+          💫 <strong>Exchange Policy:</strong><br>
+          At <b>Aurielle by SHSA</b>, we care about your satisfaction!<br>
+          If you wish to exchange your item, please contact us on WhatsApp within <strong>24 hours</strong> of delivery.<br>
+          Simply share your <b>tracking code</b> with our support team and we’ll guide you through the process smoothly 💎<br><br>
+          <strong>It’s the easiest & best exchange policy ever!</strong> 🌸
+        </p>
+
+        <p class="message">
+          Thank you for trusting <strong>{{ setting.website_name if setting else 'Aurielle by SHSA' }}</strong> —<br>
+          where luxury meets confidence ✨
         </p>
       </div>
 
+      <!-- Footer -->
       <div class="footer">
-        &copy; {{ setting.website_name if setting else 'Bin Ahmed' }} — All rights reserved.<br>
+        &copy; {{ setting.website_name if setting else 'Aurielle by SHSA' }} — All rights reserved.<br>
         This is an automated message. Please do not reply.
       </div>
+
     </div>
   </div>
 </body>
