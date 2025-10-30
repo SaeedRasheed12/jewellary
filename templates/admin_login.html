@@ -33,7 +33,6 @@
       z-index: 0;
     }
 
-    /* ✨ Smooth Floating Card Animation */
     @keyframes float {
       0% { transform: translateY(0px); }
       50% { transform: translateY(-6px); }
@@ -49,7 +48,7 @@
     <!-- 🌐 Logo & Website Name -->
     <div class="flex flex-col items-center mb-6 sm:mb-8">
       {% if setting and setting.logo %}
-        <img src="{{ setting.logo }}" alt="{{ setting.website_name }}"
+        <img src="{{ setting.logo }}" alt="{{ setting.website_name or 'Website Logo' }}"
              class="h-16 sm:h-20 w-16 sm:w-20 object-contain mb-4 rounded-2xl shadow-md ring-1 ring-gray-200 bg-white/80 p-2">
       {% else %}
         <div class="h-16 w-16 flex items-center justify-center bg-gray-800 text-white text-xl font-bold rounded-2xl shadow-lg mb-4">
@@ -58,7 +57,7 @@
       {% endif %}
 
       <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800">
-        {{ setting.website_name if setting else "Bin Ahmed" }}
+        {{ setting.website_name if setting else "Aurielle" }}
       </h1>
       <p class="text-gray-500 text-xs sm:text-sm mt-1">Admin Control Panel</p>
     </div>
@@ -102,11 +101,11 @@
 
     <!-- 🔗 Footer -->
     <p class="text-[11px] sm:text-xs text-gray-400">
-      © {{ setting.website_name if setting else "Bin Ahmed" }} — All Rights Reserved
+      © {{ setting.website_name if setting else "Aurielle" }} — All Rights Reserved
     </p>
 
     <p class="text-[10px] sm:text-[11px] text-gray-400 mt-1">
-      Powered by <span class="font-semibold text-gray-800">Admin Portal</span>
+      Powered by <span class="font-semibold text-gray-800">{{ setting.website_name if setting else "Admin Portal" }}</span>
     </p>
   </div>
 

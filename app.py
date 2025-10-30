@@ -320,29 +320,33 @@ def track_visits():
     if not is_mobile:
         return  # Only count mobile devices
 
-    today = date.today()
-
-    # Only count if this IP + user_agent combo hasn't visited today
-    existing_visit = Visit.query.filter_by(ip=ip, user_agent=user_agent, date=today).first()
+    # 🔥 Unique device signature (IP + User-Agent)
+    existing_visit = Visit.query.filter_by(ip=ip, user_agent=user_agent).first()
 
     if not existing_visit:
-        new_visit = Visit(ip=ip, date=today, user_agent=user_agent)
+        new_visit = Visit(ip=ip, user_agent=user_agent)
         db.session.add(new_visit)
         db.session.commit()
 
-@app.after_request
-def add_header(response):
-    response.cache_control.max_age = 31536000  # 1 year
-    return response
-
 @app.route('/admin/visits_data')
 def visits_data():
-    today_count = Visit.query.filter(Visit.date == date.today()).count()
+    # All unique visits ever
     total_count = Visit.query.count()
+
+    # Visits first registered today (new unique users today)
+    today_count = Visit.query.filter(
+        db.func.date(Visit.timestamp) == date.today()
+    ).count()
+
     return jsonify({
         'today_visits': today_count,
         'total_visits': total_count
     })
+    
+@app.after_request
+def add_header(response):
+    response.cache_control.max_age = 31536000  # 1 year
+    return response
 
 # 🔍 Search Products
 @app.route('/search')
@@ -2265,22 +2269,16 @@ def admin_performance_data():
     # ✅ Count all products
     total_products = Product.query.count()
 
-    # ✅ Count active orders
-    active_orders = Order.query.filter(
-        Order.status.in_(["pending", "processing", "active"])
-    ).count()
+    # ✅ Count only pending orders
+    active_orders = Order.query.filter_by(status="Pending").count()
 
     # ✅ Count active coupons
     active_coupons = Coupon.query.filter_by(is_active=True).count()
 
-    # ✅ Calculate total revenue from the `total` column instead of `total_amount`
-    total_revenue = db.session.query(db.func.sum(Order.total)).with_entities(db.func.sum(Order.total)).scalar() or 0
-
     return jsonify({
         "total_products": total_products,
         "active_orders": active_orders,
-        "active_coupons": active_coupons,
-        "total_revenue": round(total_revenue, 2)
+        "active_coupons": active_coupons
     })
 
 # ==========================================

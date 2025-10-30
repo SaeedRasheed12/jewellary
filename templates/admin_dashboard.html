@@ -25,7 +25,7 @@
       📊 Performance Summary
     </h2>
 
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-5">
       <div class="aurielle-card text-center p-6 rounded-2xl">
         <h4 class="text-purple-600 font-semibold text-lg">🛍 Products</h4>
         <p id="totalProducts" class="text-4xl font-extrabold text-gray-900 mt-2">—</p>
@@ -37,10 +37,6 @@
       <div class="aurielle-card text-center p-6 rounded-2xl">
         <h4 class="text-indigo-600 font-semibold text-lg">🎟 Coupons</h4>
         <p id="activeCoupons" class="text-4xl font-extrabold text-gray-900 mt-2">—</p>
-      </div>
-      <div class="aurielle-card text-center p-6 rounded-2xl">
-        <h4 class="text-emerald-600 font-semibold text-lg">💰 Revenue</h4>
-        <p id="totalRevenue" class="text-4xl font-extrabold text-gray-900 mt-2">—</p>
       </div>
     </div>
   </div>
@@ -159,13 +155,12 @@ async function updatePerformance() {
     document.getElementById("totalProducts").innerText = data.total_products ?? 0;
     document.getElementById("activeOrders").innerText = data.active_orders ?? 0;
     document.getElementById("activeCoupons").innerText = data.active_coupons ?? 0;
-    document.getElementById("totalRevenue").innerText = "Rs " + (data.total_revenue ?? 0).toLocaleString();
   } catch (e) {
     console.error("Performance fetch failed:", e);
   }
 }
 
-// ⏱ Auto Refresh Every 5s
+// ⏱ Auto Refresh Every 5 seconds
 setInterval(() => {
   updateVisits();
   updatePerformance();
