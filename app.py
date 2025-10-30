@@ -785,17 +785,19 @@ def product_detail(product_id):
     # 💬 Load product reviews (latest first)
     reviews = Review.query.filter_by(product_id=product.id).order_by(Review.created_at.desc()).all()
 
-    # 🎨 Parse color and size lists (for display in dropdowns or labels)
+    # 🎨 Parse color and size lists (support commas, pipes, and slashes)
     color_options = []
     size_options = []
 
     if product.color:
-        # Split by comma → handle multiple colors like "Gold, Silver, Rose"
-        color_options = [c.strip() for c in product.color.split(',') if c.strip()]
+        # Normalize by replacing all separators with commas
+        normalized_colors = product.color.replace('|', ',').replace('/', ',')
+        color_options = [c.strip() for c in normalized_colors.split(',') if c.strip()]
 
     if product.size:
-        # Split by comma → handle "Small, Medium, Large"
-        size_options = [s.strip() for s in product.size.split(',') if s.strip()]
+        # Normalize size list as well
+        normalized_sizes = product.size.replace('|', ',').replace('/', ',')
+        size_options = [s.strip() for s in normalized_sizes.split(',') if s.strip()]
 
     return render_template(
         "product_detail.html",
@@ -1249,19 +1251,24 @@ def delete_gallery_image(image_id):
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
     product = Product.query.get_or_404(product_id)
-    color = request.form.get('color') or 'none'
-    size = request.form.get('size') or 'none'
 
-    # ✅ Use composite key if lenses are selected
+    # Fetch and normalize values
+    color = (request.form.get('color') or '').strip() or 'no-color'
+    size = (request.form.get('size') or '').strip() or 'no-size'
+
+    # ✅ Use a safe composite key (|| won’t conflict with names)
+    cart_key = f"{product_id}||{color}||{size}"
+
+    # Retrieve existing cart from session
     cart = session.get('cart', {})
-    cart_key = f"{product_id}-{color}-{size}"
 
-    # ✅ Add or increment quantity
+    # Add or increment quantity
     cart[cart_key] = cart.get(cart_key, 0) + 1
     session['cart'] = cart
 
     flash(f"✅ {product.name} added to cart.", "success")
     return redirect(url_for('cart'))
+
 
 # -------------------------------
 # 🛒 View Cart
@@ -1274,17 +1281,16 @@ def cart():
 
     for key, qty in cart.items():
         try:
-            # 🧩 Support composite keys like "12-Red-M"
-            parts = key.split('-')
+            # 🧩 Safe split (supports color/size with spaces, slashes, or dashes)
+            parts = key.split('||')
             product_id = int(parts[0])
-            color = parts[1] if len(parts) > 1 else None
-            size = parts[2] if len(parts) > 2 else None
+            color = parts[1] if len(parts) > 1 and parts[1] != 'no-color' else None
+            size = parts[2] if len(parts) > 2 and parts[2] != 'no-size' else None
 
             product = Product.query.get(product_id)
             if product:
-                # ✅ Prefer today's price, fallback to standard price
-                product_price = Decimal(str(product.today_price or product.price))
-                subtotal = product_price * qty
+                price = Decimal(str(product.today_price or product.price))
+                subtotal = price * qty
 
                 items.append({
                     'key': key,
@@ -1299,22 +1305,22 @@ def cart():
             print(f"⚠️ Cart item error: {e}")
             continue
 
-    # ✅ Delivery configuration
+    # ✅ Delivery settings
     setting = Setting.query.first()
-    delivery_fee = Decimal(str(setting.delivery_fee)) if setting and setting.delivery_fee else Decimal("0.00")
-    free_delivery_threshold = Decimal(str(setting.free_delivery_threshold)) if setting and setting.free_delivery_threshold else Decimal("0.00")
+    delivery_fee = Decimal(str(setting.delivery_fee)) if setting and setting.delivery_fee else Decimal('0.00')
+    free_threshold = Decimal(str(setting.free_delivery_threshold)) if setting and setting.free_delivery_threshold else Decimal('0.00')
 
-    # ✅ Free delivery logic
-    if total >= free_delivery_threshold:
-        delivery_fee = Decimal("0.00")
+    # Free delivery logic
+    if total >= free_threshold:
+        delivery_fee = Decimal('0.00')
 
     grand_total = total + delivery_fee
 
     return render_template(
         'cart.html',
         products=items,
-        delivery_fee=delivery_fee,
         total=total,
+        delivery_fee=delivery_fee,
         grand_total=grand_total,
         setting=setting
     )
@@ -1421,14 +1427,13 @@ def checkout():
     # 🔹 Calculate product subtotal
     for key, qty in cart.items():
         try:
-            # 🧩 Support composite keys: "12-Red-M"
-            parts = key.split('-')
+            # 🧩 Safe composite key format: "12||Gold / Silver||6"
+            parts = key.split('||')
             product_id = int(parts[0])
-            color = parts[1] if len(parts) > 1 else None
-            size = parts[2] if len(parts) > 2 else None
+            color = parts[1] if len(parts) > 1 and parts[1] != 'no-color' else None
+            size = parts[2] if len(parts) > 2 and parts[2] != 'no-size' else None
 
             product = Product.query.get(product_id)
-
             if product:
                 price = Decimal(str(product.today_price or product.price))
                 subtotal = price * qty
@@ -1512,7 +1517,7 @@ def checkout():
             phone=phone,
             email=customer_email,
             address=address,
-            city=city,  # ✅ Added city field
+            city=city,
             product_total=float(product_total),
             delivery_fee=float(delivery_fee),
             total=float(grand_total),
@@ -1584,7 +1589,7 @@ def checkout():
                 logo_url=logo_url
             )
             send_email(
-                to_email="saeedrasheed225@gmail.com",
+                to_email="sk5431251@gmail.com",
                 subject=f"📦 New Order from {name}",
                 html_content=admin_html
             )
@@ -1610,7 +1615,7 @@ from decimal import Decimal
 
 @app.route("/buy-now/<int:product_id>", methods=["POST"])
 def buy_now(product_id):
-    """Direct-buy: instantly opens checkout for one product only."""
+    """Direct-buy: instantly opens checkout for one specific product + options."""
     product = Product.query.get_or_404(product_id)
 
     # 🔒 Prevent checkout for sold-out items
@@ -1618,12 +1623,17 @@ def buy_now(product_id):
         flash("This product is currently sold out.", "warning")
         return redirect(url_for("product_detail", product_id=product.id))
 
-    # 🛒 Build a temporary one-item cart inside session
-    session["cart"] = {
-        f"{product.id}-0": 1   # format matches your checkout parser (product_id + lens_id)
-    }
+    # 🧾 Get selected color and size from form
+    color = (request.form.get("color") or "none").strip()
+    size = (request.form.get("size") or "none").strip()
 
-    # 🧮 (Optional) store the product’s latest price
+    # ✅ Use safe delimiter (||) to avoid splitting errors on “-” or “/”
+    cart_key = f"{product.id}||{color}||{size}"
+
+    # 🛒 Create a temporary single-item cart
+    session["cart"] = {cart_key: 1}
+
+    # 💰 Store latest price for reference
     session["instant_price"] = str(product.today_price or product.price)
 
     # 🚀 Go straight to checkout

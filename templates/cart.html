@@ -139,19 +139,31 @@ body {
           <h3 class="text-lg font-semibold text-[rgb(204,102,255)]">{{ item.product.name }}</h3>
 
           <!-- 🎨 Show color and size badges -->
-          {% if item.color or item.size %}
-          <div class="flex flex-wrap justify-center sm:justify-start gap-2 mt-1">
-            {% if item.color %}
-            <span class="variant-badge">
-              <span class="variant-dot" style="background: {{ item.color }}"></span>
-              {{ item.color }}
-            </span>
-            {% endif %}
-            {% if item.size %}
-            <span class="variant-badge">📏 Size: {{ item.size }}</span>
-            {% endif %}
-          </div>
-          {% endif %}
+{% if item.color or item.size %}
+<div class="flex flex-wrap justify-center sm:justify-start gap-2 mt-1">
+
+  {% if item.color %}
+  <span class="variant-badge">
+    {% set color_lower = item.color|lower %}
+    {% if '#' in color_lower or color_lower in [
+      'red','blue','black','white','gold','silver','pink','purple','green','yellow','brown','gray','beige','orange'
+    ] %}
+      <span class="variant-dot" style="background: {{ item.color }}"></span>
+    {% else %}
+      🎨
+    {% endif %}
+    {{ item.color }}
+  </span>
+  {% endif %}
+
+  {% if item.size %}
+  <span class="variant-badge">
+    📏 Size: {{ item.size }}
+  </span>
+  {% endif %}
+
+</div>
+{% endif %}
 
           <p class="text-gray-600 text-sm sm:text-base">
             💵 Price: <span class="font-medium">Rs. {{ item.product.today_price }}</span>
