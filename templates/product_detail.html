@@ -119,64 +119,75 @@
 <section class="max-w-6xl mx-auto px-5 sm:px-8 py-14 animate-fadeInUp">
 
 <!-- 🪩 Premium Product Media Showcase -->
-<div class="aurielle-card p-6 sm:p-8 md:p-10 relative overflow-hidden">
+<div class="aurielle-card p-4 sm:p-6 md:p-10 relative overflow-hidden">
   <div class="absolute inset-0 bg-gradient-to-br 
-              from-[rgba(255,245,255,0.8)] via-[rgba(255,240,250,0.65)] to-[rgba(240,225,255,0.8)] 
-              blur-3xl rounded-3xl shadow-[0_0_60px_rgba(230,153,255,0.15)]"></div>
+              from-[rgba(255,245,255,0.9)] via-[rgba(255,240,250,0.7)] to-[rgba(240,225,255,0.8)]
+              blur-3xl rounded-3xl shadow-[0_0_50px_rgba(230,153,255,0.15)]"></div>
 
   <div class="relative z-10 text-center sm:text-left">
-    <!-- 💖 Elegant Product Title -->
-    <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-6 
-               bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-               bg-clip-text text-transparent drop-shadow-[0_2px_15px_rgba(230,153,255,0.3)]
-               tracking-wide leading-tight capitalize">
+    <!-- 💖 Product Title -->
+    <h2 class="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-5
+               bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)]
+               bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(230,153,255,0.35)]
+               tracking-wide leading-tight capitalize px-1">
       {{ product.name }}
     </h2>
 
-    <!-- ✨ Horizontal Scroll Section -->
-    <div class="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth pb-4 snap-x snap-mandatory hide-scrollbar">
+    <!-- ✨ Scrollable Gallery -->
+    <div class="relative">
+      <!-- 🩵 Left Blur Fade -->
+      <div class="absolute left-0 top-0 h-full w-10 sm:w-16 bg-gradient-to-r from-white/95 via-white/60 to-transparent
+                  pointer-events-none z-20 rounded-l-3xl animate-blink"></div>
 
-      {% if product.image %}
-      <div class="relative flex-shrink-0 w-[85vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
-        <a href="{{ product.image }}" class="glightbox" data-gallery="media-gallery">
-          <img src="{{ product.image }}" alt="{{ product.name }}"
-               class="w-full h-[280px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
-                      transition-all duration-[1200ms] ease-[cubic-bezier(0.19,1,0.22,1)]
-                      hover:scale-[1.05] hover:shadow-[0_15px_45px_rgba(230,153,255,0.35)]
-                      bg-white/70 backdrop-blur-md border border-[rgba(230,153,255,0.3)]">
-        </a>
-      </div>
-      {% endif %}
+      <!-- 🩷 Right Blur Fade -->
+      <div class="absolute right-0 top-0 h-full w-10 sm:w-16 bg-gradient-to-l from-white/95 via-white/60 to-transparent
+                  pointer-events-none z-20 rounded-r-3xl animate-blink"></div>
 
-      {% for img in product.images %}
-      <div class="relative flex-shrink-0 w-[85vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
-        <a href="{{ img.filename }}" class="glightbox" data-gallery="media-gallery">
-          <img src="{{ img.filename }}" alt="{{ product.name }}"
-               class="w-full h-[280px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
-                      transition-all duration-[1200ms] ease-[cubic-bezier(0.19,1,0.22,1)]
-                      hover:scale-[1.05] hover:shadow-[0_15px_45px_rgba(230,153,255,0.35)]
-                      bg-white/70 backdrop-blur-md border border-[rgba(230,153,255,0.3)]">
-        </a>
-      </div>
-      {% endfor %}
+      <div class="flex gap-3 sm:gap-5 overflow-x-auto scroll-smooth pb-3 sm:pb-4
+                  snap-x snap-mandatory hide-scrollbar relative z-10 px-1 sm:px-2">
+        
+        {% if product.image %}
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
+          <a href="{{ product.image }}" class="glightbox" data-gallery="media-gallery">
+            <img src="{{ product.image }}" alt="{{ product.name }}"
+                 class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
+                        transition-all duration-[1000ms] ease-[cubic-bezier(0.19,1,0.22,1)]
+                        hover:scale-[1.04] hover:shadow-[0_15px_45px_rgba(230,153,255,0.35)]
+                        bg-white/80 backdrop-blur-md border border-[rgba(230,153,255,0.3)]">
+          </a>
+        </div>
+        {% endif %}
 
-      {% if product.video_url %}
-      <div class="relative flex-shrink-0 w-[85vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-[0_0_45px_rgba(230,153,255,0.25)] border border-[rgba(230,153,255,0.25)] bg-white/70 backdrop-blur-xl">
-        <video controls playsinline preload="metadata" poster="{{ product.image or '' }}"
-               class="rounded-2xl sm:rounded-3xl w-full h-[280px] sm:h-[400px] md:h-[460px] object-cover">
-          <source src="{{ product.video_url }}" type="video/mp4">
-        </video>
+        {% for img in product.images %}
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
+          <a href="{{ img.filename }}" class="glightbox" data-gallery="media-gallery">
+            <img src="{{ img.filename }}" alt="{{ product.name }}"
+                 class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
+                        transition-all duration-[1000ms] ease-[cubic-bezier(0.19,1,0.22,1)]
+                        hover:scale-[1.04] hover:shadow-[0_15px_45px_rgba(230,153,255,0.35)]
+                        bg-white/80 backdrop-blur-md border border-[rgba(230,153,255,0.3)]">
+          </a>
+        </div>
+        {% endfor %}
+
+        {% if product.video_url %}
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-[0_0_45px_rgba(230,153,255,0.25)] border border-[rgba(230,153,255,0.25)] bg-white/80 backdrop-blur-xl">
+          <video controls playsinline preload="metadata" poster="{{ product.image or '' }}"
+                 class="rounded-2xl sm:rounded-3xl w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover">
+            <source src="{{ product.video_url }}" type="video/mp4">
+          </video>
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
 
-    <p class="text-xs sm:text-sm text-gray-600 mt-4 text-center italic">
-      Swipe → to explore {{ product.name }} in detail ✨
+    <p class="text-xs sm:text-sm text-gray-600 mt-3 sm:mt-5 text-center italic px-3">
+      Swipe → or tap to explore <span class="font-semibold text-purple-500">{{ product.name }}</span> in detail ✨
     </p>
   </div>
 </div>
 
-<!-- 🌸 Hide Scrollbar + Smooth -->
+<!-- 🌸 Hide Scrollbar + Smooth + Blink Animation -->
 <style>
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -185,6 +196,27 @@
   .scroll-smooth {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ✨ Gentle fade pulse for edge hints */
+@keyframes blink {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.5; }
+}
+.animate-blink {
+  animation: blink 3s ease-in-out infinite;
+}
+
+/* 🔧 Extra micro-utility for tiny phones */
+@media (max-width: 360px) {
+  .aurielle-card h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  .aurielle-card img,
+  .aurielle-card video {
+    height: 200px;
   }
 }
 </style>

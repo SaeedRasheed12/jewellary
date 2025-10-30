@@ -1890,20 +1890,31 @@ def admin_coupons():
 
     # 🧾 Add New Coupon
     if request.method == 'POST' and 'add_coupon' in request.form:
-        code = request.form.get('code').strip().upper()
+        code = request.form.get('code', '').strip().upper()
         discount_type = request.form.get('discount_type')
         discount_value = float(request.form.get('discount_value', 0))
         is_active = 'is_active' in request.form
 
-        new_coupon = Coupon(
-            code=code,
-            discount_type=discount_type,
-            discount_value=discount_value,
-            is_active=is_active
-        )
-        db.session.add(new_coupon)
-        db.session.commit()
-        flash("🎟 Coupon added successfully!", "success")
+        # ⚠️ Prevent duplicate codes
+        existing_coupon = Coupon.query.filter_by(code=code).first()
+        if existing_coupon:
+            flash(f"⚠️ Coupon code '{code}' already exists. Please choose a unique code.", "warning")
+            return redirect(url_for('admin_coupons'))
+
+        try:
+            new_coupon = Coupon(
+                code=code,
+                discount_type=discount_type,
+                discount_value=discount_value,
+                is_active=is_active
+            )
+            db.session.add(new_coupon)
+            db.session.commit()
+            flash("🎟 Coupon added successfully!", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"❌ Error adding coupon: {str(e)}", "danger")
+
         return redirect(url_for('admin_coupons'))
 
     # 🔄 Toggle Coupon Status
@@ -1913,7 +1924,7 @@ def admin_coupons():
         if coupon:
             coupon.is_active = not coupon.is_active
             db.session.commit()
-            flash("🔄 Coupon status updated!", "info")
+            flash(f"🔄 Coupon '{coupon.code}' status updated!", "info")
         return redirect(url_for('admin_coupons'))
 
     # 🗑️ Delete Coupon
@@ -1923,7 +1934,7 @@ def admin_coupons():
         if coupon:
             db.session.delete(coupon)
             db.session.commit()
-            flash("🗑️ Coupon deleted successfully!", "danger")
+            flash(f"🗑️ Coupon '{coupon.code}' deleted successfully!", "danger")
         return redirect(url_for('admin_coupons'))
 
     return render_template('admin_coupons.html', coupons=coupons)
