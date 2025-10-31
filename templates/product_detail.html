@@ -133,21 +133,34 @@
       {{ product.name }}
     </h2>
 
-    <!-- ✨ Scrollable Gallery -->
-    <div class="relative">
-      <!-- 🩵 Left Blur Fade -->
-      <div class="absolute left-0 top-0 h-full w-10 sm:w-16 bg-gradient-to-r from-white/95 via-white/60 to-transparent
-                  pointer-events-none z-20 rounded-l-3xl animate-blink"></div>
+    <!-- ✨ Scrollable Gallery with Arrows -->
+    <div class="relative group">
+      <!-- 🩵 Left Arrow -->
+      <button id="scrollLeft" 
+        class="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 
+               border border-purple-200 backdrop-blur-md rounded-full p-3 shadow-[0_0_20px_rgba(230,153,255,0.25)] 
+               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0 group-hover:opacity-100">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+      </button>
 
-      <!-- 🩷 Right Blur Fade -->
-      <div class="absolute right-0 top-0 h-full w-10 sm:w-16 bg-gradient-to-l from-white/95 via-white/60 to-transparent
-                  pointer-events-none z-20 rounded-r-3xl animate-blink"></div>
+      <!-- 🩷 Right Arrow -->
+      <button id="scrollRight" 
+        class="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 
+               border border-purple-200 backdrop-blur-md rounded-full p-3 shadow-[0_0_20px_rgba(230,153,255,0.25)] 
+               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0 group-hover:opacity-100">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </button>
 
-      <div class="flex gap-3 sm:gap-5 overflow-x-auto scroll-smooth pb-3 sm:pb-4
+      <div id="mediaContainer" 
+           class="flex gap-3 sm:gap-5 overflow-x-auto scroll-smooth pb-3 sm:pb-4
                   snap-x snap-mandatory hide-scrollbar relative z-10 px-1 sm:px-2">
         
         {% if product.image %}
-        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
           <a href="{{ product.image }}" class="glightbox" data-gallery="media-gallery">
             <img src="{{ product.image }}" alt="{{ product.name }}"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
@@ -159,7 +172,7 @@
         {% endif %}
 
         {% for img in product.images %}
-        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
           <a href="{{ img.filename }}" class="glightbox" data-gallery="media-gallery">
             <img src="{{ img.filename }}" alt="{{ product.name }}"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
@@ -182,24 +195,16 @@
     </div>
 
     <p class="text-xs sm:text-sm text-gray-600 mt-3 sm:mt-5 text-center italic px-3">
-      Swipe → or tap to explore <span class="font-semibold text-purple-500">{{ product.name }}</span> in detail 
+      Swipe → or use arrows to explore <span class="font-semibold text-purple-500">{{ product.name }}</span> in detail 
     </p>
   </div>
 </div>
 
-<!-- 🌸 Hide Scrollbar + Smooth + Blink Animation -->
+<!-- 🌸 Styling & JS -->
 <style>
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-@supports (scroll-behavior: smooth) {
-  .scroll-smooth {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-/* ✨ Gentle fade pulse for edge hints */
 @keyframes blink {
   0%, 100% { opacity: 0.9; }
   50% { opacity: 0.5; }
@@ -208,18 +213,34 @@
   animation: blink 3s ease-in-out infinite;
 }
 
-/* 🔧 Extra micro-utility for tiny phones */
 @media (max-width: 360px) {
-  .aurielle-card h2 {
-    font-size: 1.5rem;
-    line-height: 2rem;
-  }
-  .aurielle-card img,
-  .aurielle-card video {
-    height: 200px;
-  }
+  .aurielle-card h2 { font-size: 1.5rem; line-height: 2rem; }
+  .aurielle-card img, .aurielle-card video { height: 200px; }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('mediaContainer');
+  const leftBtn = document.getElementById('scrollLeft');
+  const rightBtn = document.getElementById('scrollRight');
+
+  const scrollAmount = 400;
+
+  leftBtn.addEventListener('click', () => container.scrollBy({ left: -scrollAmount, behavior: 'smooth' }));
+  rightBtn.addEventListener('click', () => container.scrollBy({ left: scrollAmount, behavior: 'smooth' }));
+
+  // 🔥 Hide arrows when at ends
+  const updateArrows = () => {
+    leftBtn.classList.toggle('opacity-0', container.scrollLeft <= 10);
+    rightBtn.classList.toggle('opacity-0', container.scrollLeft + container.clientWidth >= container.scrollWidth - 10);
+  };
+
+  container.addEventListener('scroll', updateArrows);
+  window.addEventListener('resize', updateArrows);
+  updateArrows();
+});
+</script>
 
 <!-- 💎 Product Info -->
 <div 
