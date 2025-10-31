@@ -121,14 +121,14 @@
 <!-- 🪩 Premium Product Media Showcase -->
 <div class="aurielle-card p-4 sm:p-6 md:p-10 relative overflow-hidden">
   <div class="absolute inset-0 bg-gradient-to-br 
-              from-[rgba(255,245,255,0.9)] via-[rgba(255,240,250,0.7)] to-[rgba(240,225,255,0.8)]
-              blur-3xl rounded-3xl shadow-[0_0_50px_rgba(230,153,255,0.15)]"></div>
+              from-[rgba(255,245,255,0.95)] via-[rgba(255,240,250,0.8)] to-[rgba(240,225,255,0.85)]
+              blur-2xl rounded-3xl shadow-[0_0_40px_rgba(230,153,255,0.1)]"></div>
 
   <div class="relative z-10 text-center sm:text-left">
     <!-- 💖 Product Title -->
     <h2 class="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-5
                bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)]
-               bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(230,153,255,0.35)]
+               bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(230,153,255,0.25)]
                tracking-wide leading-tight capitalize px-1">
       {{ product.name }}
     </h2>
@@ -137,9 +137,11 @@
     <div class="relative group">
       <!-- 🩵 Left Arrow -->
       <button id="scrollLeft" 
-        class="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 
-               border border-purple-200 backdrop-blur-md rounded-full p-3 shadow-[0_0_20px_rgba(230,153,255,0.25)] 
-               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0 group-hover:opacity-100">
+        class="absolute -left-6 sm:-left-8 top-1/2 -translate-y-1/2 z-30 
+               bg-white/70 hover:bg-white/90 border border-purple-200 backdrop-blur-sm 
+               rounded-full p-3 shadow-[0_0_10px_rgba(230,153,255,0.25)] 
+               text-purple-500 hover:text-purple-700 transition-all duration-300 
+               opacity-0 group-hover:opacity-100">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
@@ -147,9 +149,11 @@
 
       <!-- 🩷 Right Arrow -->
       <button id="scrollRight" 
-        class="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 
-               border border-purple-200 backdrop-blur-md rounded-full p-3 shadow-[0_0_20px_rgba(230,153,255,0.25)] 
-               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0 group-hover:opacity-100">
+        class="absolute -right-6 sm:-right-8 top-1/2 -translate-y-1/2 z-30 
+               bg-white/70 hover:bg-white/90 border border-purple-200 backdrop-blur-sm 
+               rounded-full p-3 shadow-[0_0_10px_rgba(230,153,255,0.25)] 
+               text-purple-500 hover:text-purple-700 transition-all duration-300 
+               opacity-0 group-hover:opacity-100">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
         </svg>
@@ -165,8 +169,8 @@
             <img src="{{ product.image }}" alt="{{ product.name }}"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
                         transition-all duration-[1000ms] ease-[cubic-bezier(0.19,1,0.22,1)]
-                        hover:scale-[1.04] hover:shadow-[0_15px_45px_rgba(230,153,255,0.35)]
-                        bg-white/80 backdrop-blur-md border border-[rgba(230,153,255,0.3)]">
+                        hover:scale-[1.03] hover:shadow-[0_15px_45px_rgba(230,153,255,0.25)]
+                        bg-white/90 border border-[rgba(230,153,255,0.25)]">
           </a>
         </div>
         {% endif %}
@@ -177,14 +181,14 @@
             <img src="{{ img.filename }}" alt="{{ product.name }}"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
                         transition-all duration-[1000ms] ease-[cubic-bezier(0.19,1,0.22,1)]
-                        hover:scale-[1.04] hover:shadow-[0_15px_45px_rgba(230,153,255,0.35)]
-                        bg-white/80 backdrop-blur-md border border-[rgba(230,153,255,0.3)]">
+                        hover:scale-[1.03] hover:shadow-[0_15px_45px_rgba(230,153,255,0.25)]
+                        bg-white/90 border border-[rgba(230,153,255,0.25)]">
           </a>
         </div>
         {% endfor %}
 
         {% if product.video_url %}
-        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-[0_0_45px_rgba(230,153,255,0.25)] border border-[rgba(230,153,255,0.25)] bg-white/80 backdrop-blur-xl">
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-[0_0_40px_rgba(230,153,255,0.25)] border border-[rgba(230,153,255,0.25)] bg-white/90 backdrop-blur-sm">
           <video controls playsinline preload="metadata" poster="{{ product.image or '' }}"
                  class="rounded-2xl sm:rounded-3xl w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover">
             <source src="{{ product.video_url }}" type="video/mp4">
@@ -224,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('mediaContainer');
   const leftBtn = document.getElementById('scrollLeft');
   const rightBtn = document.getElementById('scrollRight');
-
   const scrollAmount = 400;
 
   leftBtn.addEventListener('click', () => container.scrollBy({ left: -scrollAmount, behavior: 'smooth' }));
