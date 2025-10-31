@@ -40,19 +40,29 @@
     </button>
   </div>
 
-  <!-- 🔍 Search + Sort -->
-  <div class="flex flex-col sm:flex-row gap-3 items-center mb-8">
-    <input type="text" id="liveSearch" placeholder="Search by name or supplier..."
-           class="w-full sm:w-2/3 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition" />
-    <select id="sortSelect"
-            class="w-full sm:w-1/3 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2 bg-white focus:ring-2 focus:ring-purple-400 focus:border-transparent transition">
-      <option value="newest">Newest First</option>
-      <option value="name_asc">Name A → Z</option>
-      <option value="name_desc">Name Z → A</option>
-      <option value="price_low">Price: Low to High</option>
-      <option value="price_high">Price: High to Low</option>
-    </select>
-  </div>
+<!-- 🔍 Search + Sort Section -->
+<div class="flex flex-col sm:flex-row items-center gap-3 mb-8 bg-white/70 backdrop-blur-xl border border-[rgba(230,153,255,0.3)] rounded-2xl p-3 shadow-sm hover:shadow-md transition-all duration-300">
+
+  <!-- Search Input -->
+  <input type="text" id="liveSearch" placeholder="🔍 Search by name or supplier..."
+         class="w-full sm:flex-1 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2.5 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-300" />
+
+  <!-- Sort Dropdown -->
+  <select id="sortSelect"
+          class="w-full sm:w-1/3 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2.5 bg-white text-gray-700 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-300">
+    <option value="newest">📅 Newest First</option>
+    <option value="name_asc">🔠 Name A → Z</option>
+    <option value="name_desc">🔡 Name Z → A</option>
+    <option value="price_low">💰 Price: Low → High</option>
+    <option value="price_high">💸 Price: High → Low</option>
+  </select>
+
+  <!-- 🟣 Search Button -->
+  <button id="searchButton"
+          class="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-400 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md hover:scale-105 transition duration-300">
+    🔍 Search
+  </button>
+</div>
 
   <!-- 📋 Inventory Table -->
   <div id="inventoryTable"
@@ -139,8 +149,9 @@
 </section>
 
 <!-- 📋 Add Modal -->
-<div id="addModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl relative animate-fade-in overflow-y-auto max-h-[90vh]">
+<div id="addModal"
+     class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl relative animate-fade-in my-10">
     <h2 class="text-2xl font-bold text-purple-700 mb-4 text-center">Add Inventory Item</h2>
 
     <form method="POST" enctype="multipart/form-data" class="space-y-5">
@@ -241,9 +252,10 @@
 <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+  // 🖼️ Image Lightbox
   GLightbox({ selector: ".glightbox" });
 
-  // 💹 Profit Calculation in Modal (includes Extra Cost)
+  // 💹 Profit Calculation (includes Extra Cost)
   const productCost = document.getElementById("productCost");
   const packagingCost = document.getElementById("packagingCost");
   const extraCost = document.getElementById("extraCost");
@@ -251,16 +263,61 @@ document.addEventListener("DOMContentLoaded", () => {
   const profitDisplay = document.getElementById("profitDisplay");
 
   function calculateProfit() {
-    const pc = parseFloat(productCost.value) || 0;
-    const pk = parseFloat(packagingCost.value) || 0;
-    const ex = parseFloat(extraCost.value) || 0;
-    const sp = parseFloat(sellingPrice.value) || 0;
+    const pc = parseFloat(productCost?.value) || 0;
+    const pk = parseFloat(packagingCost?.value) || 0;
+    const ex = parseFloat(extraCost?.value) || 0;
+    const sp = parseFloat(sellingPrice?.value) || 0;
     const profit = sp - (pc + pk + ex);
-    profitDisplay.textContent = profit >= 0 ? `Rs ${profit.toFixed(2)}` : `Loss Rs ${Math.abs(profit).toFixed(2)}`;
-    profitDisplay.className = profit >= 0 ? "text-lg font-bold text-green-600" : "text-lg font-bold text-red-500";
+    profitDisplay.textContent = profit >= 0 
+      ? `Rs ${profit.toFixed(2)}` 
+      : `Loss Rs ${Math.abs(profit).toFixed(2)}`;
+    profitDisplay.className = profit >= 0 
+      ? "text-lg font-bold text-green-600" 
+      : "text-lg font-bold text-red-500";
   }
 
-  [productCost, packagingCost, extraCost, sellingPrice].forEach(el => el.addEventListener("input", calculateProfit));
+  [productCost, packagingCost, extraCost, sellingPrice].forEach(el => {
+    if (el) el.addEventListener("input", calculateProfit);
+  });
+
+  // 🔍 Live Search Filter
+  const searchInput = document.getElementById("liveSearch");
+  const tableRows = document.querySelectorAll("#inventoryBody tr");
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      tableRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? "" : "none";
+      });
+    });
+  }
+
+  // ↕️ Sort Dropdown
+  const sortSelect = document.getElementById("sortSelect");
+  if (sortSelect) {
+    sortSelect.addEventListener("change", () => {
+      const tbody = document.getElementById("inventoryBody");
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      const sortType = sortSelect.value;
+
+      rows.sort((a, b) => {
+        const priceA = parseFloat(a.querySelector('[data-label="Selling Price"]')?.textContent.replace(/[^0-9.]/g, '')) || 0;
+        const priceB = parseFloat(b.querySelector('[data-label="Selling Price"]')?.textContent.replace(/[^0-9.]/g, '')) || 0;
+        const nameA = a.querySelector('[data-label="Name"]')?.textContent.toLowerCase() || "";
+        const nameB = b.querySelector('[data-label="Name"]')?.textContent.toLowerCase() || "";
+
+        switch (sortType) {
+          case "name_asc": return nameA.localeCompare(nameB);
+          case "name_desc": return nameB.localeCompare(nameA);
+          case "price_low": return priceA - priceB;
+          case "price_high": return priceB - priceA;
+          default: return 0;
+        }
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  }
 });
 </script>
 {% endblock %}
