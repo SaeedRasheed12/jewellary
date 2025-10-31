@@ -133,34 +133,21 @@
       {{ product.name }}
     </h2>
 
-    <!-- ✨ Scrollable Gallery with Arrows -->
-    <div class="relative group">
-      <!-- 🩵 Left Arrow -->
-      <button id="scrollLeft" 
-        class="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 
-               border border-purple-200 backdrop-blur-md rounded-full p-3 shadow-[0_0_20px_rgba(230,153,255,0.25)] 
-               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0 group-hover:opacity-100">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-        </svg>
-      </button>
+    <!-- ✨ Scrollable Gallery -->
+    <div class="relative">
+      <!-- 🩵 Left Blur Fade -->
+      <div class="absolute left-0 top-0 h-full w-10 sm:w-16 bg-gradient-to-r from-white/95 via-white/60 to-transparent
+                  pointer-events-none z-20 rounded-l-3xl animate-blink"></div>
 
-      <!-- 🩷 Right Arrow -->
-      <button id="scrollRight" 
-        class="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 
-               border border-purple-200 backdrop-blur-md rounded-full p-3 shadow-[0_0_20px_rgba(230,153,255,0.25)] 
-               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0 group-hover:opacity-100">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-      </button>
+      <!-- 🩷 Right Blur Fade -->
+      <div class="absolute right-0 top-0 h-full w-10 sm:w-16 bg-gradient-to-l from-white/95 via-white/60 to-transparent
+                  pointer-events-none z-20 rounded-r-3xl animate-blink"></div>
 
-      <div id="mediaContainer" 
-           class="flex gap-3 sm:gap-5 overflow-x-auto scroll-smooth pb-3 sm:pb-4
+      <div class="flex gap-3 sm:gap-5 overflow-x-auto scroll-smooth pb-3 sm:pb-4
                   snap-x snap-mandatory hide-scrollbar relative z-10 px-1 sm:px-2">
         
         {% if product.image %}
-        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
           <a href="{{ product.image }}" class="glightbox" data-gallery="media-gallery">
             <img src="{{ product.image }}" alt="{{ product.name }}"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
@@ -172,7 +159,7 @@
         {% endif %}
 
         {% for img in product.images %}
-        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
+        <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center group overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
           <a href="{{ img.filename }}" class="glightbox" data-gallery="media-gallery">
             <img src="{{ img.filename }}" alt="{{ product.name }}"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
@@ -195,16 +182,24 @@
     </div>
 
     <p class="text-xs sm:text-sm text-gray-600 mt-3 sm:mt-5 text-center italic px-3">
-      Swipe → or use arrows to explore <span class="font-semibold text-purple-500">{{ product.name }}</span> in detail 
+      Swipe → or tap to explore <span class="font-semibold text-purple-500">{{ product.name }}</span> in detail 
     </p>
   </div>
 </div>
 
-<!-- 🌸 Styling & JS -->
+<!-- 🌸 Hide Scrollbar + Smooth + Blink Animation -->
 <style>
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+@supports (scroll-behavior: smooth) {
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ✨ Gentle fade pulse for edge hints */
 @keyframes blink {
   0%, 100% { opacity: 0.9; }
   50% { opacity: 0.5; }
@@ -213,78 +208,36 @@
   animation: blink 3s ease-in-out infinite;
 }
 
+/* 🔧 Extra micro-utility for tiny phones */
 @media (max-width: 360px) {
-  .aurielle-card h2 { font-size: 1.5rem; line-height: 2rem; }
-  .aurielle-card img, .aurielle-card video { height: 200px; }
+  .aurielle-card h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  .aurielle-card img,
+  .aurielle-card video {
+    height: 200px;
+  }
 }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('mediaContainer');
-  const leftBtn = document.getElementById('scrollLeft');
-  const rightBtn = document.getElementById('scrollRight');
-
-  const scrollAmount = 400;
-
-  leftBtn.addEventListener('click', () => container.scrollBy({ left: -scrollAmount, behavior: 'smooth' }));
-  rightBtn.addEventListener('click', () => container.scrollBy({ left: scrollAmount, behavior: 'smooth' }));
-
-  // 🔥 Hide arrows when at ends
-  const updateArrows = () => {
-    leftBtn.classList.toggle('opacity-0', container.scrollLeft <= 10);
-    rightBtn.classList.toggle('opacity-0', container.scrollLeft + container.clientWidth >= container.scrollWidth - 10);
-  };
-
-  container.addEventListener('scroll', updateArrows);
-  window.addEventListener('resize', updateArrows);
-  updateArrows();
-});
-</script>
-
 <!-- 💎 Product Info -->
 <div 
-  x-data="{
-    selectedColor: '',
+  x-data="{ 
+    selectedColor: '', 
     selectedSize: '',
     init() {
-      // Auto-select first available color/size if only one
-      const firstColor = this.$el.querySelector('[data-color-option]');
-      const firstSize = this.$el.querySelector('[data-size-option]');
-      if (firstColor && !this.selectedColor) this.selectedColor = firstColor.dataset.colorOption;
-      if (firstSize && !this.selectedSize) this.selectedSize = firstSize.dataset.sizeOption;
-    },
-    handleSubmit(formId) {
-      const requiresColor = {{ 'true' if product.color else 'false' }};
-      const requiresSize = {{ 'true' if product.size else 'false' }};
-
-      if ((requiresColor && !this.selectedColor) || (requiresSize && !this.selectedSize)) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Please select all options 💖',
-          text: 'Choose your color and size before continuing.',
-          confirmButtonColor: '#d946ef'
-        });
-      } else {
-        const form = document.getElementById(formId);
-        if (form) {
-          // Sync Alpine data to hidden inputs
-          const colorInput = form.querySelector('input[name=color]');
-          const sizeInput = form.querySelector('input[name=size]');
-          if (colorInput) colorInput.value = this.selectedColor;
-          if (sizeInput) sizeInput.value = this.selectedSize;
-          form.submit();
-        }
+      // ✅ Auto-select if there's only one color
+      const colorButtons = this.$el.querySelectorAll('[data-color]');
+      if (colorButtons.length === 1) {
+        const onlyColor = colorButtons[0].getAttribute('data-color');
+        this.selectedColor = onlyColor;
       }
     }
   }"
   x-init="init()"
 >
-
-  <!-- 💫 Product Title -->
-  <h1 class="text-4xl sm:text-5xl font-extrabold aurielle-gradient mb-4 leading-tight">
-    {{ product.name }}
-  </h1>
+  <h1 class="text-4xl sm:text-5xl font-extrabold aurielle-gradient mb-4 leading-tight">{{ product.name }}</h1>
 
   {% if product.before_price and product.before_price > product.today_price %}
     {% set discount = ((product.before_price - product.today_price) / product.before_price) * 100 %}
@@ -299,99 +252,98 @@ document.addEventListener('DOMContentLoaded', () => {
     <p class="text-3xl font-extrabold text-[rgb(204,102,255)] mb-4 price-glow">Rs {{ product.today_price|int }}</p>
   {% endif %}
 
-  <!-- 🎨 Color & Size -->
+  <!-- 🎨 Color & Size Display -->
   <div class="flex flex-col sm:flex-row flex-wrap sm:items-center gap-4 mb-6">
 
-    {% if product.color %}
-    <div class="flex flex-col gap-2">
-      <span class="text-sm font-semibold text-[rgb(120,80,160)]">🎨 Color:</span>
-      <div class="flex flex-wrap gap-3">
-        {% set normalized_colors = product.color.replace('|', ',') %}
-        {% set color_list = normalized_colors.split(',') %}
-        {% for clr in color_list %}
-          {% set color_name = clr.strip() %}
-          {% set lower_color = color_name.lower() %}
+  {% if product.color %}
+  <div class="flex flex-col gap-2">
+    <span class="text-sm font-semibold text-[rgb(120,80,160)]">🎨 Color:</span>
+    <div class="flex flex-wrap gap-4">
+      {% for clr in product.color.split(',') %}
+        {% if '/' not in clr %}
+        <div class="flex flex-col items-center gap-1">
+          <button type="button"
+                  data-color="{{ clr.strip() }}"
+                  @click="selectedColor = '{{ clr.strip() }}'"
+                  :class="selectedColor === '{{ clr.strip() }}' 
+                          ? 'ring-2 ring-[rgb(204,102,255)] scale-110' 
+                          : 'opacity-90 hover:opacity-100'"
+                  class="w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-all duration-200"
+                  style="background-color: {{ clr.strip() | lower }};"
+                  title="{{ clr.strip() }}">
+          </button>
+          <span class="text-[11px] text-gray-600 font-medium">{{ clr.strip() }}</span>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <p x-show="selectedColor" class="text-xs text-gray-600 mt-1">
+      Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedColor"></span>
+    </p>
+  </div>
+  {% endif %}
 
-          {% if '#' in lower_color or lower_color in [
-            'red','blue','black','white','gold','silver','pink','purple','green','yellow','brown','gray','beige','orange'
-          ] %}
-            <!-- Real color swatch -->
-            <button type="button"
-                    data-color-option="{{ color_name }}"
-                    @click="selectedColor = '{{ color_name }}'"
-                    :class="selectedColor === '{{ color_name }}' 
-                            ? 'ring-2 ring-[rgb(204,102,255)] scale-110' 
-                            : 'opacity-90 hover:opacity-100'"
-                    class="w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-all duration-200"
-                    style="background-color: {{ color_name }};"
-                    title="{{ color_name }}">
-            </button>
-          {% else %}
-            <!-- Text-based name -->
-            <button type="button"
-                    data-color-option="{{ color_name }}"
-                    @click="selectedColor = '{{ color_name }}'"
-                    :class="selectedColor === '{{ color_name }}'
-                            ? 'bg-gradient-to-r from-[rgb(204,102,255)] to-[rgb(255,153,204)] text-white scale-105'
-                            : 'bg-gradient-to-r from-[rgba(255,245,255,0.9)] to-[rgba(250,235,255,0.9)] text-[rgb(100,70,150)] hover:scale-105'"
-                    class="px-4 py-1.5 rounded-full border border-[rgba(230,153,255,0.4)] text-sm font-medium transition-all duration-200">
-              {{ color_name }}
-            </button>
-          {% endif %}
+  {% if product.size %}
+  <div class="flex flex-col gap-2">
+    <span class="text-sm font-semibold text-[rgb(120,80,160)]">📏 Size:</span>
+    <div class="flex flex-wrap gap-2">
+      {% for sz in product.size.split(',') %}
+      <button type="button"
+              @click="selectedSize = '{{ sz.strip() }}'"
+              :class="selectedSize === '{{ sz.strip() }}'
+                      ? 'bg-gradient-to-r from-[rgb(200,100,255)] to-[rgb(255,150,210)] text-white scale-105'
+                      : 'bg-gradient-to-r from-[rgba(255,240,255,0.9)] to-[rgba(250,230,255,0.9)] text-[rgb(100,70,150)] hover:scale-105'"
+              class="px-3 py-1.5 rounded-full border border-[rgba(230,153,255,0.4)] shadow-sm font-semibold text-sm transition-all duration-200">
+        {{ sz.strip() }}
+      </button>
+      {% endfor %}
+    </div>
+    <p x-show="selectedSize" class="text-xs text-gray-600 mt-1">
+      Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedSize"></span>
+    </p>
+  </div>
+  {% endif %}
+  </div>
+
+  {% if product.reviews %}
+    {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
+    <div class="flex items-center gap-2 mb-4">
+      <div class="flex text-yellow-400 text-lg">
+        {% for i in range(1,6) %}
+          {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
         {% endfor %}
       </div>
-      <p x-show="selectedColor" class="text-xs text-gray-600 mt-1">
-        Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedColor"></span>
-      </p>
+      <span class="text-sm text-gray-600">{{ "%.1f"|format(avg_rating) }}/5 ({{ product.reviews|length }} Reviews)</span>
     </div>
-    {% endif %}
+  {% endif %}
 
-    {% if product.size %}
-    <div class="flex flex-col gap-2">
-      <span class="text-sm font-semibold text-[rgb(120,80,160)]">📏 Size:</span>
-      <div class="flex flex-wrap gap-2">
-        {% for sz in product.size.split(',') %}
-        <button type="button"
-                data-size-option="{{ sz.strip() }}"
-                @click="selectedSize = '{{ sz.strip() }}'"
-                :class="selectedSize === '{{ sz.strip() }}'
-                        ? 'bg-gradient-to-r from-[rgb(200,100,255)] to-[rgb(255,150,210)] text-white scale-105'
-                        : 'bg-gradient-to-r from-[rgba(255,240,255,0.9)] to-[rgba(250,230,255,0.9)] text-[rgb(100,70,150)] hover:scale-105'"
-                class="px-3 py-1.5 rounded-full border border-[rgba(230,153,255,0.4)] shadow-sm font-semibold text-sm transition-all duration-200">
-          {{ sz.strip() }}
-        </button>
-        {% endfor %}
-      </div>
-      <p x-show="selectedSize" class="text-xs text-gray-600 mt-1">
-        Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedSize"></span>
-      </p>
-    </div>
+  <div class="prose max-w-none text-gray-700 leading-relaxed mb-6">
+    {% if '<p>' in product.description or '<br>' in product.description %}
+      {{ product.description | safe }}
+    {% else %}
+      <p class="whitespace-pre-line break-words">{{ product.description }}</p>
     {% endif %}
   </div>
 
   <!-- 🛒 Buttons -->
   <div class="mt-8 flex flex-col sm:flex-row gap-4">
     {% if product.is_soldout %}
-      <button disabled class="w-full sm:w-1/2 py-3 text-center rounded-xl font-semibold bg-gradient-to-r from-gray-300 to-gray-200 text-gray-600 uppercase shadow-inner">
+      <button disabled class="w-full sm:w-1/2 soldout-btn py-3 text-center rounded-xl font-semibold bg-gradient-to-r from-gray-300 to-gray-200 text-gray-600 uppercase shadow-inner">
         ❌ Sold Out
       </button>
     {% else %}
-      <form id="add-to-cart-form" method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2">
-        <input type="hidden" name="color">
-        <input type="hidden" name="size">
-        <button type="button" 
-                @click="handleSubmit('add-to-cart-form')" 
-                class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(255,150,210)] to-[rgb(255,190,230)] shadow-[0_0_25px_rgba(200,100,255,0.4)]">
+      <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="w-full sm:w-1/2">
+        <input type="hidden" name="color" :value="selectedColor">
+        <input type="hidden" name="size" :value="selectedSize">
+        <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(255,150,210)] to-[rgb(255,190,230)] shadow-[0_0_25px_rgba(200,100,255,0.4)]">
           Add to Cart
         </button>
       </form>
 
-      <form id="buy-now-form" method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2">
-        <input type="hidden" name="color">
-        <input type="hidden" name="size">
-        <button type="button" 
-                @click="handleSubmit('buy-now-form')" 
-                class="aurielle-btn w-full bg-gradient-to-r from-[rgb(255,110,190)] via-[rgb(240,150,255)] to-[rgb(255,200,230)] shadow-[0_0_25px_rgba(240,150,255,0.4)]">
+      <form method="POST" action="{{ url_for('buy_now', product_id=product.id) }}" class="w-full sm:w-1/2">
+        <input type="hidden" name="color" :value="selectedColor">
+        <input type="hidden" name="size" :value="selectedSize">
+        <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(255,110,190)] via-[rgb(240,150,255)] to-[rgb(255,200,230)] shadow-[0_0_25px_rgba(240,150,255,0.4)]">
           Buy Now
         </button>
       </form>
@@ -399,22 +351,17 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- ✅ Alpine.js + SweetAlert -->
+<!-- ✅ Alpine.js for interactivity -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- 💬 Reviews Section -->
-<div id="review-section" class="review-box mt-16 p-8 scroll-mt-28 animate-fadeInUp">
-  <h2 class="text-3xl font-bold aurielle-gradient mb-10 text-center tracking-wide">
-    💬 Customer Reviews
-  </h2>
-
+<div class="review-box mt-14 p-8">
+  <h2 class="text-2xl font-bold aurielle-gradient mb-8 text-center">Customer Reviews</h2>
   {% if product.reviews %}
-    <div class="divide-y divide-[rgba(230,153,255,0.2)] space-y-5">
+    <div class="divide-y divide-[rgba(230,153,255,0.2)]">
       {% for review in product.reviews %}
       <div class="py-5">
         <div class="flex items-center justify-between mb-1">
-          <!-- ⭐ Star Rating -->
           <div class="flex text-yellow-400 text-lg">
             {% for i in range(1,6) %}
               {% if i <= review.rating %}★{% else %}☆{% endif %}
@@ -422,43 +369,23 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <span class="text-sm text-gray-600">{{ review.rating }}/5</span>
         </div>
-
-        <!-- 💬 Review Text -->
-        <p class="text-gray-800 leading-relaxed mt-1">
-          {{ review.comment }}
-        </p>
-
-        <!-- 👤 Reviewer Info -->
-        <p class="text-xs text-gray-500 mt-2 italic">
-          — {{ review.user_name or "Anonymous" }}, {{ review.created_at.strftime('%Y-%m-%d') }}
-        </p>
+        <p class="text-gray-800 leading-relaxed">{{ review.comment }}</p>
+        <p class="text-xs text-gray-500 mt-1">— {{ review.user_name or "Anonymous" }}, {{ review.created_at.strftime('%Y-%m-%d') }}</p>
       </div>
       {% endfor %}
     </div>
   {% else %}
-    <p class="text-gray-500 italic text-center py-6">
-      No reviews yet — be the first to sparkle ✨
-    </p>
+    <p class="text-gray-500 italic text-center">No reviews yet — be the first to sparkle ✨</p>
   {% endif %}
 </div>
 
-<!-- ✍️ Write a Review -->
-<div class="mt-12 aurielle-card p-10 animate-fadeInUp scroll-mt-24">
-  <h3 class="text-2xl font-bold aurielle-gradient mb-6 text-center tracking-wide">
-    ✍️ Write a Review
-  </h3>
-  <p class="text-center text-gray-600 mb-6">
-    Share your honest thoughts — it helps others and makes our community shine 💎
-  </p>
-
-  <form method="POST" action="{{ url_for('add_review', product_id=product.id) }}" 
-        class="space-y-6 max-w-lg mx-auto">
-    <!-- ⭐ Rating -->
+<!-- ✍️ Review Form -->
+<div class="mt-10 aurielle-card p-8">
+  <h3 class="text-xl font-semibold aurielle-gradient mb-6 text-center">Write a Review</h3>
+  <form method="POST" action="{{ url_for('add_review', product_id=product.id) }}" class="space-y-5 max-w-lg mx-auto">
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-2">Rating</label>
-      <select name="rating" required
-              class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/90 
-                     focus:ring-2 focus:ring-[rgb(204,102,255)] transition-all">
+      <select name="rating" required class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/80 focus:ring-2 focus:ring-[rgb(204,102,255)]">
         <option value="">Select Rating</option>
         <option value="5">★★★★★ Excellent</option>
         <option value="4">★★★★☆ Good</option>
@@ -467,33 +394,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <option value="1">★☆☆☆☆ Terrible</option>
       </select>
     </div>
-
-    <!-- 💬 Comment -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-2">Your Review</label>
-      <textarea name="comment" rows="4" required 
-                placeholder="Share your experience..."
-                class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 
-                       bg-white/90 focus:ring-2 focus:ring-[rgb(204,102,255)] resize-none transition-all"></textarea>
+      <textarea name="comment" rows="4" required placeholder="Share your experience..." class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/80 focus:ring-2 focus:ring-[rgb(204,102,255)] resize-none"></textarea>
     </div>
-
-    <!-- 👤 Name -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-2">Name (optional)</label>
-      <input type="text" name="user_name" placeholder="Your name"
-             class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/90 
-                    focus:ring-2 focus:ring-[rgb(204,102,255)] transition-all">
+      <input type="text" name="user_name" placeholder="Your name" class="w-full border border-[rgba(230,153,255,0.4)] rounded-lg px-3 py-2 bg-white/80 focus:ring-2 focus:ring-[rgb(204,102,255)]">
     </div>
-
-    <!-- ✅ Submit -->
-    <button type="submit"
-            class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(240,150,255)] 
-                   to-[rgb(255,190,240)] shadow-[0_0_30px_rgba(200,100,255,0.4)] text-lg font-semibold">
-      Submit Review 💖
-    </button>
+    <button type="submit" class="aurielle-btn w-full bg-gradient-to-r from-[rgb(200,100,255)] via-[rgb(240,150,255)] to-[rgb(255,190,240)] shadow-[0_0_25px_rgba(200,100,255,0.4)]">Submit Review</button>
   </form>
 </div>
-
 
 <!-- 🚚 Delivery & Exchange -->
 <div class="policy-box mt-14">
