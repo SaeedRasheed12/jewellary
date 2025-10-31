@@ -140,7 +140,7 @@
         class="absolute -left-6 sm:-left-8 top-1/2 -translate-y-1/2 z-30 
                bg-white/70 hover:bg-white/90 border border-purple-200 backdrop-blur-sm 
                rounded-full p-3 shadow-[0_0_10px_rgba(230,153,255,0.25)] 
-               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0">
+               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0 pointer-events-none">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
@@ -222,36 +222,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateArrows() {
     const maxScroll = container.scrollWidth - container.clientWidth;
-    leftBtn.classList.toggle('opacity-0', container.scrollLeft <= 10);
-    rightBtn.classList.toggle('opacity-0', container.scrollLeft >= maxScroll - 10);
+    const atStart = container.scrollLeft <= 5;
+    const atEnd = container.scrollLeft >= maxScroll - 5;
+
+    if (atStart) {
+      leftBtn.classList.add('opacity-0', 'pointer-events-none');
+    } else {
+      leftBtn.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    if (atEnd) {
+      rightBtn.classList.add('opacity-0', 'pointer-events-none');
+    } else {
+      rightBtn.classList.remove('opacity-0', 'pointer-events-none');
+    }
   }
 
+  // Smooth scroll handlers
   leftBtn.addEventListener('click', () => {
     container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     setTimeout(updateArrows, 600);
   });
-
   rightBtn.addEventListener('click', () => {
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     setTimeout(updateArrows, 600);
   });
 
+  // Update when scrolling or resizing
   container.addEventListener('scroll', updateArrows);
   window.addEventListener('resize', updateArrows);
 
-  // ⏳ Fade arrows out after 3 seconds of no interaction
-  let fadeTimeout;
-  const showArrows = () => {
-    leftBtn.classList.add('opacity-100');
-    rightBtn.classList.add('opacity-100');
-    clearTimeout(fadeTimeout);
-    fadeTimeout = setTimeout(() => {
-      leftBtn.classList.add('opacity-0');
-      rightBtn.classList.add('opacity-0');
-      updateArrows();
-    }, 3000);
-  };
-  container.addEventListener('scroll', showArrows);
+  // ✅ Initial check
   updateArrows();
 });
 </script>
