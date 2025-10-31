@@ -165,6 +165,10 @@
         <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
           <a href="{{ product.image }}" class="glightbox" data-gallery="media-gallery">
             <img src="{{ product.image }}" alt="{{ product.name }}"
+                 loading="eager"
+                 fetchpriority="high"
+                 decoding="async"
+                 width="100%" height="auto"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
                         transition-all duration-[1000ms] ease-[cubic-bezier(0.19,1,0.22,1)]
                         hover:scale-[1.03] hover:shadow-[0_15px_45px_rgba(230,153,255,0.25)]
@@ -177,6 +181,10 @@
         <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl">
           <a href="{{ img.filename }}" class="glightbox" data-gallery="media-gallery">
             <img src="{{ img.filename }}" alt="{{ product.name }}"
+                 loading="eager"
+                 fetchpriority="high"
+                 decoding="async"
+                 width="100%" height="auto"
                  class="w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover rounded-2xl sm:rounded-3xl 
                         transition-all duration-[1000ms] ease-[cubic-bezier(0.19,1,0.22,1)]
                         hover:scale-[1.03] hover:shadow-[0_15px_45px_rgba(230,153,255,0.25)]
@@ -187,7 +195,8 @@
 
         {% if product.video_url %}
         <div class="relative flex-shrink-0 w-[88vw] sm:w-[420px] snap-center overflow-hidden rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-[0_0_40px_rgba(230,153,255,0.25)] border border-[rgba(230,153,255,0.25)] bg-white/90 backdrop-blur-sm">
-          <video controls playsinline preload="metadata" poster="{{ product.image or '' }}"
+          <video controls playsinline preload="auto" poster="{{ product.image or '' }}"
+                 width="100%" height="auto"
                  class="rounded-2xl sm:rounded-3xl w-full h-[240px] xs:h-[260px] sm:h-[400px] md:h-[460px] object-cover">
             <source src="{{ product.video_url }}" type="video/mp4">
           </video>

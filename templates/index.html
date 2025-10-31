@@ -14,7 +14,11 @@
     <div class="carousel-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out" id="slide-image">
       <img src="{{ setting.hero_banner }}"
            alt="Aurielle Hero Banner"
-           class="w-full h-full object-cover rounded-3xl brightness-95" />
+           loading="eager"
+           fetchpriority="high"
+           decoding="async"
+           width="100%" height="auto"
+           class="w-full h-full object-cover rounded-3xl brightness-95 transition-all duration-700 ease-out" />
     </div>
     <div class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out" id="slide-video">
       <video autoplay muted loop playsinline 
@@ -45,7 +49,6 @@
       current = (current + 1) % slides.length;
       showSlide(current);
     };
-    // Auto-switch every 8 seconds
     setInterval(() => {
       current = (current + 1) % slides.length;
       showSlide(current);
@@ -63,7 +66,11 @@
   <!-- 🌷 Hero Image -->
   <img src="{{ setting.hero_banner }}"
        alt="Aurielle Hero Banner"
-       class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95" />
+       loading="eager"
+       fetchpriority="high"
+       decoding="async"
+       width="100%" height="auto"
+       class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95 transition-all duration-700 ease-out" />
   {% endif %}
 
   <!-- ✨ Gradient & Glow Overlays -->
@@ -199,6 +206,10 @@
       {% for banner in promo_banners %}
       <div class="swiper-slide relative group">
         <img src="{{ banner.image }}" alt="{{ banner.title }}"
+             loading="eager"
+             fetchpriority="high"
+             decoding="async"
+             width="100%" height="auto"
              class="w-full h-64 sm:h-[28rem] object-cover object-center scale-105 
                     group-hover:scale-110 transition-transform duration-[1500ms] ease-out rounded-3xl" />
 
@@ -241,6 +252,10 @@
       {% if cat.image %}
       <div class="swiper-slide relative group">
         <img src="{{ cat.image }}" alt="{{ cat.name }}"
+             loading="eager"
+             fetchpriority="high"
+             decoding="async"
+             width="100%" height="auto"
              class="w-full h-64 sm:h-[28rem] object-cover object-center scale-105 
                     group-hover:scale-110 transition-transform duration-[1500ms] ease-out rounded-3xl" />
 
@@ -356,6 +371,10 @@
           
           <!-- Image -->
           <img src="{{ cat.image }}" alt="{{ cat.name }}"
+               loading="eager"
+               fetchpriority="high"
+               decoding="async"
+               width="100%" height="auto"
                class="w-full h-44 sm:h-56 object-cover rounded-2xl brightness-95 
                       group-hover:brightness-110 transition duration-700 ease-out" />
 
@@ -549,6 +568,10 @@
       <!-- 💎 Product Image -->
       <div class="relative overflow-hidden">
         <img src="{{ product.image }}" alt="{{ product.name }}"
+             loading="eager"
+             fetchpriority="high"
+             decoding="async"
+             width="100%" height="auto"
              class="w-full h-44 sm:h-56 object-cover rounded-t-2xl transition-transform duration-[1500ms] ease-out group-hover:scale-110" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent 
                     opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">

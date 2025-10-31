@@ -5,58 +5,62 @@
   <title>{% block title %}{{ setting.website_name if setting else 'Aurielle' }}{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🅰️ Font: Poppins -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- ⚡ Instant Image Preload Optimizations -->
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://res.cloudinary.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
-<!-- 💨 Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: {
-          sans: ['Poppins', 'sans-serif'],
-        },
-        colors: {
-          primary: '#1e3a8a',
-          brand: '#0f172a'
+  <!-- 🖼️ Preload key visual assets -->
+  {% if setting and setting.logo %}
+    <link rel="preload" as="image" href="{{ setting.logo }}">
+  {% endif %}
+  {% if setting and setting.background_image %}
+    <link rel="preload" as="image" href="{{ setting.background_image }}">
+  {% endif %}
+  {% if setting and setting.hero_banner %}
+    <link rel="preload" as="image" href="{{ setting.hero_banner }}">
+  {% endif %}
+  {% if promo_banners %}
+    {% for banner in promo_banners[:3] %}
+      <link rel="preload" as="image" href="{{ banner.image }}">
+    {% endfor %}
+  {% endif %}
+  {% if categories %}
+    {% for cat in categories[:3] %}
+      {% if cat.image %}
+        <link rel="preload" as="image" href="{{ cat.image }}">
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  <meta http-equiv="Cache-Control" content="max-age=31536000, must-revalidate">
+
+  <!-- 🅰️ Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- 💨 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'sans-serif'] },
+          colors: { primary: '#1e3a8a', brand: '#0f172a' }
         }
       }
     }
-  }
-</script>
+  </script>
 
-<style>
-  /* 🟦 Line Banner Animation */
-  @keyframes scrollLeft {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .banner-marquee-wrapper {
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    height: 2.25rem;
-  }
-  .banner-marquee-text {
-    display: flex;
-    width: max-content;
-    animation: scrollLeft 18s linear infinite;
-    will-change: transform;
-  }
-  .banner-marquee-content {
-    flex-shrink: 0;
-    padding-right: 4rem;
-    min-width: 100vw;
-    box-sizing: border-box;
-  }
+  <style>
+    /* 🟦 Line Banner Animation */
+    @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .banner-marquee-wrapper { overflow: hidden; white-space: nowrap; position: relative; height: 2.25rem; }
+    .banner-marquee-text { display: flex; width: max-content; animation: scrollLeft 18s linear infinite; will-change: transform; }
+    .banner-marquee-content { flex-shrink: 0; padding-right: 4rem; min-width: 100vw; box-sizing: border-box; }
 
-  /* 🩶 Background overlay for readability */
-  .background-overlay {
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(6px);
-  }
-</style>
+    /* 🩶 Background overlay for readability */
+    .background-overlay { background: rgba(255,255,255,0.7); backdrop-filter: blur(6px); }
+  </style>
 </head>
 
 <body class="relative font-[Poppins] text-gray-800 min-h-screen flex flex-col bg-white transition-all duration-500">
