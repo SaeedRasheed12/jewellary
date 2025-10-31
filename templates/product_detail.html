@@ -140,8 +140,7 @@
         class="absolute -left-6 sm:-left-8 top-1/2 -translate-y-1/2 z-30 
                bg-white/70 hover:bg-white/90 border border-purple-200 backdrop-blur-sm 
                rounded-full p-3 shadow-[0_0_10px_rgba(230,153,255,0.25)] 
-               text-purple-500 hover:text-purple-700 transition-all duration-300 
-               opacity-0 group-hover:opacity-100">
+               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-0">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
@@ -152,8 +151,7 @@
         class="absolute -right-6 sm:-right-8 top-1/2 -translate-y-1/2 z-30 
                bg-white/70 hover:bg-white/90 border border-purple-200 backdrop-blur-sm 
                rounded-full p-3 shadow-[0_0_10px_rgba(230,153,255,0.25)] 
-               text-purple-500 hover:text-purple-700 transition-all duration-300 
-               opacity-0 group-hover:opacity-100">
+               text-purple-500 hover:text-purple-700 transition-all duration-300 opacity-100">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
         </svg>
@@ -209,14 +207,6 @@
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-@keyframes blink {
-  0%, 100% { opacity: 0.9; }
-  50% { opacity: 0.5; }
-}
-.animate-blink {
-  animation: blink 3s ease-in-out infinite;
-}
-
 @media (max-width: 360px) {
   .aurielle-card h2 { font-size: 1.5rem; line-height: 2rem; }
   .aurielle-card img, .aurielle-card video { height: 200px; }
@@ -230,17 +220,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const rightBtn = document.getElementById('scrollRight');
   const scrollAmount = 400;
 
-  leftBtn.addEventListener('click', () => container.scrollBy({ left: -scrollAmount, behavior: 'smooth' }));
-  rightBtn.addEventListener('click', () => container.scrollBy({ left: scrollAmount, behavior: 'smooth' }));
-
-  // 🔥 Hide arrows when at ends
-  const updateArrows = () => {
+  function updateArrows() {
+    const maxScroll = container.scrollWidth - container.clientWidth;
     leftBtn.classList.toggle('opacity-0', container.scrollLeft <= 10);
-    rightBtn.classList.toggle('opacity-0', container.scrollLeft + container.clientWidth >= container.scrollWidth - 10);
-  };
+    rightBtn.classList.toggle('opacity-0', container.scrollLeft >= maxScroll - 10);
+  }
+
+  leftBtn.addEventListener('click', () => {
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    setTimeout(updateArrows, 600);
+  });
+
+  rightBtn.addEventListener('click', () => {
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    setTimeout(updateArrows, 600);
+  });
 
   container.addEventListener('scroll', updateArrows);
   window.addEventListener('resize', updateArrows);
+
+  // ⏳ Fade arrows out after 3 seconds of no interaction
+  let fadeTimeout;
+  const showArrows = () => {
+    leftBtn.classList.add('opacity-100');
+    rightBtn.classList.add('opacity-100');
+    clearTimeout(fadeTimeout);
+    fadeTimeout = setTimeout(() => {
+      leftBtn.classList.add('opacity-0');
+      rightBtn.classList.add('opacity-0');
+      updateArrows();
+    }, 3000);
+  };
+  container.addEventListener('scroll', showArrows);
   updateArrows();
 });
 </script>
