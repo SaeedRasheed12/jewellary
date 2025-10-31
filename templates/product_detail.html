@@ -276,12 +276,17 @@ document.addEventListener('DOMContentLoaded', () => {
     <p class="text-3xl font-extrabold text-[rgb(204,102,255)] mb-4 price-glow">Rs {{ product.today_price|int }}</p>
   {% endif %}
 
-  <!-- 🎨 Color & Size Display -->
-  <div class="flex flex-col sm:flex-row flex-wrap sm:items-center gap-4 mb-6">
+<!-- 🎨 Color & Size Display -->
+<div class="flex flex-col sm:flex-row flex-wrap sm:items-center gap-8 mb-8 
+            bg-gradient-to-br from-[rgba(255,250,255,0.9)] via-[rgba(250,245,255,0.8)] to-[rgba(245,240,255,0.9)] 
+            p-5 sm:p-7 rounded-2xl border border-[rgba(230,153,255,0.25)] shadow-[0_0_25px_rgba(230,153,255,0.1)] 
+            backdrop-blur-xl transition-all duration-500">
 
   {% if product.color %}
-  <div class="flex flex-col gap-2">
-    <span class="text-sm font-semibold text-[rgb(120,80,160)]">🎨 Color:</span>
+  <div class="flex flex-col gap-3 w-full sm:w-auto">
+    <span class="text-sm font-semibold text-[rgb(120,80,160)] uppercase tracking-wide">
+      🎨 Color
+    </span>
     <div class="flex flex-wrap gap-4">
       {% for clr in product.color.split(',') %}
         {% if '/' not in clr %}
@@ -290,9 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
                   data-color="{{ clr.strip() }}"
                   @click="selectedColor = '{{ clr.strip() }}'"
                   :class="selectedColor === '{{ clr.strip() }}' 
-                          ? 'ring-2 ring-[rgb(204,102,255)] scale-110' 
+                          ? 'ring-2 ring-[rgb(204,102,255)] scale-110 shadow-[0_0_12px_rgba(204,102,255,0.4)]' 
                           : 'opacity-90 hover:opacity-100'"
-                  class="w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-all duration-200"
+                  class="w-8 h-8 rounded-full border border-gray-300 shadow-sm transition-all duration-300"
                   style="background-color: {{ clr.strip() | lower }};"
                   title="{{ clr.strip() }}">
           </button>
@@ -301,6 +306,11 @@ document.addEventListener('DOMContentLoaded', () => {
         {% endif %}
       {% endfor %}
     </div>
+
+    <!-- ✨ Selection feedback -->
+    <template x-if="!selectedColor">
+      <p class="text-xs text-rose-500 mt-1 animate-pulse">Please select a color ✨</p>
+    </template>
     <p x-show="selectedColor" class="text-xs text-gray-600 mt-1">
       Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedColor"></span>
     </p>
@@ -308,26 +318,33 @@ document.addEventListener('DOMContentLoaded', () => {
   {% endif %}
 
   {% if product.size %}
-  <div class="flex flex-col gap-2">
-    <span class="text-sm font-semibold text-[rgb(120,80,160)]">📏 Size:</span>
-    <div class="flex flex-wrap gap-2">
+  <div class="flex flex-col gap-3 w-full sm:w-auto">
+    <span class="text-sm font-semibold text-[rgb(120,80,160)] uppercase tracking-wide">
+      📏 Size
+    </span>
+    <div class="flex flex-wrap gap-3">
       {% for sz in product.size.split(',') %}
       <button type="button"
               @click="selectedSize = '{{ sz.strip() }}'"
               :class="selectedSize === '{{ sz.strip() }}'
-                      ? 'bg-gradient-to-r from-[rgb(200,100,255)] to-[rgb(255,150,210)] text-white scale-105'
-                      : 'bg-gradient-to-r from-[rgba(255,240,255,0.9)] to-[rgba(250,230,255,0.9)] text-[rgb(100,70,150)] hover:scale-105'"
-              class="px-3 py-1.5 rounded-full border border-[rgba(230,153,255,0.4)] shadow-sm font-semibold text-sm transition-all duration-200">
+                      ? 'bg-gradient-to-r from-[rgb(200,100,255)] to-[rgb(255,150,210)] text-white scale-105 shadow-[0_0_15px_rgba(200,100,255,0.35)]'
+                      : 'bg-gradient-to-r from-[rgba(255,250,255,0.9)] to-[rgba(250,230,255,0.9)] text-[rgb(100,70,150)] hover:scale-105'"
+              class="px-3 py-1.5 rounded-full border border-[rgba(230,153,255,0.4)] shadow-sm font-semibold text-sm transition-all duration-300">
         {{ sz.strip() }}
       </button>
       {% endfor %}
     </div>
+
+    <!-- ✨ Selection feedback -->
+    <template x-if="!selectedSize">
+      <p class="text-xs text-rose-500 mt-1 animate-pulse">Please select a size ✨</p>
+    </template>
     <p x-show="selectedSize" class="text-xs text-gray-600 mt-1">
       Selected: <span class="font-semibold text-[rgb(160,100,220)]" x-text="selectedSize"></span>
     </p>
   </div>
   {% endif %}
-  </div>
+</div>
 
   {% if product.reviews %}
     {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
