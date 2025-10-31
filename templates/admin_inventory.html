@@ -10,14 +10,17 @@
   @keyframes fade-in { from {opacity: 0; transform: scale(0.95);} to {opacity: 1; transform: scale(1);} }
   .animate-fade-in { animation: fade-in 0.3s ease-out; }
 
-  @media (max-width: 640px) {
+  /* 📱 Mobile Responsive Table Cards */
+  @media (max-width: 768px) {
     table thead { display: none; }
-    table tr { display: block; margin-bottom: 1rem; background: white; border-radius: 1rem; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
-    table td { display: flex; justify-content: space-between; padding: 0.75rem 1rem; border: none; }
-    table td::before {
+    table, tbody, tr, td { display: block; width: 100%; }
+    tr { background: white; border-radius: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
+    td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border: none; }
+    td::before {
       content: attr(data-label);
       font-weight: 600;
       color: #7e57c2;
+      text-transform: capitalize;
     }
   }
 </style>
@@ -37,9 +40,9 @@
     </button>
   </div>
 
-  <!-- 🔍 Live Search + Sort -->
+  <!-- 🔍 Search + Sort -->
   <div class="flex flex-col sm:flex-row gap-3 items-center mb-8">
-    <input type="text" id="liveSearch" placeholder="Search by name or notes..."
+    <input type="text" id="liveSearch" placeholder="Search by name or supplier..."
            class="w-full sm:w-2/3 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition" />
     <select id="sortSelect"
             class="w-full sm:w-1/3 border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-2 bg-white focus:ring-2 focus:ring-purple-400 focus:border-transparent transition">
@@ -59,18 +62,25 @@
         <tr class="text-gray-700">
           <th class="p-4">Image</th>
           <th class="p-4">Name</th>
-          <th class="p-4">Price (Rs)</th>
+          <th class="p-4">Stock</th>
+          <th class="p-4">Product Cost</th>
+          <th class="p-4">Packaging</th>
+          <th class="p-4">Extra Cost</th>
+          <th class="p-4">Selling Price</th>
+          <th class="p-4 text-green-700 font-semibold">Profit (Rs)</th>
           <th class="p-4">Notes</th>
+          <th class="p-4">Supplier</th>
           <th class="p-4 text-center">Actions</th>
         </tr>
       </thead>
       <tbody id="inventoryBody">
         {% for item in items %}
+        {% set total_cost = (item.product_cost or 0) + (item.packaging_cost or 0) + (item.selling_cost or 0) %}
+        {% set profit = (item.price or 0) - total_cost %}
         <tr class="border-b border-gray-100 hover:bg-purple-50/40 transition">
           <td class="p-4" data-label="Image">
             {% if item.image %}
-              <a href="{{ item.image }}" class="glightbox" data-gallery="inventory-gallery"
-                 data-title="{{ item.name }}" data-description="Rs {{ item.price|int }}">
+              <a href="{{ item.image }}" class="glightbox" data-gallery="inventory-gallery">
                 <img src="{{ item.image }}" alt="{{ item.name }}" 
                      class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm cursor-pointer hover:scale-105 transition-all duration-300" />
               </a>
@@ -79,11 +89,43 @@
             {% endif %}
           </td>
           <td class="p-4 font-semibold break-words" data-label="Name">{{ item.name }}</td>
-          <td class="p-4 text-purple-700 font-bold" data-label="Price">Rs {{ item.price|int }}</td>
-          <td class="p-4 text-gray-600 break-words" data-label="Notes">{{ item.notes }}</td>
+          <td class="p-4 text-gray-700" data-label="Stock">{{ item.stock or '—' }}</td>
+          <td class="p-4 text-gray-600" data-label="Product Cost">{{ item.product_cost or '—' }}</td>
+          <td class="p-4 text-gray-600" data-label="Packaging">{{ item.packaging_cost or '—' }}</td>
+          <td class="p-4 text-gray-600" data-label="Extra Cost">{{ item.selling_cost or '—' }}</td>
+          <td class="p-4 text-purple-700 font-semibold" data-label="Selling Price">Rs {{ item.price|int }}</td>
+          <td class="p-4 font-semibold" data-label="Profit">
+            {% if profit >= 0 %}
+              <span class="text-green-600">Rs {{ "%.2f"|format(profit) }}</span>
+            {% else %}
+              <span class="text-red-500">Loss Rs {{ "%.2f"|format(profit|abs) }}</span>
+            {% endif %}
+          </td>
+          <td class="p-4 text-gray-500 italic" data-label="Notes">{{ item.notes or '—' }}</td>
+          <td class="p-4 text-center" data-label="Supplier">
+            {% if item.supplier_name %}
+              <div class="text-sm leading-tight">
+                <p class="font-semibold text-purple-700">{{ item.supplier_name }}</p>
+                <p class="text-gray-500 text-xs">{{ item.supplier_contact or '' }}</p>
+                <p class="text-gray-400 text-xs italic">{{ item.supplier_address or '' }}</p>
+              </div>
+            {% else %}
+              <span class="text-gray-400">—</span>
+            {% endif %}
+          </td>
+
+          <!-- ✏️ Actions -->
           <td class="p-4 text-center" data-label="Actions">
-            <a href="{{ url_for('delete_inventory_item', item_id=item.id) }}"
-               class="text-red-500 hover:text-red-600 font-medium">Delete</a>
+            <div class="flex justify-center gap-3">
+              <a href="{{ url_for('edit_inventory_item', item_id=item.id) }}"
+                 class="text-purple-600 hover:text-purple-800 font-medium transition duration-300">
+                 ✏️ Edit
+              </a>
+              <a href="{{ url_for('delete_inventory_item', item_id=item.id) }}"
+                 class="text-red-500 hover:text-red-600 font-medium transition duration-300">
+                 🗑️ Delete
+              </a>
+            </div>
           </td>
         </tr>
         {% endfor %}
@@ -98,34 +140,88 @@
 
 <!-- 📋 Add Modal -->
 <div id="addModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md relative animate-fade-in">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl relative animate-fade-in overflow-y-auto max-h-[90vh]">
     <h2 class="text-2xl font-bold text-purple-700 mb-4 text-center">Add Inventory Item</h2>
 
     <form method="POST" enctype="multipart/form-data" class="space-y-5">
-      <div>
-        <label class="block font-medium mb-1">Product Name</label>
-        <input type="text" name="name" required
-               class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+      <!-- Basic Info -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-medium mb-1">Product Name</label>
+          <input type="text" name="name" required
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Selling Price (Rs)</label>
+          <input type="number" id="sellingPrice" name="price" step="0.01" required
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
       </div>
 
-      <div>
-        <label class="block font-medium mb-1">Price (Rs)</label>
-        <input type="number" name="price" step="0.01" required
-               class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+      <!-- Cost & Stock -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div>
+          <label class="block font-medium mb-1">Stock</label>
+          <input type="number" name="stock" min="0"
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Product Cost</label>
+          <input type="number" id="productCost" name="product_cost" step="0.01"
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Packaging Cost</label>
+          <input type="number" id="packagingCost" name="packaging_cost" step="0.01"
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Extra Cost</label>
+          <input type="number" id="extraCost" name="selling_cost" step="0.01"
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
       </div>
 
-      <div>
-        <label class="block font-medium mb-1">Image</label>
-        <input type="file" name="image" accept="image/*"
-               class="w-full border rounded-xl px-4 py-2 bg-gray-50" />
+      <!-- 💹 Live Profit -->
+      <div class="bg-purple-50 border border-purple-200 rounded-xl p-3 text-center">
+        <p class="text-sm text-gray-600 font-medium">Estimated Profit:</p>
+        <p id="profitDisplay" class="text-lg font-bold text-green-600">Rs 0.00</p>
       </div>
 
       <div>
         <label class="block font-medium mb-1">Notes</label>
-        <textarea name="notes" rows="3"
+        <textarea name="notes" rows="2"
                   class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400"></textarea>
       </div>
 
+      <!-- Supplier Info -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-medium mb-1">Supplier Name</label>
+          <input type="text" name="supplier_name"
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Supplier Contact</label>
+          <input type="text" name="supplier_contact"
+                 class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Supplier Address</label>
+        <input type="text" name="supplier_address"
+               class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-purple-400" />
+      </div>
+
+      <!-- Image -->
+      <div>
+        <label class="block font-medium mb-1">Product Image</label>
+        <input type="file" name="image" accept="image/*"
+               class="w-full border rounded-xl px-4 py-2 bg-gray-50 hover:bg-gray-100 transition" />
+      </div>
+
+      <!-- Buttons -->
       <div class="flex justify-center gap-3 pt-4">
         <button type="submit"
                 class="bg-gradient-to-r from-purple-500 to-pink-400 text-white font-semibold px-6 py-2 rounded-xl hover:scale-105 transition">
@@ -145,68 +241,26 @@
 <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const lightbox = GLightbox({
-    selector: ".glightbox",
-    touchNavigation: true,
-    loop: true,
-    openEffect: "zoom",
-    closeEffect: "fade",
-    zoomable: true,
-    width: "90vw",
-    height: "90vh",
-  });
+  GLightbox({ selector: ".glightbox" });
 
-  const searchInput = document.getElementById("liveSearch");
-  const sortSelect = document.getElementById("sortSelect");
-  const tableBody = document.getElementById("inventoryBody");
+  // 💹 Profit Calculation in Modal (includes Extra Cost)
+  const productCost = document.getElementById("productCost");
+  const packagingCost = document.getElementById("packagingCost");
+  const extraCost = document.getElementById("extraCost");
+  const sellingPrice = document.getElementById("sellingPrice");
+  const profitDisplay = document.getElementById("profitDisplay");
 
-  async function fetchInventory() {
-    const query = searchInput.value.trim();
-    const sort = sortSelect.value;
-    const res = await fetch(`/admin/inventory/search?q=${encodeURIComponent(query)}&sort=${sort}`);
-    const data = await res.json();
-
-    tableBody.innerHTML = "";
-    if (data.length === 0) {
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="5" class="text-center text-gray-500 italic py-6">
-            No matching items found.
-          </td>
-        </tr>`;
-      return;
-    }
-
-    data.forEach(item => {
-      const row = `
-        <tr class="border-b border-gray-100 hover:bg-purple-50/40 transition">
-          <td class="p-4">
-            ${item.image 
-              ? `<a href="${item.image}" class="glightbox" data-gallery="inventory-gallery"
-                   data-title="${item.name}" data-description="Rs ${Math.round(item.price)}">
-                   <img src="${item.image}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm cursor-pointer hover:scale-105 transition-all duration-300">
-                 </a>`
-              : `<div class='w-16 h-16 flex items-center justify-center rounded-lg bg-gray-100 text-gray-400'>📦</div>`}
-          </td>
-          <td class="p-4 font-semibold break-words">${item.name}</td>
-          <td class="p-4 text-purple-700 font-bold">Rs ${Math.round(item.price)}</td>
-          <td class="p-4 text-gray-600 break-words">${item.notes || ""}</td>
-          <td class="p-4 text-center">
-            <a href="/admin/inventory/delete/${item.id}" class="text-red-500 hover:text-red-600 font-medium">Delete</a>
-          </td>
-        </tr>`;
-      tableBody.insertAdjacentHTML("beforeend", row);
-    });
-
-    GLightbox({ selector: ".glightbox", loop: true });
+  function calculateProfit() {
+    const pc = parseFloat(productCost.value) || 0;
+    const pk = parseFloat(packagingCost.value) || 0;
+    const ex = parseFloat(extraCost.value) || 0;
+    const sp = parseFloat(sellingPrice.value) || 0;
+    const profit = sp - (pc + pk + ex);
+    profitDisplay.textContent = profit >= 0 ? `Rs ${profit.toFixed(2)}` : `Loss Rs ${Math.abs(profit).toFixed(2)}`;
+    profitDisplay.className = profit >= 0 ? "text-lg font-bold text-green-600" : "text-lg font-bold text-red-500";
   }
 
-  let debounceTimer;
-  searchInput.addEventListener("input", () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(fetchInventory, 300);
-  });
-  sortSelect.addEventListener("change", fetchInventory);
+  [productCost, packagingCost, extraCost, sellingPrice].forEach(el => el.addEventListener("input", calculateProfit));
 });
 </script>
 {% endblock %}

@@ -117,10 +117,23 @@ class Coupon(db.Model):
 class InventoryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
-    image = db.Column(db.String(300))
-    price = db.Column(db.Float)
-    notes = db.Column(db.Text)
+    price = db.Column(db.Float, nullable=False)
+    notes = db.Column(db.Text, nullable=True)
+    image = db.Column(db.String(500), nullable=True)
+    
+    # 🧮 Extended fields (optional)
+    stock = db.Column(db.Integer, nullable=True)
+    packaging_cost = db.Column(db.Float, nullable=True)
+    product_cost = db.Column(db.Float, nullable=True)
+    selling_cost = db.Column(db.Float, nullable=True)
+    
+    # 🏬 Supplier Info (optional)
+    supplier_name = db.Column(db.String(150), nullable=True)
+    supplier_address = db.Column(db.String(255), nullable=True)
+    supplier_contact = db.Column(db.String(50), nullable=True)
+
     added_on = db.Column(db.DateTime, default=datetime.utcnow)
+
    
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -2147,19 +2160,30 @@ def toggle_soldout(product_id):
     flash(f"Product '{product.name}' marked as {status}.", "success")
     return redirect(request.referrer or url_for('admin_dashboard'))
 
+# 🧱 Admin Inventory Manager
 @app.route("/admin/inventory", methods=["GET", "POST"])
 def admin_inventory():
     if not session.get("admin_logged_in"):
         flash("Please log in as admin first.", "warning")
         return redirect(url_for("admin_login"))
 
-    # ✅ Add item
+    # ✅ Add New Item
     if request.method == "POST":
         name = request.form.get("name")
         price = request.form.get("price")
         notes = request.form.get("notes")
         image = request.files.get("image")
 
+        # 🆕 Optional Fields
+        stock = request.form.get("stock") or None
+        packaging_cost = request.form.get("packaging_cost") or None
+        product_cost = request.form.get("product_cost") or None
+        selling_cost = request.form.get("selling_cost") or None
+        supplier_name = request.form.get("supplier_name") or None
+        supplier_address = request.form.get("supplier_address") or None
+        supplier_contact = request.form.get("supplier_contact") or None
+
+        # 🖼️ Upload Image to Cloudinary (if any)
         image_url = None
         if image and image.filename != "":
             upload_result = cloudinary.uploader.upload(
@@ -2171,26 +2195,38 @@ def admin_inventory():
             )
             image_url = upload_result.get("secure_url")
 
-        item = InventoryItem(name=name, price=price, notes=notes, image=image_url)
+        # 🧾 Save Item
+        item = InventoryItem(
+            name=name,
+            price=price,
+            notes=notes,
+            image=image_url,
+            stock=stock,
+            packaging_cost=packaging_cost,
+            product_cost=product_cost,
+            selling_cost=selling_cost,
+            supplier_name=supplier_name,
+            supplier_address=supplier_address,
+            supplier_contact=supplier_contact
+        )
         db.session.add(item)
         db.session.commit()
-        flash("Item added successfully!", "success")
+        flash("✅ Item added successfully!", "success")
         return redirect(url_for("admin_inventory"))
 
-    # ✅ Filters
+    # 🔍 Filters
     search_query = request.args.get("search", "").strip()
     sort_by = request.args.get("sort", "newest")
 
     items = InventoryItem.query
 
-    # 🔍 Search by name or notes
     if search_query:
         items = items.filter(
             InventoryItem.name.ilike(f"%{search_query}%") |
             InventoryItem.notes.ilike(f"%{search_query}%")
         )
 
-    # 📊 Sorting logic
+    # 📊 Sorting Options
     if sort_by == "name_asc":
         items = items.order_by(InventoryItem.name.asc())
     elif sort_by == "name_desc":
@@ -2199,12 +2235,14 @@ def admin_inventory():
         items = items.order_by(InventoryItem.price.asc())
     elif sort_by == "price_high":
         items = items.order_by(InventoryItem.price.desc())
-    else:  # newest
+    else:
         items = items.order_by(InventoryItem.added_on.desc())
 
     items = items.all()
     return render_template("admin_inventory.html", items=items, search_query=search_query, sort_by=sort_by)
 
+
+# 🗑️ Delete Item
 @app.route("/admin/inventory/delete/<int:item_id>")
 def delete_inventory_item(item_id):
     if not session.get("admin_logged_in"):
@@ -2212,7 +2250,7 @@ def delete_inventory_item(item_id):
 
     item = InventoryItem.query.get_or_404(item_id)
 
-    # Optional: delete from Cloudinary
+    # 🧹 Delete from Cloudinary
     if item.image:
         try:
             public_id = item.image.split("/")[-1].rsplit(".", 1)[0]
@@ -2222,11 +2260,11 @@ def delete_inventory_item(item_id):
 
     db.session.delete(item)
     db.session.commit()
-    flash("Item deleted from inventory.", "info")
+    flash("🗑️ Item deleted successfully.", "info")
     return redirect(url_for("admin_inventory"))
 
-from flask import jsonify
 
+# 🔍 AJAX Search
 @app.route("/admin/inventory/search")
 def admin_inventory_search():
     if not session.get("admin_logged_in"):
@@ -2259,10 +2297,53 @@ def admin_inventory_search():
         "name": i.name,
         "price": i.price,
         "notes": i.notes,
-        "image": i.image
+        "image": i.image,
+        "stock": i.stock,
+        "supplier": i.supplier_name or "N/A"
     } for i in items.all()]
 
     return jsonify(results)
+
+
+# ✏️ Edit Item
+@app.route("/admin/inventory/edit/<int:item_id>", methods=["GET", "POST"])
+def edit_inventory_item(item_id):
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    item = InventoryItem.query.get_or_404(item_id)
+
+    if request.method == "POST":
+        item.name = request.form.get("name")
+        item.price = request.form.get("price")
+        item.notes = request.form.get("notes")
+
+        # Optional fields update
+        item.stock = request.form.get("stock") or None
+        item.packaging_cost = request.form.get("packaging_cost") or None
+        item.product_cost = request.form.get("product_cost") or None
+        item.selling_cost = request.form.get("selling_cost") or None
+        item.supplier_name = request.form.get("supplier_name") or None
+        item.supplier_address = request.form.get("supplier_address") or None
+        item.supplier_contact = request.form.get("supplier_contact") or None
+
+        # 🖼️ Cloudinary Upload (only if new)
+        image_file = request.files.get("image")
+        if image_file and image_file.filename != "":
+            upload_result = cloudinary.uploader.upload(
+                image_file,
+                folder="inventory_items",
+                public_id=secure_filename(image_file.filename).rsplit('.', 1)[0],
+                overwrite=True,
+                resource_type="image"
+            )
+            item.image = upload_result.get("secure_url")
+
+        db.session.commit()
+        flash("✅ Item updated successfully!", "success")
+        return redirect(url_for("admin_inventory"))
+
+    return render_template("edit_inventory.html", item=item)
 
 @app.route('/admin/performance_data')
 def admin_performance_data():
