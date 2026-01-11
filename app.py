@@ -85,7 +85,7 @@ class Category(db.Model):
 class Visit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ip = db.Column(db.String(45))
-    user_agent = db.Column(db.String(300))
+    user_agent = db.Column(db.Text)
     device = db.Column(db.String(20))  # Mobile / Desktop
     date = db.Column(db.Date, index=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
