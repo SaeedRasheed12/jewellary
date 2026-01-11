@@ -84,9 +84,10 @@ class Category(db.Model):
 
 class Visit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    ip = db.Column(db.String(100))
-    date = db.Column(db.Date, default=date.today) 
-    user_agent = db.Column(db.String(500))
+    ip = db.Column(db.String(45))
+    user_agent = db.Column(db.String(300))
+    device = db.Column(db.String(20))  # Mobile / Desktop
+    date = db.Column(db.Date, index=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     
 class PromoBanner(db.Model):
@@ -319,41 +320,67 @@ def index():
         selected_category=category_id
     )
 
+def get_real_ip():
+    if request.headers.get("X-Forwarded-For"):
+        return request.headers.get("X-Forwarded-For").split(",")[0]
+    return request.remote_addr
+
 @app.before_request
 def track_visits():
-    # Skip admin pages
-    if request.path.startswith("/admin"):
+
+    # ❌ Skip admin & static files
+    if (
+        request.path.startswith("/admin") or
+        request.path.startswith("/static")
+    ):
         return
 
-    ip = request.remote_addr
-    user_agent = request.headers.get('User-Agent', '')
+    # ✅ Only count real pages
+    if request.endpoint not in ["index", "product_detail"]:
+        return
 
-    # Detect if it's a mobile device
-    is_mobile = re.search(r"Mobile|Android|iPhone|iPad", user_agent, re.I)
-    if not is_mobile:
-        return  # Only count mobile devices
+    ip = get_real_ip()
+    user_agent = request.headers.get("User-Agent", "")
 
-    # 🔥 Unique device signature (IP + User-Agent)
-    existing_visit = Visit.query.filter_by(ip=ip, user_agent=user_agent).first()
+    today = date.today()
 
-    if not existing_visit:
-        new_visit = Visit(ip=ip, user_agent=user_agent)
-        db.session.add(new_visit)
-        db.session.commit()
+    # Detect device
+    device = "Mobile" if re.search(
+        r"Mobile|Android|iPhone|iPad", user_agent, re.I
+    ) else "Desktop"
 
-@app.route('/admin/visits_data')
+    # ❌ Avoid duplicate visits per day
+    exists = Visit.query.filter_by(
+        ip=ip,
+        date=today
+    ).first()
+
+    if exists:
+        return
+
+    visit = Visit(
+        ip=ip,
+        user_agent=user_agent[:300],
+        device=device,
+        date=today
+    )
+
+    db.session.add(visit)
+    db.session.commit()
+
+@app.route("/admin/visits_data")
 def visits_data():
-    # All unique visits ever
-    total_count = Visit.query.count()
+    if not session.get("admin_logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
 
-    # Visits first registered today (new unique users today)
-    today_count = Visit.query.filter(
-        db.func.date(Visit.timestamp) == date.today()
-    ).count()
+    today = date.today()
+
+    today_visits = Visit.query.filter_by(date=today).count()
+    total_visits = Visit.query.count()
 
     return jsonify({
-        'today_visits': today_count,
-        'total_visits': total_count
+        "today_visits": today_visits,
+        "total_visits": total_visits
     })
     
 @app.after_request
@@ -446,9 +473,9 @@ def admin_dashboard():
     ).distinct().all()
     unread_count = len(unread_users)
 
-    # 🔹 Visits stats
-    today = datetime.utcnow().date()
-    today_visits = Visit.query.filter(Visit.timestamp >= today).count()
+    # ================= REAL WEBSITE VISITS =================
+    today = date.today()
+    today_visits = Visit.query.filter_by(date=today).count()
     total_visits = Visit.query.count()
 
     # ===============================
