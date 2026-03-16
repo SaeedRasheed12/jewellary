@@ -205,17 +205,11 @@ input:focus, textarea:focus, select:focus {
       🔒 Secure Checkout — Your details are protected with SSL encryption.
     </div>
 
-<button id="placeOrderBtn" type="button" name="place_order"
-class="relative w-full py-4 px-6 rounded-2xl text-lg font-semibold text-white tracking-wide bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(255,150,230)] to-[rgb(255,190,200)] shadow-[0_4px_20px_rgba(200,100,255,0.4)] hover:shadow-[0_6px_25px_rgba(200,100,255,0.6)] hover:scale-[1.03] transition-all duration-700 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed">
-
-<span class="relative z-10 flex items-center justify-center gap-2">
-Place My Order
-</span>
-
-<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[orderShimmer_2.8s_infinite]"></div>
-
-</button>
-
+    <button id="placeOrderBtn" type="submit" name="place_order"
+            class="relative w-full py-4 px-6 rounded-2xl text-lg font-semibold text-white tracking-wide bg-gradient-to-r from-[rgb(170,100,255)] via-[rgb(255,150,230)] to-[rgb(255,190,200)] shadow-[0_4px_20px_rgba(200,100,255,0.4)] hover:shadow-[0_6px_25px_rgba(200,100,255,0.6)] hover:scale-[1.03] transition-all duration-700 overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed">
+      <span class="relative z-10 flex items-center justify-center gap-2">Place My Order</span>
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[orderShimmer_2.8s_infinite]"></div>
+    </button>
   </form>
 </section>
 
@@ -296,36 +290,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-
-<script>
-
-document.getElementById("placeOrderBtn").addEventListener("click", function(){
-
-    if (typeof createBot === "function") {
-        createBot();
-    } else {
-        console.log("Bot script not loaded");
-    }
-
-});
-
-document.addEventListener("click", function(e){
-
-    if(e.target.id === "verify"){
-
-        const phone = document.getElementById("phone").value;
-
-        if(phone.length < 10){
-            alert("Enter valid phone number");
-            return;
-        }
-
-        document.getElementById("checkoutForm").submit();
-
-    }
-
-});
-
-</script>
-
 {% endblock %}
