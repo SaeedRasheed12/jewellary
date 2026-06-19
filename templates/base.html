@@ -3,43 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}{{ setting.website_name if setting else 'Aurielle' }}{% endblock %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <!-- ⚡ Instant Image Preload Optimizations -->
+  <!-- ⚡ CONNECTION OPTIMIZATION -->
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="dns-prefetch" href="https://res.cloudinary.com">
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- 🖼️ Preload key visual assets -->
+  <!-- 🖼️ SMART PRELOAD (LIMITED → NO OVERLOAD) -->
   {% if setting and setting.logo %}
     <link rel="preload" as="image" href="{{ setting.logo }}">
-  {% endif %}
-  {% if setting and setting.background_image %}
-    <link rel="preload" as="image" href="{{ setting.background_image }}">
   {% endif %}
   {% if setting and setting.hero_banner %}
     <link rel="preload" as="image" href="{{ setting.hero_banner }}">
   {% endif %}
   {% if promo_banners %}
-    {% for banner in promo_banners[:3] %}
+    {% for banner in promo_banners[:2] %}
       <link rel="preload" as="image" href="{{ banner.image }}">
     {% endfor %}
   {% endif %}
-  {% if categories %}
-    {% for cat in categories[:3] %}
-      {% if cat.image %}
-        <link rel="preload" as="image" href="{{ cat.image }}">
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+
+  <!-- ⚡ CACHE -->
   <meta http-equiv="Cache-Control" content="max-age=31536000, must-revalidate">
 
-  <!-- 🅰️ Font: Poppins -->
+  <!-- 🅰️ FONT (OPTIMIZED) -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- 💨 Tailwind CSS -->
+  <style>
+html {
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+</style>
+
+  <!-- 💨 TAILWIND (DEFERRED LOAD 🔥) -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -52,263 +51,261 @@
   </script>
 
   <style>
-    /* 🟦 Line Banner Animation */
-    @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-    .banner-marquee-wrapper { overflow: hidden; white-space: nowrap; position: relative; height: 2.25rem; }
-    .banner-marquee-text { display: flex; width: max-content; animation: scrollLeft 18s linear infinite; will-change: transform; }
-    .banner-marquee-content { flex-shrink: 0; padding-right: 4rem; min-width: 100vw; box-sizing: border-box; }
+    /* 🟦 Line Banner Animation (LIGHT) */
+    @keyframes scrollLeft { 
+      0% { transform: translateX(0); } 
+      100% { transform: translateX(-50%); } 
+    }
 
-    /* 🩶 Background overlay for readability */
-    .background-overlay { background: rgba(255,255,255,0.7); backdrop-filter: blur(6px); }
+    .banner-marquee-wrapper {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      height: 2.25rem;
+    }
+
+    .banner-marquee-text {
+      display: flex;
+      width: max-content;
+      animation: scrollLeft 25s linear infinite; /* slower = less CPU */
+      will-change: transform;
+    }
+
+    .banner-marquee-content {
+      flex-shrink: 0;
+      padding-right: 4rem;
+      min-width: 100vw;
+    }
+
+    /* 🩶 Background overlay */
+    .background-overlay {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(4px); /* reduced blur */
+    }
   </style>
 </head>
 
-<body class="relative font-[Poppins] text-gray-800 min-h-screen flex flex-col bg-white transition-all duration-500">
+<body class="relative font-[Poppins] text-gray-800 min-h-screen flex flex-col bg-white">
 
-  <!-- 🌄 Background (Dynamic or White) -->
-  {% if setting and setting.background_image %}
-  <div class="fixed inset-0 -z-10 overflow-hidden">
-    <img src="{{ setting.background_image }}" alt="Background"
-         class="w-full h-full object-cover object-center opacity-30 brightness-100 transition-transform duration-700 ease-out hover:scale-105" />
-    <div class="absolute inset-0 bg-white/85 backdrop-blur-[4px]"></div>
-  </div>
-  {% else %}
-  <div class="fixed inset-0 -z-10 bg-white"></div>
-  {% endif %}
-
-  <!-- 💎 AURIELLE — Fixed Glass-Luxury Navbar -->
-  <nav id="main-navbar"
-       class="fixed top-0 inset-x-0 z-[1000] bg-gradient-to-r from-white/90 via-[rgba(250,245,255,0.85)] to-[rgba(245,235,255,0.85)]
-              backdrop-blur-2xl border-b border-[rgba(200,180,255,0.3)] shadow-[0_2px_25px_rgba(160,120,255,0.1)]
-              transition-all duration-300 font-[Poppins]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div id="navbar-inner" class="flex justify-between items-center py-3 sm:py-3.5 transition-all duration-500">
-
-        <!-- 🍔 Mobile Menu Button -->
-        <button id="menu-toggle"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br 
-                 from-[rgba(255,255,255,0.7)] to-[rgba(240,225,255,0.9)] 
-                 text-[rgb(150,90,230)] shadow-sm hover:scale-110 
-                 hover:shadow-[0_0_15px_rgba(180,130,255,0.3)] transition-all duration-300 focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-               viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-
-        <!-- 👑 Logo + Title -->
-        <a href="{{ url_for('index') }}" class="flex items-center gap-3 sm:gap-4 group cursor-pointer transition-all duration-300">
-          {% if setting and setting.logo %}
-          <img src="{{ setting.logo }}" alt="Aurielle Logo" id="nav-logo"
-               class="h-10 sm:h-11 w-auto object-contain drop-shadow-[0_0_10px_rgba(180,130,255,0.3)] group-hover:scale-105 transition-all duration-500">
-          {% endif %}
-          <div class="flex flex-col items-start leading-tight">
-            <span class="bg-gradient-to-r from-[rgb(150,90,230)] via-[rgb(200,120,255)] to-[rgb(255,170,240)] 
-                         bg-clip-text text-transparent font-extrabold text-lg sm:text-2xl tracking-wide drop-shadow-sm transition-all duration-500">
-              {{ setting.website_name if setting else 'AURIELLE' }}
-            </span>
-            <p class="text-[10px] sm:text-xs text-[rgb(170,120,255)] italic mt-0.5 opacity-80 whitespace-nowrap">
-              A house of calm luxury ✨
-            </p>
-          </div>
-        </a>
-
-        <!-- 🛍️ Cart -->
-        <a href="{{ url_for('cart') }}"
-           class="relative flex items-center justify-center w-10 h-10 rounded-full 
-                  bg-gradient-to-br from-[rgba(255,255,255,0.8)] to-[rgba(240,225,255,0.9)]
-                  text-[rgb(150,90,230)] hover:text-[rgb(120,70,200)]
-                  shadow-sm hover:shadow-[0_0_15px_rgba(180,130,255,0.2)] hover:scale-110 transition-all duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-               stroke-width="1.8" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.3 6.3A1 1 0 0 0 6.7 21h10.6a1 1 0 0 0 1-.7L21 13M7 13l4 8m6-8l-4 8"/>
-          </svg>
-          {% if session.get('cart') and session['cart']|length > 0 %}
-          <span class="absolute -top-1.5 -right-1.5 bg-[rgb(180,130,255)] text-white text-[10px] w-4.5 h-4.5 
-                       flex items-center justify-center rounded-full font-bold shadow-sm animate-pulse">
-            {{ session['cart']|length }}
-          </span>
-          {% endif %}
-        </a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- 💫 Desktop Menu -->
-  <div class="hidden lg:flex justify-center items-center gap-8 mt-3 text-sm sm:text-base font-medium text-gray-700 z-[950] relative">
-    {% for label, icon, link in [
-        ('Home','',url_for('index')),
-        ('Reviews','',url_for('all_reviews')),
-        ('Track Order','',url_for('track_order')),
-        ('Refund','',url_for('refund_policy')),
-        ('Social','',url_for('social')),
-        ('About','',url_for('about'))
-    ] %}
-    <a href="{{ link }}" class="relative group flex items-center gap-1">
-      {{ icon }} {{ label }}
-      <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-[rgb(180,130,255)] group-hover:w-full transition-all duration-300"></span>
-    </a>
-    {% endfor %}
-    {% if session.get('admin_logged_in') %}
-    <a href="{{ url_for('admin_dashboard') }}" class="text-[rgb(160,90,230)] hover:underline">⚙️ Admin</a>
-    <a href="{{ url_for('admin_logout') }}" class="text-rose-400 hover:underline">🔒 Logout</a>
-    {% endif %}
-  </div>
-
-  <!-- 📱 Mobile Menu -->
-  <div id="mobile-menu"
-       class="hidden fixed top-[75px] left-0 right-0 z-[1100] bg-white/95 border-t border-[rgb(235,225,255)] 
-              shadow-[0_10px_25px_rgba(160,120,255,0.15)] animate-slideDown text-[rgb(130,80,210)] 
-              font-[Poppins] rounded-b-3xl overflow-y-auto max-h-[calc(100vh-75px)]">
-    <div class="flex flex-col px-4 py-5 space-y-3 font-medium">
-      <a href="{{ url_for('index') }}" class="hover:text-[rgb(170,110,250)] transition-all">Home</a>
-      <a href="{{ url_for('all_reviews') }}" class="hover:text-[rgb(170,110,250)] transition-all">Reviews</a>
-      <a href="{{ url_for('track_order') }}" class="hover:text-[rgb(170,110,250)] transition-all">Track Order</a>
-      <a href="{{ url_for('refund_policy') }}" class="hover:text-[rgb(170,110,250)] transition-all">Refund Policy</a>
-      <a href="{{ url_for('social') }}" class="hover:text-[rgb(170,110,250)] transition-all">Social</a>
-      <a href="{{ url_for('about') }}" class="hover:text-[rgb(170,110,250)] transition-all">About</a>
-
-      {% if categories %}
-      <div class="border-t border-[rgba(225,210,255,0.5)] mt-4 pt-5">
-        <h3 class="text-[rgb(150,90,230)] font-semibold text-lg mb-4 text-center uppercase">
-          Our Categories
-        </h3>
-        {% for cat in categories %}
-        <a href="{{ url_for('filter_category', category_id=cat.id) }}"
-           class="flex items-center justify-between px-3 py-4 bg-white transition-all duration-300 group 
-                  hover:bg-[rgba(245,235,255,0.8)] hover:text-[rgb(160,90,240)] rounded-xl">
-          <span class="font-semibold text-[rgb(110,60,190)] group-hover:text-[rgb(160,90,240)] tracking-wide transition-all">{{ cat.name }}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-               stroke-width="2" stroke="currentColor"
-               class="w-4 h-4 text-[rgb(160,90,230)] opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all duration-300">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-        {% if not loop.last %}
-        <div class="divider-line w-full h-[1px] bg-[rgba(235,225,255,0.6)] my-1 opacity-70 transition-all duration-500"></div>
-        {% endif %}
-        {% endfor %}
-      </div>
-      {% endif %}
-
-      {% if session.get('admin_logged_in') %}
-      <div class="border-t border-[rgba(230,220,255,0.4)] pt-4 mt-4">
-        <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-2 text-[rgb(140,80,220)] hover:underline">⚙️ Admin Dashboard</a>
-        <a href="{{ url_for('admin_logout') }}" class="flex items-center gap-2 text-rose-400 hover:underline">🔒 Logout</a>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-
-  <!-- 🌈 Animations + Scroll Reactive -->
-  <style>
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-slideDown { animation: slideDown 0.3s ease-out; }
-
-  @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 6px rgba(160, 90, 240, 0.3); }
-    50% { box-shadow: 0 0 12px rgba(160, 90, 240, 0.6); }
-  }
-  .divider-line { transition: opacity 0.4s ease-in-out, box-shadow 0.6s ease-in-out; }
-  a:hover + .divider-line { opacity: 1 !important; animation: pulseGlow 1.8s ease-in-out infinite; }
-
-  #main-navbar.scrolled {
-    background: linear-gradient(to right, rgba(240,230,255,0.92), rgba(230,220,255,0.95));
-    backdrop-filter: blur(25px) saturate(200%);
-    box-shadow: 0 6px 30px rgba(150, 100, 255, 0.25);
-    border-color: rgba(180,160,250,0.5);
-    transform: scale(0.985);
-  }
-  #nav-logo.scrolled { transform: scale(0.9); filter: brightness(0.95); }
-
-  /* 🌸 Line Banner Marquee */
-  .banner-marquee-wrapper { position: relative; overflow: hidden; }
-  @keyframes marquee { 0% { transform: translateX(0%);} 100% { transform: translateX(-50%);} }
-  .animate-marquee { animation: marquee 18s linear infinite; width: max-content; }
-  .banner-marquee-content { display: inline-block; white-space: nowrap; padding-right: 4rem; }
-  </style>
-
-  <script>
-  const menuToggle = document.getElementById("menu-toggle");
-  const mobileMenu = document.getElementById("mobile-menu");
-  const navbar = document.getElementById("main-navbar");
-  const logo = document.getElementById("nav-logo");
-
-  // 🍔 Toggle Mobile Menu
-  menuToggle?.addEventListener("click", () => {
-    mobileMenu.classList.toggle("hidden");
-    mobileMenu.classList.toggle("animate-slideDown");
-  });
-
-  // Auto-hide menu when scrolling
-  window.addEventListener("scroll", () => {
-    if (!mobileMenu.classList.contains("hidden")) mobileMenu.classList.add("hidden");
-  });
-
-  // Navbar scroll behavior
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 40) {
-      navbar?.classList.add("scrolled");
-      logo?.classList.add("scrolled");
-    } else {
-      navbar?.classList.remove("scrolled");
-      logo?.classList.remove("scrolled");
+<!-- 🚀 PAGE READY OPTIMIZATION -->
+<script>
+  // Stop animations when tab inactive (BIG performance boost)
+  document.addEventListener("visibilitychange", () => {
+    const marquee = document.querySelector(".banner-marquee-text");
+    if (marquee) {
+      marquee.style.animationPlayState = document.hidden ? "paused" : "running";
     }
   });
-  </script>
+</script>
+
+<!-- 🌄 Background (Optimized) -->
+{% if setting and setting.background_image %}
+<div class="fixed inset-0 -z-10 overflow-hidden">
+  <img src="{{ setting.background_image }}" alt="Background"
+     width="1920" height="1080"
+       loading="eager"
+       decoding="async"
+       class="w-full h-full object-cover object-center opacity-25" />
+  <!-- 🔥 Reduced blur (major lag fix) -->
+  <div class="absolute inset-0 bg-white/80"></div>
+</div>
+{% else %}
+<div class="fixed inset-0 -z-10 bg-white"></div>
+{% endif %}
+
+<!-- 💎 Navbar -->
+<nav id="main-navbar"
+     class="fixed top-0 inset-x-0 z-[1000] bg-gradient-to-r from-white/90 via-[rgba(250,245,255,0.85)] to-[rgba(245,235,255,0.85)]
+            backdrop-blur-[6px] border-b border-[rgba(200,180,255,0.3)]
+            shadow-[0_2px_15px_rgba(160,120,255,0.1)]
+            transition-all duration-300 font-[Poppins] will-change-transform">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div id="navbar-inner" class="flex justify-between items-center py-3 sm:py-3.5">
+
+      <!-- 🍔 Menu -->
+      <button id="menu-toggle"
+        class="flex items-center justify-center w-10 h-10 rounded-full 
+               bg-white/80 text-[rgb(150,90,230)] shadow-sm 
+               hover:scale-105 transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <!-- 👑 Logo -->
+      <a href="{{ url_for('index') }}" class="flex items-center gap-3 group">
+        {% if setting and setting.logo %}
+        <img src="{{ setting.logo }}" alt="Logo" id="nav-logo"
+             loading="eager"
+             class="h-10 sm:h-11 object-contain transition-transform duration-300 group-hover:scale-105">
+        {% endif %}
+        <div class="leading-tight">
+          <span class="bg-gradient-to-r from-[rgb(150,90,230)] via-[rgb(200,120,255)] to-[rgb(255,170,240)] 
+                       bg-clip-text text-transparent font-extrabold text-lg sm:text-2xl">
+            {{ setting.website_name if setting else 'AURIELLE' }}
+          </span>
+          <p class="text-[10px] sm:text-xs text-[rgb(170,120,255)] italic">
+            A house of calm luxury ✨
+          </p>
+        </div>
+      </a>
+
+      <!-- 🛍️ Cart -->
+      <a href="{{ url_for('cart') }}"
+         class="relative flex items-center justify-center w-10 h-10 rounded-full 
+                bg-white/80 text-[rgb(150,90,230)]
+                shadow-sm hover:scale-105 transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.6" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.3 6.3A1 1 0 0 0 6.7 21h10.6a1 1 0 0 0 1-.7L21 13"/>
+        </svg>
+
+        {% if session.get('cart') and session['cart']|length > 0 %}
+        <span class="absolute -top-1 -right-1 bg-purple-400 text-white text-[10px] w-4 h-4 
+                     flex items-center justify-center rounded-full font-bold">
+          {{ session['cart']|length }}
+        </span>
+        {% endif %}
+      </a>
+
+    </div>
+  </div>
+</nav>
+
+<!-- 📱 Mobile Menu -->
+<div id="mobile-menu"
+     class="hidden fixed top-[75px] left-0 right-0 z-[1100] bg-white/95 
+            shadow-lg rounded-b-2xl overflow-y-auto max-h-[calc(100vh-75px)]">
+
+  <div class="flex flex-col px-4 py-5 space-y-3 text-[rgb(130,80,210)] font-medium">
+
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('all_reviews') }}">Reviews</a>
+    <a href="{{ url_for('track_order') }}">Track Order</a>
+    <a href="{{ url_for('refund_policy') }}">Refund Policy</a>
+    <a href="{{ url_for('social') }}">Social</a>
+    <a href="{{ url_for('about') }}">About</a>
+
+    {% if categories %}
+    <div class="border-t mt-4 pt-4">
+      {% for cat in categories %}
+      <a href="{{ url_for('filter_category', category_id=cat.id) }}"
+         class="block py-3 hover:text-purple-500">
+        {{ cat.name }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- ⚡ OPTIMIZED SCRIPT -->
+<script>
+const menuToggle = document.getElementById("menu-toggle");
+const mobileMenu = document.getElementById("mobile-menu");
+const navbar = document.getElementById("main-navbar");
+const logo = document.getElementById("nav-logo");
+
+// 🍔 Toggle
+menuToggle?.addEventListener("click", () => {
+  mobileMenu.classList.toggle("hidden");
+});
+
+// 🚀 THROTTLED SCROLL (MAJOR FIX)
+let ticking = false;
+
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+
+      // hide menu
+      if (!mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.add("hidden");
+      }
+
+      // navbar effect
+      if (window.scrollY > 40) {
+        navbar?.classList.add("shadow-xl");
+        logo?.classList.add("scale-90");
+      } else {
+        navbar?.classList.remove("shadow-xl");
+        logo?.classList.remove("scale-90");
+      }
+
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+</script>
 
 {% if setting and setting.line_banner_text %}
-<!-- 💜 AURIELLE — Elegant Scrolling Line Banner -->
+<!-- 💜 AURIELLE — Optimized Scrolling Line Banner -->
 <div id="line-banner"
      class="fixed top-[72px] sm:top-[80px] inset-x-0 z-[1040]
             bg-gradient-to-r from-[rgb(250,245,255)] via-[rgb(255,240,250)] to-[rgb(250,245,255)]
             text-[rgb(140,90,210)] font-semibold text-xs sm:text-sm md:text-base py-2
-            shadow-sm border-t border-[rgb(230,210,250)] text-center select-none overflow-hidden">
+            shadow-sm border-t border-[rgb(230,210,250)]
+            text-center select-none overflow-hidden">
+
   <div class="banner-marquee-wrapper">
     <div class="banner-marquee-text flex animate-marquee">
+
       <span class="banner-marquee-content mx-6 sm:mx-8">
         {{ setting.line_banner_text }}
       </span>
+
       <span class="banner-marquee-content mx-6 sm:mx-8" aria-hidden="true">
         {{ setting.line_banner_text }}
       </span>
+
     </div>
   </div>
 </div>
 
-<!-- 🧭 Spacer (push content below navbar + line banner) -->
-<div class="h-[125px] sm:h-[145px]"></div>
+<!-- 🧭 Spacer -->
+<div class="h-[120px] sm:h-[140px]"></div>
 
 <style>
-/* ✨ Smooth Marquee Animation */
+/* 🚀 OPTIMIZED MARQUEE (GPU-friendly) */
 @keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
+  from { transform: translate3d(0,0,0); }
+  to { transform: translate3d(-50%,0,0); }
 }
+
 .animate-marquee {
-  animation: marquee 22s linear infinite;
+  animation: marquee 28s linear infinite; /* 🔥 slower = less CPU */
+  will-change: transform;
 }
+
 .banner-marquee-wrapper {
   overflow: hidden;
   white-space: nowrap;
   position: relative;
 }
+
+html, body {
+  overflow-x: hidden;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
 .banner-marquee-text {
   display: flex;
   width: max-content;
-  will-change: transform;
 }
+
 .banner-marquee-content {
   flex-shrink: 0;
-  padding-right: 4rem;
+  padding-right: 3rem; /* 🔥 reduced spacing */
   min-width: 100vw;
 }
 
-/* Subtle glow line under banner */
+/* ⚡ LIGHTER glow (reduced blur) */
 #line-banner::after {
   content: "";
   position: absolute;
@@ -316,29 +313,31 @@
   left: 0;
   height: 2px;
   width: 100%;
-  background: linear-gradient(to right, rgba(180,130,255,0.3), rgba(255,200,255,0.6), rgba(180,130,255,0.3));
+  background: linear-gradient(to right, rgba(180,130,255,0.3), rgba(255,200,255,0.5), rgba(180,130,255,0.3));
   opacity: 0.7;
-  animation: glowPulse 3s ease-in-out infinite;
+  animation: glowPulse 4s ease-in-out infinite;
 }
+
 @keyframes glowPulse {
-  0%, 100% { opacity: 0.6; filter: blur(1px); }
-  50% { opacity: 1; filter: blur(3px); }
+  0%,100% { opacity: 0.6; }
+  50% { opacity: 0.9; }
 }
 </style>
 {% endif %}
 
-<!-- 💎 AURIELLE — Page Content Area -->
-<main class="flex-grow max-w-6xl mx-auto px-4 py-10 bg-gradient-to-br 
-             from-white/90 via-[rgb(252,248,255)] to-[rgb(245,240,255)] 
-             backdrop-blur-xl shadow-lg rounded-2xl mt-8 border border-[rgb(240,230,255)] 
-             transition-all duration-300 w-full">
+<!-- 💎 AURIELLE — Page Content Area (Optimized) -->
+<main class="flex-grow max-w-6xl mx-auto px-4 py-10 
+             bg-gradient-to-br from-white/95 via-[rgb(252,248,255)] to-[rgb(245,240,255)]
+             shadow-md rounded-2xl mt-8 border border-[rgb(240,230,255)] 
+             transition-all duration-300 w-full will-change-transform">
 
   <!-- 🔔 Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="space-y-4 mb-8 animate-fadeIn">
+
         {% for category, message in messages %}
-        <div class="flex items-center justify-between p-4 rounded-xl text-sm sm:text-base font-medium shadow-md border
+        <div class="flash-msg flex items-center justify-between p-4 rounded-xl text-sm sm:text-base font-medium shadow-sm border
           {% if category == 'success' %}
             bg-[rgb(240,255,245)] border-[rgb(190,245,200)] text-[rgb(25,100,60)]
           {% elif category == 'danger' %}
@@ -348,28 +347,29 @@
           {% else %}
             bg-[rgb(245,245,255)] border-[rgb(230,220,255)] text-[rgb(100,80,160)]
           {% endif %}">
-          
+
           <!-- Icon + Message -->
           <div class="flex items-center gap-2">
             {% if category == 'success' %}
-              <span class="text-green-600 text-lg">✅</span>
+              <span>✅</span>
             {% elif category == 'danger' %}
-              <span class="text-red-500 text-lg">❌</span>
+              <span>❌</span>
             {% elif category == 'warning' %}
-              <span class="text-yellow-500 text-lg">⚠️</span>
+              <span>⚠️</span>
             {% else %}
-              <span class="text-[rgb(160,120,255)] text-lg">💡</span>
+              <span>💡</span>
             {% endif %}
             <p class="leading-snug break-words">{{ message }}</p>
           </div>
 
           <!-- Close Button -->
-          <button onclick="this.closest('div').remove()" 
-                  class="text-lg font-bold px-2 hover:text-[rgb(180,130,255)] transition">
+          <button class="close-flash text-lg font-bold px-2 hover:text-[rgb(180,130,255)] transition">
             ×
           </button>
+
         </div>
         {% endfor %}
+
       </div>
     {% endif %}
   {% endwith %}
@@ -380,25 +380,38 @@
   </div>
 </main>
 
-<!-- 🌸 Smooth Entry Animation -->
+<!-- 🌸 Optimized Animations -->
 <style>
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0,8px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
 }
-.animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
 
 @keyframes fadeInSlow {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0,12px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
 }
-.animate-fadeInSlow { animation: fadeInSlow 0.8s ease-out; }
+.animate-fadeInSlow { animation: fadeInSlow 0.6s ease-out; }
 </style>
+
+<!-- ⚡ Optimized Flash Close Script -->
+<script>
+document.querySelectorAll(".close-flash").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const el = btn.closest(".flash-msg");
+    el.style.opacity = "0";
+    el.style.transform = "translateY(-5px)";
+    setTimeout(() => el.remove(), 200);
+  });
+});
+</script>
 
 <!-- 💜 AURIELLE — Signature Luxury Footer -->
 <footer class="bg-gradient-to-r from-[rgb(249,245,255)] via-[rgb(255,250,255)] to-[rgb(250,245,255)]
-               border-t border-[rgb(235,225,255)] mt-24 shadow-inner backdrop-blur-md 
+               border-t border-[rgb(235,225,255)] mt-24 shadow-inner 
                text-[rgb(90,70,150)] font-[Poppins]">
+
   <div class="max-w-7xl mx-auto px-6 py-16 space-y-14">
 
     <!-- ✨ Top Service Bar -->
@@ -410,9 +423,9 @@
         {'icon': 'M12 8c-3.314 0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6h-2a4 4 0 1 1-4-4V4m0 0h4m-4 0H8', 'title': 'Secure Payment', 'desc': 'SSL encrypted checkout'},
         {'icon': 'M12 6v6l4 2m6-2a10 10 0 1 1-8-9.95', 'title': '24/7 Support', 'desc': 'We’re here anytime'}
       ] %}
-      <div class="flex flex-col items-center hover:scale-105 transition">
+      <div class="flex flex-col items-center transition-transform duration-300 hover:scale-105">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-             stroke-width="1.8" stroke="rgb(160,90,230)" class="w-8 h-8 mb-2">
+             stroke-width="1.6" stroke="rgb(160,90,230)" class="w-7 h-7 mb-2">
           <path stroke-linecap="round" stroke-linejoin="round" d="{{ service.icon }}" />
         </svg>
         <p class="font-semibold">{{ service.title }}</p>
@@ -424,7 +437,7 @@
     <!-- 🌿 Middle Content -->
     <div class="grid sm:grid-cols-3 gap-12 text-center sm:text-left">
 
-      <!-- 💍 About Aurielle -->
+      <!-- 💍 About -->
       <div>
         <h3 class="text-xl font-bold mb-4 bg-gradient-to-r from-[rgb(160,90,230)] via-[rgb(200,100,250)] to-[rgb(255,180,255)]
                    bg-clip-text text-transparent">
@@ -432,135 +445,111 @@
         </h3>
         <p class="text-sm leading-relaxed text-[rgb(110,85,170)]">
           <span class="font-semibold">Aurielle</span> is your destination for timeless jewelry that blends modern elegance 
-          with everyday sophistication. Each collection inspires confidence, highlights your individuality, 
-          and lets your inner glow shine. Discover premium bracelets, studs, and accessories crafted ethically — worn beautifully.
+          with everyday sophistication.
         </p>
       </div>
 
-      <!-- ⚡ Quick Links -->
+      <!-- ⚡ Links -->
       <div>
         <h3 class="text-xl font-bold mb-4 text-[rgb(160,90,230)]">Quick Links</h3>
         <ul class="space-y-2 text-sm">
           <li><a href="#category-section" class="hover:text-[rgb(180,100,230)] transition">Shop Categories</a></li>
           <li><a href="#products-section" class="hover:text-[rgb(180,100,230)] transition">Latest Collection</a></li>
           <li><a href="/about" class="hover:text-[rgb(180,100,230)] transition">About Us</a></li>
-          <li><a href="https://wa.me/923701018456?text=Hi%20Aurielle!%20I%20need%20help%20with%20my%20order." 
-                 target="_blank" class="hover:text-[rgb(180,100,230)] transition">Contact Support</a></li>
+          <li><a href="https://wa.me/923701018456" target="_blank" class="hover:text-[rgb(180,100,230)] transition">Contact Support</a></li>
           <li><a href="/refund-policy" class="hover:text-[rgb(180,100,230)] transition">Exchange & Return Policy</a></li>
         </ul>
       </div>
 
-      <!-- 🌸 Connect -->
+      <!-- 🌸 Social -->
       <div class="flex flex-col items-center sm:items-start">
         <h3 class="text-xl font-bold mb-4 text-[rgb(160,90,230)]">Stay Connected</h3>
         <div class="flex gap-5">
+
           <!-- Instagram -->
-          <a href="https://www.instagram.com/aurielle.byshsa" target="_blank" title="Instagram" 
-             class="transition hover:scale-110">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8">
-              <path fill="url(#instaGradient)" d="M12 2.163c3.204 0 3.584.012 4.85.07 1.17.056 1.97.246 2.425.415.6.23 1.03.507 1.48.957.45.45.727.88.957 1.48.169.455.359 1.255.415 2.425.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.056 1.17-.246 1.97-.415 2.425-.23.6-.507 1.03-.957 1.48-.45.45-.88.727-1.48.957-.455.169-1.255.359-2.425.415-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.056-1.97-.246-2.425-.415-.6-.23-1.03-.507-1.48-.957-.45-.45-.727-.88-.957-1.48-.169-.455-.359-1.255-.415-2.425C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.056-1.17.246-1.97.415-2.425.23-.6.507-1.03.957-1.48.45-.45.88-.727 1.48-.957.455-.169 1.255-.359 2.425-.415C8.416 2.175 8.796 2.163 12 2.163zM12 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm6.406-1.682a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/>
-              <defs>
-                <linearGradient id="instaGradient" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#f58529"/>
-                  <stop offset="50%" stop-color="#dd2a7b"/>
-                  <stop offset="100%" stop-color="#8134af"/>
-                </linearGradient>
-              </defs>
-            </svg>
+          <a href="https://www.instagram.com/aurielle.byshsa" target="_blank"
+             class="transition-transform duration-300 hover:scale-110">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+                 class="w-7 h-7" loading="lazy">
           </a>
 
           <!-- Facebook -->
-          <a href="https://www.facebook.com/share/1BZgD3i7Gr/?mibextid=wwXIfr" target="_blank" title="Facebook" 
-             class="text-[rgb(100,120,240)] hover:text-[rgb(80,90,220)] transition hover:scale-110">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                 viewBox="0 0 24 24" class="w-7 h-7 mt-[2px]">
-              <path d="M22 12c0-5.522-4.478-10-10-10S2 6.478 2 12c0 5 3.657 9.128 8.438 9.878v-6.987H8.078v-2.89h2.36V9.797c0-2.332 1.393-3.621 3.523-3.621 1.021 0 2.09.182 2.09.182v2.3h-1.178c-1.164 0-1.528.723-1.528 1.465v1.757h2.598l-.415 2.89h-2.183v6.987C18.343 21.128 22 17 22 12z"/>
-            </svg>
+          <a href="https://www.facebook.com/share/1BZgD3i7Gr/?mibextid=wwXIfr" target="_blank"
+             class="transition-transform duration-300 hover:scale-110">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+                 class="w-6 h-6 mt-[2px]" loading="lazy">
           </a>
+
         </div>
-        <p class="text-sm mt-4 text-[rgb(110,85,170)]">Follow us for the latest trends & exclusive offers</p>
+        <p class="text-sm mt-4 text-[rgb(110,85,170)]">Follow us for updates</p>
       </div>
+
     </div>
 
-    <!-- 🩵 Bottom Credits -->
+    <!-- 🩵 Bottom -->
     <div class="pt-6 border-t border-[rgb(235,225,255)] text-xs sm:text-sm text-center 
                 sm:flex sm:items-center sm:justify-between text-[rgb(120,95,180)]">
       <p class="italic mb-3 sm:mb-0">
         Crafted with calm by 
-        <span class="font-semibold text-[rgb(160,90,230)]">AURIELLE 💜</span> — Where each piece tells your story.
+        <span class="font-semibold text-[rgb(160,90,230)]">AURIELLE 💜</span>
       </p>
-      <p>© {{ setting.website_name if setting else 'AURIELLE' }} {{ now().year }}. All rights reserved.</p>
+      <p>© {{ setting.website_name if setting else 'AURIELLE' }} {{ now().year }}</p>
     </div>
 
   </div>
 </footer>
 
-<!-- 🌸 Navbar Shadow on Scroll -->
-<script>
-  window.addEventListener("scroll", () => {
-    const navbar = document.getElementById("main-navbar");
-    if (navbar) {
-      if (window.scrollY > 10) {
-        navbar.classList.add("shadow-2xl", "backdrop-blur-lg");
-      } else {
-        navbar.classList.remove("shadow-2xl", "backdrop-blur-lg");
-      }
-    }
-  });
-
-  const menuBtn = document.getElementById("menu-toggle");
-  const mobileMenu = document.getElementById("mobile-menu");
-  menuBtn?.addEventListener("click", () => {
-    mobileMenu.classList.toggle("hidden");
-  });
-</script>
-
-<!-- 💬 AURIELLE — WhatsApp Chat Widget -->
-<div id="whatsapp-chat" class="fixed bottom-6 right-6 z-50 animate-bounce-soft">
+<!-- 💬 WhatsApp Chat (OPTIMIZED) -->
+<div id="whatsapp-chat" class="fixed bottom-5 right-5 z-50">
   <a id="whatsapp-link"
      href="#"
      target="_blank"
-     class="group flex items-center gap-3 bg-gradient-to-r from-[rgb(160,100,255)] to-[rgb(200,150,255)]
-            text-white px-6 py-3.5 rounded-full shadow-lg font-semibold tracking-wide
-            hover:from-[rgb(170,110,255)] hover:to-[rgb(220,170,255)]
-            transition-all duration-300 transform hover:scale-110 hover:shadow-[0_0_25px_rgb(220,180,255)]">
+     class="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-400
+            text-white px-4 py-2 rounded-full shadow-md font-semibold
+            transition-transform duration-300 hover:scale-105">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
-         alt="WhatsApp" class="w-6 h-6 drop-shadow-md group-hover:scale-110 transition-transform duration-200">
-    <span class="hidden sm:inline">Chat with Us</span>
+         class="w-5 h-5" loading="lazy">
+    <span class="hidden sm:inline text-sm">Chat</span>
   </a>
 </div>
 
-<style>
-  /* 💫 Soft bounce animation (luxury-style) */
-  @keyframes bounce-soft {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-  .animate-bounce-soft {
-    animation: bounce-soft 4s ease-in-out infinite;
-  }
-
-  /* 🌸 Glow Pulse (optional soft aura) */
-  #whatsapp-chat:hover {
-    filter: drop-shadow(0 0 12px rgba(210,160,255,0.6));
-  }
-</style>
-
 <script>
-  // 🌷 Dynamic WhatsApp link builder
-  const phone = "923701018456"; // your WhatsApp number (no + or 0)
-  const msg   = "Hi, I’d love to know more about AURIELLE 💜";
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  // ⚡ Throttle scroll (FIX LAG)
+  let ticking = false;
 
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const navbar = document.getElementById("main-navbar");
+        if (navbar) {
+          if (window.scrollY > 10) {
+            navbar.classList.add("shadow-xl");
+          } else {
+            navbar.classList.remove("shadow-xl");
+          }
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // ⚡ Menu toggle safe
+  document.getElementById("menu-toggle")?.addEventListener("click", () => {
+    document.getElementById("mobile-menu")?.classList.toggle("hidden");
+  });
+
+  // ⚡ WhatsApp link (lightweight)
+  const phone = "923701018456";
+  const msg = "Hi, I need help";
   const link = document.getElementById("whatsapp-link");
+
   if (link) {
-    link.href = isMobile
-      ? `whatsapp://send?phone=${phone}&text=${encodeURIComponent(msg)}`
-      : `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`;
+    link.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   }
 </script>
 
-<script src="http://0e84-202-47-48-243.ngrok-free.app/static/bot.js?store=1"></script>
+<script src="http://aibot-production-aa25.up.railway.app/static/bot.js?store=2"></script>
 
 </body>
 </html>

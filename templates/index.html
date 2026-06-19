@@ -3,26 +3,28 @@
 
 {% block content %}
 
-<!-- 🌸 AURIELLE Hero Banner — Luxe Glow + Smart Media Edition -->
+<!-- 🌸 AURIELLE Hero Banner — Clean Luxe Edition -->
 {% if setting and (setting.hero_banner or setting.hero_video) %}
 <section class="relative w-full overflow-hidden mb-16 h-[60vh] sm:h-[75vh] rounded-3xl shadow-2xl 
                 bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100 flex items-center justify-center">
 
-  <!-- 🌈 Media Carousel (if both image + video exist) -->
+  <!-- 🌈 Media Carousel -->
   {% if setting.hero_banner and setting.hero_video %}
   <div id="heroCarousel" class="relative w-full h-full overflow-hidden rounded-3xl">
-    <div class="carousel-item absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out" id="slide-image">
+
+    <!-- 🖼 Image -->
+    <div class="carousel-item absolute inset-0 opacity-100 transition-opacity duration-700 ease-in-out" id="slide-image">
       <img src="{{ setting.hero_banner }}"
            alt="Aurielle Hero Banner"
            loading="eager"
-           fetchpriority="high"
            decoding="async"
-           width="100%" height="auto"
-           class="w-full h-full object-cover rounded-3xl brightness-95 transition-all duration-700 ease-out" />
+           class="w-full h-full object-cover rounded-3xl brightness-95 will-change-transform" />
     </div>
-    <div class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out" id="slide-video">
-      <video autoplay muted loop playsinline 
-             class="w-full h-full object-cover rounded-3xl brightness-95">
+
+    <!-- 🎥 Video (OPTIMIZED) -->
+    <div class="carousel-item absolute inset-0 opacity-0 transition-opacity duration-700 ease-in-out" id="slide-video">
+      <video autoplay muted loop playsinline preload="none"
+             class="w-full h-full object-cover rounded-3xl brightness-95 will-change-transform">
         <source src="{{ setting.hero_video }}" type="video/mp4">
       </video>
     </div>
@@ -32,393 +34,216 @@
     <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white z-40 text-3xl">❯</button>
   </div>
 
-  <!-- 💎 Auto Slide Script -->
+  <!-- ⚡ Optimized Script -->
   <script>
     let slides = ["slide-image", "slide-video"];
     let current = 0;
-    const showSlide = (index) => {
+    let heroInterval;
+
+    function showSlide(index) {
       slides.forEach((id, i) => {
-        document.getElementById(id).style.opacity = (i === index) ? "1" : "0";
+        const el = document.getElementById(id);
+        if (el) el.style.opacity = (i === index) ? "1" : "0";
       });
-    };
-    document.getElementById("prevSlide").onclick = () => {
+    }
+
+    document.getElementById("prevSlide")?.addEventListener("click", () => {
       current = (current - 1 + slides.length) % slides.length;
       showSlide(current);
-    };
-    document.getElementById("nextSlide").onclick = () => {
+    });
+
+    document.getElementById("nextSlide")?.addEventListener("click", () => {
       current = (current + 1) % slides.length;
       showSlide(current);
-    };
-    setInterval(() => {
+    });
+
+    heroInterval = setInterval(() => {
       current = (current + 1) % slides.length;
       showSlide(current);
     }, 8000);
+
+    // 🛑 Stop when tab inactive (performance fix)
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) clearInterval(heroInterval);
+    });
   </script>
 
   {% elif setting.hero_video %}
-  <!-- 🎥 Hero Video -->
-  <video autoplay muted loop playsinline
-         class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95">
+  <!-- 🎥 Full Video -->
+  <video autoplay muted loop playsinline preload="none"
+         class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95 will-change-transform">
     <source src="{{ setting.hero_video }}" type="video/mp4">
   </video>
 
   {% elif setting.hero_banner %}
-  <!-- 🌷 Hero Image -->
+  <!-- 🖼 Full Image -->
   <img src="{{ setting.hero_banner }}"
        alt="Aurielle Hero Banner"
        loading="eager"
-       fetchpriority="high"
        decoding="async"
-       width="100%" height="auto"
-       class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95 transition-all duration-700 ease-out" />
+       class="absolute inset-0 w-full h-full object-cover rounded-3xl brightness-95 will-change-transform" />
   {% endif %}
 
-  <!-- ✨ Gradient & Glow Overlays -->
+  <!-- ✨ Overlay -->
   <div class="absolute inset-0 bg-black/40 rounded-3xl z-10"></div>
-  <div class="absolute inset-0 bg-gradient-to-t from-[rgba(255,200,240,0.6)] via-[rgba(255,240,255,0.3)] 
-              to-transparent z-10 rounded-3xl"></div>
 
-  <!-- 🌟 Floating Sparkles -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none z-20">
-    <div class="sparkle"></div>
-    <div class="sparkle sparkle-delay"></div>
-    <div class="sparkle sparkle-alt"></div>
-  </div>
-
-  <!-- 💫 Hero Content -->
-  <div class="absolute inset-0 z-30 flex flex-col justify-end sm:justify-center items-start 
-              px-6 sm:px-12 pb-14 sm:pb-0 max-w-2xl text-white space-y-5 sm:space-y-7">
-
-    {% if setting.timer_enabled and setting.product_visibility_start %}
-    <!-- ⏳ Countdown Timer -->
-    <div id="countdownWrapper"
-         class="bg-white/20 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-lg border border-white/40 
-                mb-4 animate-fade-in flex flex-col items-start">
-      <h2 id="countdown-label"
-          class="text-[rgb(240,200,255)] text-lg sm:text-xl font-semibold tracking-wide">
-        💫 New Collection Drops In
-      </h2>
-      <div id="countdown" 
-           class="text-3xl sm:text-5xl font-mono text-[rgb(255,240,255)] font-extrabold drop-shadow-lg"></div>
-      {% if setting.coming_soon_message %}
-      <p class="text-[rgb(255,225,255)] text-xs sm:text-sm mt-1 italic">
-        ✨ {{ setting.coming_soon_message }}
-      </p>
-      {% endif %}
-    </div>
-    {% endif %}
+  <!-- 💫 Content -->
+  <div class="absolute inset-0 z-30 flex flex-col justify-center items-start 
+              px-6 sm:px-12 max-w-2xl text-white space-y-6">
 
     <!-- 💎 Headline -->
-    <h1 class="text-3xl sm:text-6xl md:text-7xl font-extrabold leading-snug sm:leading-tight 
+    <h1 class="text-2xl sm:text-5xl md:text-7xl font-extrabold leading-tight 
                bg-clip-text text-transparent bg-gradient-to-r 
-               from-[rgb(240,180,255)] via-[rgb(255,190,230)] to-[rgb(255,210,255)]
-               drop-shadow-[0_4px_20px_rgba(255,200,255,0.8)]">
+               from-[rgb(240,180,255)] via-[rgb(255,190,230)] to-[rgb(255,210,255)]">
       Discover <span class="text-white">Elegance</span><br class="hidden sm:block">
       in Every <span class="text-[rgb(255,210,255)]">Detail</span>
     </h1>
 
     <!-- 🌼 Subtext -->
-    <p class="text-white/95 text-sm sm:text-lg leading-relaxed max-w-md font-light drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
+    <p class="text-white/95 text-sm sm:text-lg max-w-md font-light">
       Where every sparkle tells your story — timeless jewelry for the modern woman 
     </p>
 
-    <!-- 💍 CTA Button -->
+    <!-- 💍 CTA -->
     <a href="{{ url_for('index') }}#products-section"
-       class="mt-4 inline-block px-10 py-3 sm:py-4 text-white text-lg font-semibold 
+       class="inline-block px-10 py-3 sm:py-4 text-white text-lg font-semibold 
               rounded-full bg-gradient-to-r from-[rgb(204,102,255)] to-[rgb(255,153,204)] 
-              hover:from-[rgb(230,153,255)] hover:to-[rgb(255,179,217)] 
-              shadow-[0_0_25px_rgba(230,153,255,0.6)] backdrop-blur-xl 
-              transition-all duration-500 hover:scale-110 hover:shadow-[0_0_45px_rgba(230,153,255,0.8)]">
+              transition-transform duration-300 hover:scale-105">
        Shop Now
     </a>
   </div>
 </section>
-
-<!-- 💖 Countdown Script -->
-{% if setting.product_visibility_start %}
-<script>
-  const countdownDate = new Date("{{ setting.product_visibility_start.isoformat() }}").getTime();
-  const countdownElement = document.getElementById("countdown");
-  const countdownLabel = document.getElementById("countdown-label");
-
-  const interval = setInterval(() => {
-    const now = new Date().getTime();
-    const distance = countdownDate - now;
-
-    if (distance <= 0) {
-      countdownElement.innerHTML = "✨ The Collection is Live!";
-      countdownLabel.innerHTML = "💎 Ready to Shine with Aurielle ✨";
-      clearInterval(interval);
-      fetch('/make_products_visible', { method: 'POST' });
-      return;
-    }
-
-    const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((distance % (1000 * 60)) / 1000);
-    countdownElement.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
-  }, 1000);
-</script>
-{% endif %}
 {% endif %}
 
-<!-- 🌟 Animations & Effects -->
+<!-- 🌟 Light Animation Only -->
 <style>
 @keyframes sparkleFloat {
-  0% { transform: translateY(0) scale(1); opacity: 0.5; }
-  50% { transform: translateY(-50px) scale(1.2); opacity: 1; }
-  100% { transform: translateY(-100px) scale(1); opacity: 0; }
+  0% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-30px); opacity: 1; }
+  100% { transform: translateY(-60px); opacity: 0; }
 }
-.sparkle, .sparkle-delay, .sparkle-alt {
-  position: absolute;
-  background: radial-gradient(circle, rgba(255,230,255,0.9) 0%, transparent 70%);
-  width: 6px; height: 6px; border-radius: 50%;
-  animation: sparkleFloat 6s ease-in-out infinite;
-  filter: blur(2px);
-}
-.sparkle { left: 20%; bottom: 10%; animation-delay: 0s; }
-.sparkle-delay { left: 60%; bottom: 20%; animation-delay: 2s; }
-.sparkle-alt { left: 80%; bottom: 15%; animation-delay: 4s; }
 
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+/* 📱 Disable animations on mobile (performance) */
+@media (max-width:640px){
+  .sparkle, .sparkle-delay, .sparkle-alt {
+    display: none !important;
+  }
 }
-.animate-fade-in { animation: fade-in 0.8s ease-out; }
 </style>
-
-<!-- 💖 Elegant Jewelry Promo Banners — Edge-to-Edge Luxe Edition -->
-{% if promo_banners or categories %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-
-<section class="relative mb-20 w-full overflow-hidden">
-  <!-- 🌸 Soft Full Gradient Background -->
-  <div class="absolute inset-0 bg-gradient-to-r 
-              from-[rgba(245,225,255,0.75)] via-[rgba(255,245,250,0.7)] to-[rgba(240,220,255,0.7)] 
-              backdrop-blur-2xl"></div>
-
-  <div class="relative swiper myPromoSwiper rounded-3xl overflow-hidden w-full max-w-[95%] sm:max-w-7xl mx-auto 
-              shadow-[0_0_45px_rgba(230,153,255,0.25)] border border-[rgba(230,153,255,0.2)]">
-    <div class="swiper-wrapper">
-
-      <!-- 🌸 Admin-Added Promo Banners -->
-      {% for banner in promo_banners %}
-      <div class="swiper-slide relative group">
-        <img src="{{ banner.image }}" alt="{{ banner.title }}"
-             loading="eager"
-             fetchpriority="high"
-             decoding="async"
-             width="100%" height="auto"
-             class="w-full h-64 sm:h-[28rem] object-cover object-center scale-105 
-                    group-hover:scale-110 transition-transform duration-[1500ms] ease-out rounded-3xl" />
-
-        <!-- ✨ Lighter Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-t 
-                    from-[rgba(230,153,255,0.45)] via-[rgba(255,240,255,0.2)] to-transparent 
-                    rounded-3xl"></div>
-
-        <!-- 💎 Promo Text Box (now smaller, bottom-left aligned) -->
-        <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-12 
-                    w-[85%] sm:w-[60%] bg-white/20 backdrop-blur-md border border-white/30 
-                    rounded-2xl p-4 sm:p-6 text-left text-white shadow-xl 
-                    transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-[0_0_30px_rgba(230,153,255,0.35)]">
-          <h3 class="text-2xl sm:text-4xl font-extrabold bg-gradient-to-r 
-                     from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-                     bg-clip-text text-transparent drop-shadow-md leading-tight">
-            {{ banner.title }}
-          </h3>
-          {% if banner.subtitle %}
-          <p class="mt-2 sm:mt-3 text-sm sm:text-lg text-white/90 leading-relaxed font-light">
-            {{ banner.subtitle }}
-          </p>
-          {% endif %}
-          <a href="#products-section"
-             class="inline-block mt-4 sm:mt-6 bg-gradient-to-r 
-                    from-[rgb(204,102,255)] to-[rgb(255,153,204)] 
-                    hover:from-[rgb(230,153,255)] hover:to-[rgb(255,179,217)] 
-                    text-white font-semibold text-sm sm:text-base 
-                    py-2.5 sm:py-3 px-6 sm:px-8 rounded-full shadow-lg 
-                    transition-transform duration-300 transform hover:scale-105 
-                    hover:shadow-[0_0_20px_rgb(230,153,255)]">
-             Explore Now
-          </a>
-        </div>
-      </div>
-      {% endfor %}
-
-      <!-- 💎 Category-Based Banners -->
-      {% for cat in categories %}
-      {% if cat.image %}
-      <div class="swiper-slide relative group">
-        <img src="{{ cat.image }}" alt="{{ cat.name }}"
-             loading="eager"
-             fetchpriority="high"
-             decoding="async"
-             width="100%" height="auto"
-             class="w-full h-64 sm:h-[28rem] object-cover object-center scale-105 
-                    group-hover:scale-110 transition-transform duration-[1500ms] ease-out rounded-3xl" />
-
-        <!-- ✨ Light Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-t 
-                    from-[rgba(204,102,255,0.4)] via-[rgba(255,240,255,0.15)] to-transparent 
-                    rounded-3xl"></div>
-
-        <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-12 
-                    w-[85%] sm:w-[60%] bg-white/20 backdrop-blur-md border border-white/30 
-                    rounded-2xl p-4 sm:p-6 text-left text-white shadow-xl 
-                    transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-[0_0_30px_rgba(230,153,255,0.35)]">
-          <h3 class="text-2xl sm:text-4xl font-extrabold bg-gradient-to-r 
-                     from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-                     bg-clip-text text-transparent drop-shadow-md leading-tight">
-            {{ cat.name }}
-          </h3>
-          <p class="mt-2 sm:mt-3 text-sm sm:text-lg text-white/90 leading-relaxed font-light">
-            Explore {{ cat.name }} collection now 
-          </p>
-          <a href="{{ url_for('filter_category', category_id=cat.id) }}#products-section"
-             class="inline-block mt-4 sm:mt-6 bg-gradient-to-r 
-                    from-[rgb(204,102,255)] to-[rgb(255,153,204)] 
-                    hover:from-[rgb(230,153,255)] hover:to-[rgb(255,179,217)] 
-                    text-white font-semibold text-sm sm:text-base 
-                    py-2.5 sm:py-3 px-6 sm:px-8 rounded-full shadow-lg 
-                    transition-transform duration-300 transform hover:scale-105 
-                    hover:shadow-[0_0_20px_rgb(230,153,255)]">
-             Explore Now
-          </a>
-        </div>
-      </div>
-      {% endif %}
-      {% endfor %}
-    </div>
-
-    <!-- 🌷 Swiper Controls -->
-    <div class="swiper-pagination"></div>
-    <div class="swiper-button-next text-white drop-shadow-lg"></div>
-    <div class="swiper-button-prev text-white drop-shadow-lg"></div>
-  </div>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-<script>
-  new Swiper(".myPromoSwiper", {
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-      dynamicBullets: true
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
-    },
-    effect: "fade",
-    fadeEffect: { crossFade: true },
-    speed: 1200
-  });
-</script>
-{% endif %}
 
 <!-- 💎 Shop by Category -->
 {% if categories %}
 <section id="category-section" 
-         class="py-16 px-4 bg-gradient-to-br from-[rgba(255,250,255,0.7)] via-[rgba(250,245,255,0.8)] to-[rgba(245,240,255,0.9)]
-                backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(230,153,255,0.15)] 
-                border border-[rgba(255,255,255,0.3)] max-w-7xl mx-auto transition-all duration-500">
+         class="py-16 px-4 max-w-7xl mx-auto">
 
-  <!-- 🌸 Section Title -->
+  <!-- 🌸 Title -->
   <h2 class="text-2xl sm:text-5xl font-extrabold text-center mb-12 
-             bg-clip-text text-transparent bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-             drop-shadow-md tracking-wide">
+             bg-clip-text text-transparent 
+             bg-gradient-to-r from-purple-500 via-pink-400 to-pink-300 
+             tracking-wide">
      Shop by Category 
   </h2>
 
   <div class="relative">
-    <!-- Left Fade -->
-    <div id="fade-left"
-         class="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-white/90 to-transparent 
-                pointer-events-none opacity-0 transition-opacity duration-300 z-10"></div>
 
-    <!-- Left Arrow -->
+    <!-- 🔥 LIGHT EDGES (LESS GPU LOAD) -->
+    <div class="absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-black/5 to-transparent pointer-events-none z-10"></div>
+    <div class="absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-black/5 to-transparent pointer-events-none z-10"></div>
+
+    <!-- LEFT BUTTON -->
     {% if categories|length > 2 %}
     <button id="cat-left"
-            class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 backdrop-blur-md 
-                   border border-[rgba(230,153,255,0.3)] shadow-lg 
-                   w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center 
-                   z-20 hover:bg-[rgba(230,153,255,0.3)] hover:scale-110 
-                   transition-all duration-300 opacity-0 pointer-events-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[rgb(204,102,255)]" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      class="absolute left-2 top-1/2 -translate-y-1/2 
+             backdrop-blur-md bg-white/70 
+             shadow-lg 
+             w-9 h-9 sm:w-11 sm:h-11 
+             rounded-full flex items-center justify-center 
+             z-20 hover:scale-105 transition">
+
+      <svg xmlns="http://www.w3.org/2000/svg" 
+           class="w-5 h-5 text-gray-700"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 19l-7-7 7-7" />
       </svg>
     </button>
     {% endif %}
 
-    <!-- 💍 Category Carousel -->
+    <!-- 💎 CATEGORY CONTAINER -->
     <div id="cat-container"
-         class="{% if categories|length > 2 %}flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide scroll-smooth{% else %}
-                grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8{% endif %}">
+         class="flex gap-4 sm:gap-6 overflow-x-auto pb-4 
+                snap-x snap-mandatory 
+                scroll-smooth 
+                scrollbar-hide">
+
       {% for cat in categories %}
-        {% if cat.image %}
-        <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
-           class="group relative bg-white/40 backdrop-blur-xl rounded-2xl shadow-lg border border-[rgba(255,255,255,0.2)] 
-                  hover:shadow-[0_0_25px_rgba(230,153,255,0.3)] overflow-hidden transition-all duration-500 
-                  transform hover:scale-[1.05] {% if categories|length > 2 %}min-w-[180px] sm:min-w-[220px] snap-center{% endif %}">
-          
-          <!-- Image -->
+      {% if cat.image %}
+      <a href="{{ url_for('index', category_id=cat.id) }}#products-section"
+         class="group relative snap-center 
+                min-w-[140px] sm:min-w-[200px] md:min-w-[240px]">
+
+        <!-- CARD -->
+        <div class="relative rounded-2xl overflow-hidden 
+                    shadow-md border border-white/20 
+                    bg-white/30 backdrop-blur-sm
+                    hover:shadow-[0_0_25px_rgba(168,85,247,0.25)] 
+                    transition duration-500 will-change-transform">
+
+          <!-- IMAGE -->
           <img src="{{ cat.image }}" alt="{{ cat.name }}"
-               loading="eager"
-               fetchpriority="high"
-               decoding="async"
-               width="100%" height="auto"
-               class="w-full h-44 sm:h-56 object-cover rounded-2xl brightness-95 
-                      group-hover:brightness-110 transition duration-700 ease-out" />
+               loading="lazy"
+               class="w-full h-36 sm:h-52 md:h-60 object-cover 
+                      group-hover:scale-105 
+                      transition duration-500 ease-out will-change-transform" />
 
-          <!-- Overlay Shine -->
-          <div class="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.5)] via-[rgba(0,0,0,0.2)] to-transparent opacity-60 
-                      group-hover:opacity-80 transition duration-500 rounded-2xl"></div>
+          <!-- OVERLAY -->
+          <div class="absolute inset-0 
+                      bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
-          <!-- Name -->
-          <div class="absolute bottom-0 w-full bg-black/40 backdrop-blur-sm py-3 rounded-b-2xl text-center">
-            <h3 class="text-sm sm:text-lg font-semibold text-white tracking-wide group-hover:text-[rgb(255,179,217)] transition">
+          <!-- NAME -->
+          <div class="absolute bottom-0 w-full text-center py-3">
+            <h3 class="text-white text-xs sm:text-base font-semibold 
+                       tracking-wide group-hover:text-pink-300 transition">
               {{ cat.name }}
             </h3>
           </div>
-        </a>
-        {% endif %}
+
+        </div>
+
+      </a>
+      {% endif %}
       {% endfor %}
+
     </div>
 
-    <!-- Right Arrow -->
+    <!-- RIGHT BUTTON -->
     {% if categories|length > 2 %}
     <button id="cat-right"
-            class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 backdrop-blur-md 
-                   border border-[rgba(230,153,255,0.3)] shadow-lg 
-                   w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center 
-                   z-20 hover:bg-[rgba(230,153,255,0.3)] hover:scale-110 transition-all duration-300 opacity-100">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[rgb(204,102,255)]" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      class="absolute right-2 top-1/2 -translate-y-1/2 
+             backdrop-blur-md bg-white/70 
+             shadow-lg 
+             w-9 h-9 sm:w-11 sm:h-11 
+             rounded-full flex items-center justify-center 
+             z-20 hover:scale-105 transition">
+
+      <svg xmlns="http://www.w3.org/2000/svg" 
+           class="w-5 h-5 text-gray-700"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 5l7 7-7 7" />
       </svg>
     </button>
-
-    <!-- Right Fade -->
-    <div id="fade-right"
-         class="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white/90 to-transparent 
-                pointer-events-none opacity-100 transition-opacity duration-300 z-10"></div>
     {% endif %}
+
   </div>
 
+  <!-- CLEAR FILTER -->
   {% if selected_category %}
   <div class="mt-10 text-center">
     <a href="{{ url_for('index') }}"
-       class="inline-block bg-gradient-to-r from-[rgb(204,102,255)] to-[rgb(255,153,204)] 
-              hover:from-[rgb(230,153,255)] hover:to-[rgb(255,179,217)] 
-              text-white text-sm font-semibold py-2 px-6 rounded-full shadow-lg transition">
+       class="inline-block bg-gradient-to-r from-purple-500 to-pink-400 
+              hover:scale-105 text-white text-sm font-semibold 
+              py-2 px-6 rounded-full shadow-lg transition">
       🔄 Clear Category Filter
     </a>
   </div>
@@ -426,234 +251,234 @@
 </section>
 {% endif %}
 
-<!-- 🌸 Smooth Auto Scroll -->
 <script>
   const container = document.getElementById("cat-container");
   const leftBtn = document.getElementById("cat-left");
   const rightBtn = document.getElementById("cat-right");
-  const fadeLeft = document.getElementById("fade-left");
-  const fadeRight = document.getElementById("fade-right");
 
   function updateArrows() {
     if (!container) return;
 
-    if (container.scrollLeft <= 0) {
+    if (container.scrollLeft <= 5) {
       leftBtn?.classList.add("opacity-0", "pointer-events-none");
-      fadeLeft?.classList.add("opacity-0");
     } else {
       leftBtn?.classList.remove("opacity-0", "pointer-events-none");
-      fadeLeft?.classList.remove("opacity-0");
     }
 
     if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
       rightBtn?.classList.add("opacity-0", "pointer-events-none");
-      fadeRight?.classList.add("opacity-0");
     } else {
       rightBtn?.classList.remove("opacity-0", "pointer-events-none");
-      fadeRight?.classList.remove("opacity-0");
     }
   }
 
   if (container) {
     let autoSlide = setInterval(() => {
-      container.scrollBy({ left: 200, behavior: 'smooth' });
+      container.scrollBy({ left: 180, behavior: 'smooth' });
+
       if (container.scrollLeft + container.clientWidth >= container.scrollWidth) {
         container.scrollTo({ left: 0, behavior: 'smooth' });
       }
-      updateArrows();
-    }, 4000);
 
-    container.addEventListener("touchstart", () => clearInterval(autoSlide));
+      updateArrows();
+    }, 6000);
+
+    // 🚀 STOP when user interacts
     container.addEventListener("mouseenter", () => clearInterval(autoSlide));
+    container.addEventListener("touchstart", () => clearInterval(autoSlide));
+
+    // 🚀 STOP when tab inactive
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) clearInterval(autoSlide);
+    });
+
     container.addEventListener("scroll", updateArrows);
     updateArrows();
   }
 
-  if (leftBtn && rightBtn && container) {
-    leftBtn.addEventListener("click", () => {
-      container.scrollBy({ left: -200, behavior: 'smooth' });
-      setTimeout(updateArrows, 400);
-    });
-    rightBtn.addEventListener("click", () => {
-      container.scrollBy({ left: 200, behavior: 'smooth' });
-      setTimeout(updateArrows, 400);
-    });
-  }
+  leftBtn?.addEventListener("click", () => {
+    container.scrollBy({ left: -180, behavior: 'smooth' });
+  });
+
+  rightBtn?.addEventListener("click", () => {
+    container.scrollBy({ left: 180, behavior: 'smooth' });
+  });
 </script>
 
-<!-- 💍 AURIELLE — Category-Wise Product Showcase -->
-<section id="products-section" 
-         class="pt-16 pb-20 px-4 bg-gradient-to-br 
-                from-[rgba(255,250,255,0.8)] via-[rgba(250,245,255,0.9)] to-[rgba(245,240,255,0.95)]
-                backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(230,153,255,0.15)] 
-                border border-[rgba(255,255,255,0.3)] max-w-7xl mx-auto mt-16 transition-all duration-500">
+<!-- Name -->
+<h2 class="text-2xl sm:text-5xl font-extrabold text-center mb-12 
+           bg-clip-text text-transparent 
+           bg-gradient-to-r from-purple-500 via-pink-400 to-pink-300 
+           tracking-wide">
+   AURIELLE PRODUCTS
+</h2>
 
-  <!-- 🌸 Section Heading -->
-  <div class="flex flex-col sm:flex-row justify-between items-center mb-10">
-    <h2 class="text-3xl sm:text-5xl font-extrabold text-center sm:text-left 
-               bg-clip-text text-transparent bg-gradient-to-r 
-               from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-               tracking-wide drop-shadow-md">
-       Elegant Jewelry Collection
-    </h2>
-    <a href="{{ url_for('index') }}#products-section"
-       class="mt-4 sm:mt-0 inline-block px-6 py-2 bg-gradient-to-r 
-              from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] 
-              text-white rounded-full text-sm font-semibold shadow-md hover:scale-105 transition-all duration-300">
-       See All Products
-    </a>
-  </div>
-
-  <!-- 🔍 Filter Dropdown -->
-  <div class="max-w-sm mx-auto mb-14">
-    <label for="categoryDropdown" 
-           class="block text-sm font-semibold text-center text-[rgb(153,102,204)] mb-2">
-       Filter by Category
-    </label>
-    <select id="categoryDropdown"
-            class="w-full border border-[rgba(230,153,255,0.4)] rounded-xl px-4 py-3 
-                   bg-white/70 backdrop-blur-md text-gray-700 font-medium shadow-sm 
-                   focus:outline-none focus:ring-2 focus:ring-[rgb(230,153,255)] 
-                   focus:border-[rgb(230,153,255)] transition-all duration-300">
-      <option value="">-- All Categories --</option>
-      {% for cat in categories %}
-      <option value="{{ url_for('index', category_id=cat.id) }}#products-section"
-              {% if selected_category == cat.id %}selected{% endif %}>
-        {{ cat.name }}
-      </option>
-      {% endfor %}
-    </select>
-  </div>
-
-  <!-- 🪞 Products Grouped by Category -->
-  {% if categories %}
-    {% for cat in categories %}
-      {% set cat_products = products | selectattr('category_id', 'equalto', cat.id) | list %}
-      {% if cat_products|length > 0 %}
+<!-- 🪞 Products Grouped by Category -->
+{% if categories %}
+  {% for cat in categories %}
+    {% set cat_products = products | selectattr('category_id', 'equalto', cat.id) | list %}
+    {% if cat_products|length > 0 %}
 
 <!-- 🌼 Category Header -->
 <div class="mb-8 mt-16 text-center relative">
   <div class="relative inline-block px-6 py-3">
     <div class="absolute inset-0 rounded-full bg-gradient-to-r 
-                from-[rgba(221,126,255,0.15)] via-[rgba(255,169,218,0.15)] to-[rgba(255,199,238,0.15)]
-                blur-xl animate-pulse"></div>
+                from-[rgba(221,126,255,0.12)] via-[rgba(255,169,218,0.12)] to-[rgba(255,199,238,0.12)]
+                blur-lg"></div>
+
     <h3 class="relative text-2xl sm:text-4xl font-extrabold 
                bg-gradient-to-r from-[rgb(221,126,255)] via-[rgb(255,169,218)] to-[rgb(255,199,238)]
-               bg-clip-text text-transparent drop-shadow-sm capitalize tracking-wide">
+               bg-clip-text text-transparent capitalize tracking-wide">
        {{ cat.name }}
     </h3>
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-[3px] 
+
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-[2px] 
                 bg-gradient-to-r from-[rgb(221,126,255)] to-[rgb(255,169,218)] rounded-full"></div>
   </div>
 </div>
 
 <!-- 🧿 Product Grid -->
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
-  {% for product in cat_products %}
-  <div class="group bg-white/50 backdrop-blur-xl rounded-2xl shadow-lg border border-[rgba(255,255,255,0.3)] 
-              hover:shadow-[0_0_30px_rgba(230,153,255,0.25)] transform hover:scale-[1.03] 
-              transition-all duration-500 overflow-hidden relative flex flex-col">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
 
-    <!-- 🔥 SALE Tag -->
-    {% if product.before_price and product.today_price %}
-    <div class="absolute top-3 right-3 bg-gradient-to-r from-[rgb(255,102,153)] to-[rgb(255,153,204)] 
-                text-white text-[10px] sm:text-xs px-3 py-1 rounded-full shadow-md font-semibold 
-                tracking-wide animate-pulse z-10">
-      SALE
+{% for product in cat_products %}
+<div class="relative group bg-white rounded-2xl 
+            shadow-md border border-gray-100 
+            hover:shadow-xl hover:-translate-y-1 
+            transition-all duration-300 
+            overflow-hidden flex flex-col">
+
+  <!-- 🔥 SALE -->
+  {% if product.before_price and product.today_price %}
+  <div class="absolute top-3 right-3 bg-pink-500 text-white 
+              text-[10px] px-3 py-1 rounded-full shadow-md z-10">
+    SALE
+  </div>
+  {% endif %}
+
+  <!-- ❌ SOLD OUT BADGE -->
+  {% if product.is_soldout or product.stock == 0 %}
+  <div class="absolute top-3 left-3 bg-gray-900 text-white 
+              text-[10px] px-3 py-1 rounded-full shadow-md z-10">
+    SOLD OUT
+  </div>
+  {% endif %}
+
+  <a href="{{ url_for('product_detail', product_id=product.id) }}" class="flex flex-col flex-grow">
+
+    <!-- 🖼 IMAGE -->
+    <div class="relative w-full aspect-square overflow-hidden bg-gray-100">
+
+      <img src="{{ product.image }}"
+           loading="lazy"
+           class="w-full h-full object-cover 
+                  {% if not (product.is_soldout or product.stock == 0) %}
+                  group-hover:scale-110
+                  {% endif %}
+                  transition duration-700 ease-out" />
+
+      <!-- 💔 SOLD OUT OVERLAY -->
+      {% if product.is_soldout or product.stock == 0 %}
+      <div class="absolute inset-0 bg-white/70 backdrop-blur-[1px] 
+                  flex flex-col items-center justify-center text-center px-2">
+
+        <p class="text-gray-800 font-bold text-sm">
+          💔 Out of Stock
+        </p>
+
+        <p class="text-xs text-gray-600 mt-1">
+          Restock Soon ✨
+        </p>
+
+      </div>
+      {% endif %}
+
     </div>
+
+    <!-- 💫 INFO -->
+    <div class="p-3 flex flex-col gap-1 flex-grow">
+
+      <!-- NAME -->
+      <h2 class="font-semibold text-gray-900 text-xs sm:text-sm line-clamp-2">
+        {{ product.name }}
+      </h2>
+
+      <!-- CATEGORY -->
+      {% if product.category %}
+      <p class="text-[10px] text-purple-500 font-medium">
+        {{ product.category.name }}
+      </p>
+      {% endif %}
+
+      <!-- ⭐ RATING -->
+      {% if product.reviews and product.reviews|length > 0 %}
+      {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
+      <div class="flex items-center gap-1 text-[10px]">
+        <div class="text-pink-400">
+          {% for i in range(1,6) %}
+            {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
+          {% endfor %}
+        </div>
+        <span class="text-gray-500">({{ product.reviews|length }})</span>
+      </div>
+      {% endif %}
+
+      <!-- 💰 PRICE -->
+      <div class="mt-auto">
+        <div class="text-sm font-bold text-purple-600">
+          Rs {{ product.today_price | int }}
+        </div>
+
+        {% if product.before_price %}
+        <div class="text-[10px] text-gray-400 line-through">
+          Rs {{ product.before_price | int }}
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </a>
+
+  <!-- 🛒 CTA BUTTON -->
+  <div class="p-3">
+
+    {% if product.is_soldout or product.stock == 0 %}
+
+      <button disabled
+        class="w-full text-xs sm:text-sm font-semibold 
+               py-2.5 rounded-xl 
+               bg-gray-200 text-gray-500 cursor-not-allowed">
+        ❌ Sold Out
+      </button>
+
+    {% else %}
+
+      <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+        <button type="submit"
+          class="w-full text-xs sm:text-sm font-semibold 
+                 py-2.5 rounded-xl 
+                 text-white 
+                 bg-gradient-to-r from-purple-600 via-pink-500 to-pink-400 
+                 shadow-md 
+                 hover:shadow-lg hover:scale-[1.03] 
+                 active:scale-95 
+                 transition-all duration-300">
+          🛒 Add to Cart
+        </button>
+      </form>
+
     {% endif %}
 
-    <!-- 💎 Clickable Area -->
-    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="flex-grow flex flex-col">
-      <!-- 💎 Product Image -->
-      <div class="relative overflow-hidden">
-        <img src="{{ product.image }}" alt="{{ product.name }}"
-             loading="eager"
-             fetchpriority="high"
-             decoding="async"
-             width="100%" height="auto"
-             class="w-full h-44 sm:h-56 object-cover rounded-t-2xl transition-transform duration-[1500ms] ease-out group-hover:scale-110" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent 
-                    opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
-          <span class="text-white text-sm font-semibold bg-[rgba(255,255,255,0.2)] 
-                       backdrop-blur-md px-4 py-2 rounded-full shadow">
-             View Details
-          </span>
-        </div>
-      </div>
-
-      <!-- 💫 Product Info -->
-      <div class="p-4 flex-grow flex flex-col">
-        <h2 class="font-bold text-gray-900 text-sm sm:text-base truncate">{{ product.name }}</h2>
-
-        {% if product.category %}
-        <p class="text-[rgb(153,102,204)] text-xs sm:text-sm mt-1 font-medium">
-           {{ product.category.name }}
-        </p>
-        {% endif %}
-
-        <p class="text-gray-500 text-xs sm:text-sm mt-1 truncate italic">
-          {{ product.description[:60] }}
-        </p>
-
-        <!-- ⭐ Rating -->
-        {% if product.reviews and product.reviews|length > 0 %}
-          {% set avg_rating = (product.reviews | map(attribute='rating') | sum) / (product.reviews|length) %}
-          <div class="flex items-center gap-1 mt-2">
-            <div class="flex text-[rgb(255,179,217)] text-xs">
-              {% for i in range(1,6) %}
-                {% if i <= avg_rating|round(0, 'floor') %}★{% else %}☆{% endif %}
-              {% endfor %}
-            </div>
-            <span class="text-xs text-gray-600">({{ product.reviews|length }})</span>
-          </div>
-        {% endif %}
-
-        <!-- 💰 Price -->
-        <div class="mt-auto pt-3 text-center">
-          <div class="text-lg sm:text-xl font-extrabold text-[rgb(204,102,255)]">
-            Rs {{ product.today_price | int }}
-          </div>
-          {% if product.before_price %}
-          <div class="text-xs sm:text-sm text-gray-400 line-through">
-            Rs {{ product.before_price | int }}
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </a>
-
-    <!-- 🛒 Add to Cart Button -->
-    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="mt-4 mb-4 text-center">
-      <button type="submit"
-              class="px-4 py-2 text-xs sm:text-sm font-semibold 
-                     text-white bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)]
-                     rounded-full shadow-md hover:scale-105 transition-all duration-300 hover:shadow-[0_0_18px_rgba(230,153,255,0.6)]">
-        🛒 Add to Cart
-      </button>
-    </form>
-
   </div>
-  {% endfor %}
+
+</div>
+{% endfor %}
+
 </div>
 
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 </section>
-
-<!-- ✨ Sparkle Animation -->
-<style>
-@keyframes sparkle {
-  0% { background-position: 0 0; opacity: 0.2; }
-  50% { background-position: 100px 100px; opacity: 0.5; }
-  100% { background-position: 200px 0; opacity: 0.3; }
-}
-.animate-sparkle {
-  animation: sparkle 10s linear infinite;
-  background-size: 300px 300px;
-}
-</style>
 
 <!-- 🔄 Redirect on Dropdown Select -->
 <script>

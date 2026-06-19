@@ -1,313 +1,255 @@
 {% extends 'base.html' %}
-{% block title %}🛍️ Your Cart - {{ setting.website_name if setting else 'Aurielle' }}{% endblock %}
+{% block title %}🛍️ Your Cart{% endblock %}
 
 {% block head %}
 <style>
-/* 🌸 General Aesthetic */
 body {
   background: linear-gradient(to bottom right, #fff5fa, #fce4ec, #f3e5f5);
   font-family: 'Poppins', sans-serif;
 }
 
-/* Drawer overlay */
-#drawer-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(3px);
-  z-index: 40;
+/* CARD */
+.cart-item {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 18px;
+  transition: 0.3s;
+}
+.cart-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(204,102,255,0.15);
 }
 
-/* Drawer box */
-#cart-drawer {
-  position: fixed;
-  bottom: -100%;
-  left: 0;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  border-top-left-radius: 1.5rem;
-  border-top-right-radius: 1.5rem;
-  box-shadow: 0 -10px 30px rgba(204, 102, 255, 0.25);
-  transition: bottom 0.4s ease;
-  z-index: 50;
-  max-height: 80%;
-  overflow-y: auto;
-}
-
-#cart-drawer.open {
-  bottom: 0;
-}
-
-/* Qty box */
-.qty-box {
+/* QTY DESIGN */
+.qty-wrapper {
   display: flex;
-  align-items: center;
-  border: 1px solid #e5c5f8;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.qty-box button {
-  background: #fbe7ff;
-  padding: 6px 12px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  transition: background 0.2s;
-}
-.qty-box button:hover {
-  background: #f3d0ff;
-}
-.qty-box input {
-  width: 50px;
-  text-align: center;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  padding: 6px;
-}
-
-/* Glow Buttons */
-.glow-btn {
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(204, 102, 255, 0.3);
-}
-.glow-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(204, 102, 255, 0.4);
-}
-
-/* Subtle shimmer header */
-.header-glow {
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.6), rgba(204, 102, 255, 0.15));
-  backdrop-filter: blur(6px);
-  border-radius: 20px;
-  padding: 1rem 2rem;
-  box-shadow: 0 4px 25px rgba(204, 102, 255, 0.15);
-}
-
-/* 🎨 Color & Size Badges */
-.variant-badge {
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 5px 10px;
-  border-radius: 9999px;
-  border: 1px solid rgba(230,153,255,0.3);
-  background: rgba(250,240,255,0.8);
-  color: rgb(120,80,160);
-  box-shadow: 0 0 10px rgba(230,153,255,0.15);
 }
-.variant-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 9999px;
-  border: 1px solid #ccc;
+
+.qty-number {
+  font-weight: bold;
+  font-size: 16px;
+  color: #7c3aed;
 }
+
+.qty-controls {
+  display: flex;
+  border: 1px solid #e9d5ff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.qty-controls button {
+  width: 34px;
+  height: 34px;
+  background: #faf5ff;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.qty-controls button:hover {
+  background: #f3e8ff;
+}
+
+/* SUMMARY */
+.summary-box {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+/* CHECKOUT BAR */
+.checkout-box {
+  background: linear-gradient(135deg, #fdf4ff, #fce7f3);
+  border-radius: 18px;
+  padding: 20px;
+  text-align: center;
+}
+
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="max-w-6xl mx-auto px-4 py-14 sm:py-20">
+<section class="max-w-6xl mx-auto px-4 py-14">
 
-  <!-- 🛍️ Page Header -->
-  <div class="text-center mb-12 header-glow">
-    <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-[rgb(204,102,255)] via-[rgb(255,153,204)] to-[rgb(255,192,230)] bg-clip-text text-transparent">
-      Your Shopping Cart
-    </h1>
-    <p class="text-gray-600 mt-2 italic">Every sparkle deserves a story ✨</p>
-  </div>
+  <h1 class="text-4xl font-bold text-center text-purple-600 mb-10">
+    Your Cart 🛍️
+  </h1>
 
   {% if products %}
-  <form id="cart-form" method="POST" action="{{ url_for('update_cart') }}" class="space-y-6 pb-32 sm:pb-40">
+  <form id="cart-form" method="POST" action="{{ url_for('update_cart') }}" class="space-y-6">
 
     {% for item in products %}
-    <!-- 🩷 Cart Item -->
-    <div class="bg-white/80 backdrop-blur-lg rounded-2xl border border-[rgba(230,153,255,0.2)] shadow-[0_0_25px_rgba(230,153,255,0.1)] p-5 hover:shadow-[0_0_40px_rgba(230,153,255,0.2)] transition-all duration-500 cart-item"
-         data-price="{{ item.product.today_price }}" data-key="{{ item.key }}">
-      <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 items-center sm:items-start">
+    <div class="cart-item">
 
-        <!-- Image -->
-        <img src="{{ item.product.image }}" alt="{{ item.product.name }}"
-             class="w-28 h-28 object-cover rounded-xl border border-[rgba(230,153,255,0.3)] shadow-md flex-shrink-0">
+      <div class="flex flex-col sm:flex-row gap-4 items-center">
 
-        <!-- Details -->
-        <div class="flex-1 text-center sm:text-left space-y-2">
-          <h3 class="text-lg font-semibold text-[rgb(204,102,255)]">{{ item.product.name }}</h3>
+        <!-- IMAGE -->
+        <img src="{{ item.product.image }}"
+             class="w-24 h-24 rounded-xl object-cover border">
 
-          <!-- 🎨 Show color and size badges -->
-{% if item.color or item.size %}
-<div class="flex flex-wrap justify-center sm:justify-start gap-2 mt-1">
+        <!-- INFO -->
+        <div class="flex-1 text-center sm:text-left">
 
-  {% if item.color %}
-  <span class="variant-badge">
-    {% set color_lower = item.color|lower %}
-    {% if '#' in color_lower or color_lower in [
-      'red','blue','black','white','gold','silver','pink','purple','green','yellow','brown','gray','beige','orange'
-    ] %}
-      <span class="variant-dot" style="background: {{ item.color }}"></span>
-    {% else %}
-      
-    {% endif %}
-    {{ item.color }}
-  </span>
-  {% endif %}
+          <h3 class="text-lg font-semibold text-purple-600">
+            {{ item.product.name }}
+          </h3>
 
-  {% if item.size %}
-  <span class="variant-badge">
-     Size: {{ item.size }}
-  </span>
-  {% endif %}
-
-</div>
-{% endif %}
-
-          <p class="text-gray-600 text-sm sm:text-base">
-            💵 Price: <span class="font-medium">Rs. {{ item.product.today_price }}</span>
+          <p class="text-gray-500 text-sm">
+            Rs. {{ item.product.today_price }}
           </p>
-          <p class="text-sm text-gray-700 font-semibold subtotal">
-            Subtotal: Rs. {{ "%.2f"|format(item.subtotal) }}
-          </p>
-        </div>
 
-        <!-- Qty + Remove -->
-        <div class="flex flex-col items-center gap-3">
-          <!-- Qty Control -->
-          <div class="qty-box">
-            <button type="button" class="decrease">−</button>
-            <input type="number" name="{{ item.key }}" value="{{ item.qty }}" min="1" class="qty-input">
-            <button type="button" class="increase">+</button>
+          <!-- QTY SECTION -->
+          <div class="mt-4 flex flex-col items-center sm:items-start">
+
+            <div class="qty-wrapper">
+
+              <!-- 🔢 Quantity number -->
+              <div class="qty-number">
+                Qty: {{ item.qty }}
+              </div>
+
+              <!-- ➕➖ Controls -->
+              <div class="qty-controls">
+                <button type="button" class="decrease">−</button>
+
+                <!-- hidden input -->
+                <input type="hidden" name="{{ item.key }}" value="{{ item.qty }}" class="qty-input">
+
+                <button type="button" class="increase">+</button>
+              </div>
+
+              <!-- 💰 Item Total -->
+              <div class="text-sm text-purple-600 font-semibold mt-1 subtotal">
+                Total: Rs. {{ "%.2f"|format(item.subtotal) }}
+              </div>
+
+            </div>
+
           </div>
 
-          <!-- Remove -->
-          <button type="submit" 
+          <!-- REMOVE -->
+          <button type="submit"
                   formaction="{{ url_for('remove_from_cart', cart_key=item.key) }}"
                   formmethod="POST"
-                  class="flex items-center gap-1 text-sm text-pink-600 hover:text-pink-700 font-medium transition-all duration-200">
-            ❌ <span>Remove</span>
+                  class="text-xs text-pink-500 mt-2 hover:underline">
+            Remove
           </button>
+
         </div>
+
       </div>
+
     </div>
     {% endfor %}
 
-    <!-- 🧾 Order Summary (Desktop) -->
-    <div class="bg-white/70 backdrop-blur-xl rounded-2xl border border-[rgba(230,153,255,0.3)] p-6 mt-10 hidden sm:block shadow-[0_0_30px_rgba(230,153,255,0.1)]">
-      <h2 class="text-2xl font-bold text-[rgb(204,102,255)] mb-4">Order Summary</h2>
-      <div class="space-y-3 text-gray-700 text-sm sm:text-base">
-        <div class="flex justify-between"><span>Products Total</span><span id="products-total">Rs. {{ "%.2f"|format(total) }}</span></div>
-        <div class="flex justify-between"><span>Delivery Fee</span><span id="delivery-fee">{% if delivery_fee == 0 %}Free 🚚{% else %}Rs. {{ "%.2f"|format(delivery_fee) }}{% endif %}</span></div>
-        {% if discount and discount > 0 %}
-        <div class="flex justify-between text-green-700 font-medium"><span>Discount</span><span>- Rs. {{ "%.2f"|format(discount) }}</span></div>
-        {% endif %}
-        <hr class="my-3">
-        <div class="flex justify-between font-bold text-lg text-gray-900">
-          <span>Grand Total</span>
-          <span id="grand-total">Rs. {{ "%.2f"|format(grand_total if grand_total else total + delivery_fee) }}</span>
-        </div>
+    <!-- 💎 SUMMARY -->
+    <div class="summary-box">
+
+      <div class="flex justify-between text-sm mb-2">
+        <span>Products Total</span>
+        <span>Rs. {{ "%.2f"|format(total) }}</span>
       </div>
+
+      <div class="flex justify-between text-sm mb-2">
+        <span>Delivery Charges</span>
+        <span>
+          {% if delivery_fee == 0 %}Free{% else %}Rs. {{ "%.2f"|format(delivery_fee) }}{% endif %}
+        </span>
+      </div>
+
+      <hr class="my-3">
+
+      <div class="flex justify-between font-bold text-lg text-purple-600">
+        <span>Grand Total</span>
+        <span>
+          Rs. {{ "%.2f"|format(grand_total if grand_total else total + delivery_fee) }}
+        </span>
+      </div>
+
     </div>
 
-    <!-- 💫 Desktop Actions -->
-    <div class="hidden sm:flex justify-between items-center gap-4 mt-8">
-      <a href="{{ url_for('index') }}"
-         class="bg-gradient-to-r from-pink-400 to-purple-400 text-white font-semibold px-6 py-3 rounded-lg glow-btn">
-        ← Continue Shopping
-      </a>
-      <div class="flex gap-3">
-        <button type="submit"
-                class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-3 rounded-lg glow-btn">
-          🔄 Update Cart
-        </button>
-        <a href="{{ url_for('checkout') }}"
-           class="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold px-6 py-3 rounded-lg glow-btn">
-          ✅ Checkout
-        </a>
-      </div>
+    <!-- 🚀 CHECKOUT CTA -->
+    <div class="checkout-box mt-6">
+
+      <p class="text-sm text-gray-600 mb-3">
+        Delivery charges will be applied at checkout.<br>
+        Please proceed to complete your order 🛍️
+      </p>
+
+<a href="{{ url_for('checkout') }}"
+   style="
+     display:inline-flex;
+     align-items:center;
+     justify-content:center;
+     gap:10px;
+
+     background: linear-gradient(135deg, #ff4d6d, #ff758f);
+     color:white;
+
+     padding:14px 32px;
+     border-radius:14px;
+
+     font-weight:600;
+     font-size:15px;
+
+     box-shadow:0 10px 25px rgba(255,77,109,0.35);
+     text-decoration:none;
+
+     transition:all 0.3s ease;
+   "
+   onmouseover="this.style.transform='translateY(-2px) scale(1.05)'; this.style.boxShadow='0 15px 35px rgba(255,77,109,0.5)'"
+   onmouseout="this.style.transform=''; this.style.boxShadow='0 10px 25px rgba(255,77,109,0.35)'"
+>
+  🛍️ Proceed to Checkout →
+</a>
+
     </div>
+
   </form>
 
-  <!-- 📱 Drawer Overlay -->
-  <div id="drawer-overlay" onclick="toggleDrawer(false)"></div>
-
-  <!-- 📱 Mobile Drawer -->
-  <div id="cart-drawer" class="p-6 sm:hidden">
-    <div class="flex justify-between items-center mb-5">
-      <h2 class="text-lg font-bold text-[rgb(204,102,255)]">🧾 Order Summary</h2>
-      <button onclick="toggleDrawer(false)" class="text-gray-500 text-2xl font-bold">&times;</button>
-    </div>
-    <div class="space-y-2 text-gray-700 text-sm">
-      <div class="flex justify-between"><span>Products Total</span><span>Rs. {{ "%.2f"|format(total) }}</span></div>
-      <div class="flex justify-between"><span>Delivery Fee</span><span>{% if delivery_fee == 0 %}Free 🚚{% else %}Rs. {{ "%.2f"|format(delivery_fee) }}{% endif %}</span></div>
-      {% if discount and discount > 0 %}
-      <div class="flex justify-between text-green-700 font-medium"><span>Discount</span><span>- Rs. {{ "%.2f"|format(discount) }}</span></div>
-      {% endif %}
-      <hr class="my-2">
-      <div class="flex justify-between font-bold text-gray-900 text-base">
-        <span>Grand Total</span>
-        <span>Rs. {{ "%.2f"|format(grand_total if grand_total else total + delivery_fee) }}</span>
-      </div>
-    </div>
-
-    <!-- Mobile Actions -->
-    <div class="mt-6 flex flex-col gap-3">
-      <a href="{{ url_for('checkout') }}" class="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-center py-3 rounded-lg font-semibold glow-btn">
-        ✅ Checkout
-      </a>
-      <a href="{{ url_for('index') }}" class="bg-gradient-to-r from-pink-400 to-purple-400 text-white text-center py-3 rounded-lg font-semibold glow-btn">
-        ← Continue Shopping
-      </a>
-    </div>
-  </div>
-
   {% else %}
-  <!-- Empty Cart -->
-  <div class="text-center py-20 text-gray-500 space-y-4">
-    <p class="text-xl sm:text-2xl">Your cart is empty.</p>
-    <a href="{{ url_for('index') }}"
-       class="inline-block bg-gradient-to-r from-pink-400 to-purple-400 text-white px-6 py-3 rounded-lg font-semibold glow-btn">
-      🛍️ Back to {{ setting.website_name if setting else 'Aurielle' }}
-    </a>
+  <div class="text-center py-20 text-gray-500">
+    Cart is empty 😢
   </div>
   {% endif %}
+
 </section>
 
 <script>
-function toggleDrawer(open) {
-  const drawer = document.getElementById("cart-drawer");
-  const overlay = document.getElementById("drawer-overlay");
-  if (open) {
-    drawer.classList.add("open");
-    overlay.style.display = "block";
-  } else {
-    drawer.classList.remove("open");
-    overlay.style.display = "none";
+const form = document.getElementById("cart-form");
+
+form?.addEventListener("click", (e) => {
+
+  if (e.target.classList.contains("increase") || e.target.classList.contains("decrease")) {
+
+    const item = e.target.closest(".cart-item");
+    const input = item.querySelector(".qty-input");
+    const display = item.querySelector(".qty-number");
+
+    let val = parseInt(input.value || 1);
+
+    if (e.target.classList.contains("increase")) val++;
+    else val = Math.max(1, val - 1);
+
+    input.value = val;
+    display.innerText = "Qty: " + val;
+
+    debounceSubmit();
   }
-}
 
-// 🪄 Auto-submit cart when qty changes
-document.querySelectorAll(".cart-item").forEach(item => {
-  const qtyInput = item.querySelector(".qty-input");
-  const increaseBtn = item.querySelector(".increase");
-  const decreaseBtn = item.querySelector(".decrease");
-  const cartForm = document.getElementById("cart-form");
-
-  function autoSave() { cartForm.submit(); }
-
-  increaseBtn.addEventListener("click", () => {
-    qtyInput.value = parseInt(qtyInput.value || 1) + 1;
-    autoSave();
-  });
-
-  decreaseBtn.addEventListener("click", () => {
-    qtyInput.value = Math.max(1, parseInt(qtyInput.value || 1) - 1);
-    autoSave();
-  });
-
-  qtyInput.addEventListener("change", autoSave);
 });
+
+let timeout;
+function debounceSubmit() {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => form.submit(), 400);
+}
 </script>
+
 {% endblock %}

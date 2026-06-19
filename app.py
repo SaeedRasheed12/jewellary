@@ -14,43 +14,45 @@ import cloudinary
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 import os
-import sendgrid
+# import sendgrid
 from sendgrid.helpers.mail import Mail
 
 # ✅ Load .env for local development
 load_dotenv()
 
 
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
+#SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+#sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
 
 # ✅ App Configuration
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "fallback-secret-key")
 
-# ✅ Detect environment & pick DB URL
-if os.environ.get("RAILWAY_ENVIRONMENT"):
-    db_url = os.getenv("DATABASE_URL")  # Railway internal DB
-else:
-    db_url = os.getenv("DATABASE_PUBLIC_URL")  # Local/public DB
+# -----------------------------
+# DATABASE CONFIGURATION
+# -----------------------------
 
-# ✅ Fallback to SQLite if nothing found
+# ✅ Get database URL from environment (Fly / Railway / Supabase)
+db_url = os.getenv("DATABASE_URL") or os.getenv("DATABASE_PUBLIC_URL")
+
+# ✅ Fallback to SQLite for local development only
 if not db_url:
     db_url = "sqlite:///local.db"
     print("💾 Using local SQLite database for development.")
 else:
-    # Fix old Heroku-style format
+    # Fix old postgres format
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
 
-    # Force SSL for PostgreSQL if not present
-    if "sslmode" not in db_url and db_url.startswith("postgresql://"):
+    # Ensure SSL for Supabase
+    if db_url.startswith("postgresql://") and "sslmode" not in db_url:
         db_url += "?sslmode=require"
 
-    print(f"🐘 Using PostgreSQL database: {db_url.split('@')[-1]}")  # hides password
+    print("🐘 Using PostgreSQL database")
 
-# ✅ Database config
-app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+# Apply to Flask
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 
@@ -1454,13 +1456,13 @@ from werkzeug.utils import secure_filename
 import cloudinary.uploader
 import random, string
 from datetime import datetime
-import sendgrid
+# import sendgrid
 from sendgrid.helpers.mail import Mail
 import os
 
 # ✅ Setup SendGrid client
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
+#SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+#sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
 
 # 🔹 Utility to generate tracking numbers
 def generate_tracking_number():
